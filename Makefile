@@ -15,10 +15,10 @@ PKGDIR = $(LIBDIR)/pkgconfig/
 INCDIR = /usr/include/
 
 H = rSON.h
-O = 
+O = JSONAtom.o JSONNode.o JSONObject.o JSONArray.o
 VERMAJ = .0
 VERMIN = .0
-VERREV = .0
+VERREV = .1
 VER = $(VERMAJ)$(VERMIN)$(VERREV)
 SOMAJ = librSON.so
 SOMIN = $(SOMAJ)$(VERMAJ)
@@ -59,6 +59,6 @@ clean:
 	$(call run-cmd,rm,rSON,*.o $(SOMAJ)* $(A) $(PC))
 
 .cpp.o:
-	$(call run-cmd,cc,$(CFLAGS))
+	$(call run-cmd,cxx,$(CFLAGS))
 
 .PHONY: clean librSON.pc install all uninstall default .cpp.o
