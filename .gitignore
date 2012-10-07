@@ -1,0 +1,5 @@
+*.o
+
+librSON.so*
+librSON.a
+librSON.pc
