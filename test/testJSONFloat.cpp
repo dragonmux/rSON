@@ -22,6 +22,18 @@ void testConstruct()
 	assertDoubleNotEqual(*testFloat, 0.0);
 }*/
 
+void testConversions()
+{
+	UNWANTED_TYPE(testFloat, Null)
+	UNWANTED_TYPE(testFloat, Bool)
+	UNWANTED_TYPE(testFloat, Int)
+	WANTED_TYPE(testFloat->asFloat())
+	// WANTED_TYPE(assertDoubleEqual(testFloat->asFloat(), 5.0))
+	UNWANTED_TYPE(testFloat, String)
+	UNWANTED_TYPE(testFloat, Object)
+	UNWANTED_TYPE(testFloat, Array)
+}
+
 void testDistruct()
 {
 	delete testFloat;
@@ -36,6 +48,7 @@ extern "C"
 BEGIN_REGISTER_TESTS()
 	TEST(testConstruct)
 //	TEST(testOperatorDouble)
+	TEST(testConversions)
 	TEST(testDistruct)
 END_REGISTER_TESTS()
 
