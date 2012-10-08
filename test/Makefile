@@ -7,7 +7,7 @@ endif
 LIBTESTMAKE += -o../JSONAtom.o -o../JSONErrors.o
 LIBTEST = libTest
 
-TESTS = testJSONNull.so testJSONBool.so testJSONInt.so testJSONFloat.so testJSONString.so testJSONObject.so
+TESTS = testJSONNull.so testJSONBool.so testJSONInt.so testJSONFloat.so testJSONString.so testJSONObject.so testJSONArray.so
 
 quiet_cmd_testMake = -n
 cmd_testMake = $(LIBTESTMAKE) -o$(2) $(3)
