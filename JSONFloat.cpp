@@ -1,6 +1,6 @@
 #include "internal.h"
 
-JSONFloat::JSONFloat(double floatValue) : value(floatValue)
+JSONFloat::JSONFloat(double floatValue) : JSONAtom(JSON_TYPE_FLOAT), value(floatValue)
 {
 }
 
