@@ -58,10 +58,17 @@ $(SO): $(O)
 libTest.pc: $(IN)
 	$(call run-cmd,sed,$(IN),$(PC))
 
-clean:
+clean: test
+	@cd test && $(MAKE) clean
 	$(call run-cmd,rm,rSON,*.o $(SOMAJ)* $(A) $(PC))
+
+tests: all test
+	@cd test && $(MAKE)
+
+check: all test
+	@cd test && $(MAKE) check
 
 .cpp.o:
 	$(call run-cmd,cxx,$(CFLAGS))
 
-.PHONY: clean librSON.pc install all uninstall default .cpp.o
+.PHONY: clean librSON.pc install all uninstall default .cpp.o tests check
