@@ -19,6 +19,8 @@ JSONAtomType JSONAtom::getType()
 
 void *JSONAtom::asNull() const
 {
+	if (type != JSON_TYPE_NULL)
+		throw JSONTypeError(type, JSON_TYPE_NULL);
 	return NULL;
 }
 
