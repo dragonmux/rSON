@@ -169,7 +169,7 @@ namespace rSON
 		JSONAtom *operator [](size_t key);
 	};
 
-	JSONAtom *parse(const char *json);
+	JSONAtom *parseJSON(const char *json);
 }
 
 #endif /*__rSON_H__*/
