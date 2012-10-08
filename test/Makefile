@@ -11,13 +11,15 @@ TESTS = testJSONBool.so testJSONInt.so testJSONFloat.so
 
 quiet_cmd_testMake = -n
 cmd_testMake = $(LIBTESTMAKE) -o$(2) $(3)
+quiet_cmd_test = -n
+cmd_test = $(LIBTEST) $(2)
 
 default: all
 
 all: $(TESTS)
 
 check: all
-	$(LIBTEST) $(subst .so,,$(TESTS))
+	$(call run-cmd,test,$(subst .so,,$(TESTS)))
 
 clean:
 	$(call run-cmd,rm,tests,$(TESTS))
