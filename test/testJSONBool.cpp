@@ -46,6 +46,17 @@ void testDistruct()
 	testBool = NULL;
 }
 
+void testConversions()
+{
+	UNWANTED_TYPE(testBool, Null)
+	WANTED_TYPE(assertTrue(testBool->asBool()))
+	UNWANTED_TYPE(testBool, Int)
+	UNWANTED_TYPE(testBool, Float)
+	UNWANTED_TYPE(testBool, String)
+	UNWANTED_TYPE(testBool, Object)
+	UNWANTED_TYPE(testBool, Array)
+}
+
 #ifdef __cplusplus
 extern "C"
 {
@@ -54,6 +65,7 @@ extern "C"
 BEGIN_REGISTER_TESTS()
 	TEST(testConstructTrue)
 	TEST(testOperatorBoolTrue)
+	TEST(testConversions)
 	TEST(testDistruct)
 	TEST(testConstructFalse)
 	TEST(testOperatorBoolFalse)
