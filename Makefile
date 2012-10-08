@@ -1,11 +1,13 @@
 include Makefile.inc
 
 PKG_CONFIG_PKGS = 
-EXTRA_DEFINE = -DrSON
-EXTRA_CFLAGS = $(shell pkg-config --cflags $(PKG_CONFIG_PKGS))
+EXTRA_DEFINE = -D__rSON__
+EXTRA_CFLAGS = 
+#$(shell pkg-config --cflags $(PKG_CONFIG_PKGS))
 CFLAGS = -c $(OPTIM_FLAGS) -pedantic -Wall $(EXTRA_CFLAGS) $(EXTRA_DEFINE) -o $@ $<
 EXTRA_LIBS = $(shell pkg-config --libs $(PKG_CONFIG_PKGS))
-LIBS = $(EXTRA_LIBS)
+LIBS = 
+#$(EXTRA_LIBS)
 LFLAGS = -shared $(O) $(LIBS) -Wl,-soname,$(SOMAJ) -o $(SO)
 
 SED = sed -e 's:@LIBDIR@:$(LIBDIR):g'
@@ -30,7 +32,8 @@ IN = librSON.pc.in
 
 default: all
 
-all: $(SO) $(PC)
+all: $(SO)
+# $(PC)
 
 install: all
 	$(call run-cmd,install_file,$(SO),$(LIBDIR))
@@ -52,7 +55,7 @@ $(SO): $(O)
 	$(call run-cmd,ccld,$(LFLAGS))
 	$(call debug-strip,$(SO))
 
-libAudio.pc: $(IN)
+libTest.pc: $(IN)
 	$(call run-cmd,sed,$(IN),$(PC))
 
 clean:
