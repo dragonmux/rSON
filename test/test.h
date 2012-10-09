@@ -7,7 +7,7 @@ try \
 { \
 	whatToDo; \
 } \
-catch (JSONTypeError e) \
+catch (JSONTypeError &e) \
 { \
 	fail(e.error()); \
 }
@@ -18,6 +18,6 @@ try \
 	onWhat->as ## type (); \
 	fail("Type " #type " converted even though wrong"); \
 } \
-catch (JSONTypeError e) \
+catch (JSONTypeError &e) \
 { \
 }

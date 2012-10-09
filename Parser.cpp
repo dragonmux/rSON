@@ -112,7 +112,7 @@ void JSONParser::skipWhite()
 		while (IsWhiteSpace(currentChar()))
 			nextChar();
 	}
-	catch (JSONParserError err)
+	catch (JSONParserError &err)
 	{
 	}
 }
@@ -240,7 +240,7 @@ JSONAtom *object(JSONParser *parser)
 		}
 		parser->match('}', true);
 	}
-	catch (JSONParserError err)
+	catch (JSONParserError &err)
 	{
 		delete object;
 		throw;
@@ -258,7 +258,7 @@ JSONAtom *array(JSONParser *parser)
 			array->add(expression(parser));
 		parser->match(']', true);
 	}
-	catch (JSONParserError err)
+	catch (JSONParserError &err)
 	{
 		delete array;
 		throw;
@@ -391,7 +391,7 @@ JSONAtom *parseJSON(const char *json)
 		{
 			ret = expression(parser, false);
 		}
-		catch (JSONParserError err)
+		catch (JSONParserError &err)
 		{
 			delete parser;
 			throw;
