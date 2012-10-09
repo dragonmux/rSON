@@ -29,3 +29,8 @@ JSONAtom *JSONObject::operator [](const char *key)
 		throw JSONObjectError(JSON_OBJECT_BAD_KEY);
 	return node->second;
 }
+
+size_t JSONObject::size()
+{
+	return children.size();
+}

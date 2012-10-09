@@ -183,6 +183,7 @@ namespace rSON
 		~JSONObject();
 		void add(char *key, JSONAtom *value);
 		JSONAtom *operator [](const char *key);
+		size_t size();
 	};
 
 	class JSONArray : public JSONAtom
@@ -195,6 +196,7 @@ namespace rSON
 		~JSONArray();
 		void add(JSONAtom *value);
 		JSONAtom *operator [](size_t key);
+		size_t size();
 	};
 
 	JSONAtom *parseJSON(const char *json);

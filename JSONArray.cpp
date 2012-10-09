@@ -22,3 +22,8 @@ JSONAtom *JSONArray::operator [](size_t key)
 		throw JSONArrayError(JSON_ARRAY_OOB);
 	return children[key];
 }
+
+size_t JSONArray::size()
+{
+	return children.size();
+}
