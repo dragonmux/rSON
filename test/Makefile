@@ -24,7 +24,7 @@ check: all
 clean:
 	$(call run-cmd,rm,tests,$(TESTS))
 
-testJSONObject.so: LIBTESTMAKE += -o../JSONInt.o
+testJSONObject.so testJSONArray.so: LIBTESTMAKE += -o../JSONInt.o
 $(TESTS): O_FILE = ../$(subst test,,$(@:.so=)).o
 %.so: %.cpp
 	$(call run-cmd,testMake,$(O_FILE),$<)
