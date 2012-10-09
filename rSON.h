@@ -46,7 +46,7 @@ namespace rSON
 	public:
 		JSONParserError(JSONParserErrorType errorType);
 		~JSONParserError();
-		JSONParserErrorType type() const;
+		JSONParserErrorType errorType() const;
 		const char *error() const;
 	};
 
