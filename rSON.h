@@ -4,6 +4,7 @@
 #include <inttypes.h>
 #include <map>
 #include <vector>
+#include <string.h>
 
 namespace rSON
 {
@@ -82,6 +83,15 @@ namespace rSON
 		JSONArrayError(JSONArrayErrorType errorType);
 		~JSONArrayError();
 		const char *error() const;
+	};
+
+	// Support types
+	struct StringLess
+	{
+		inline bool operator()(char *x, char *y) const
+		{
+			return strcmp(x, y) < 0;
+		}
 	};
 
 	// Hierachy types
@@ -164,7 +174,7 @@ namespace rSON
 	class JSONObject : public JSONAtom
 	{
 	private:
-		typedef std::map<char *, JSONAtom *> atomMap;
+		typedef std::map<char *, JSONAtom *, StringLess> atomMap;
 		typedef atomMap::iterator atomMapIter;
 		atomMap children;
 
