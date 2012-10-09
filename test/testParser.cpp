@@ -204,6 +204,71 @@ void testFloatNumber()
 
 #undef TRY_SHOULD_FAIL
 #undef TRY
+#define TRY(tests) \
+try \
+{ \
+	atom = parser->string(); \
+	assertNotNull(atom); \
+	tests; \
+	delete [] atom; \
+} \
+catch (JSONParserError &err) \
+{ \
+	delete parser; \
+	fail(err.error()); \
+}
+#define TRY_SHOULD_FAIL() \
+try \
+{ \
+	atom = parser->string(); \
+	delete [] atom; \
+	delete parser; \
+	fail("The parser failed to throw an exception on invalid string"); \
+} \
+catch (JSONParserError &err) \
+{ \
+}
+
+void testString()
+{
+	JSONParser *parser;
+	char *atom;
+
+	parser = new JSONParser("\"test\" ");
+	TRY(assertStringEqual(atom, "test"));
+	delete parser;
+
+	parser = new JSONParser("\"\\\\\" ");
+	TRY(assertStringEqual(atom, "\\\\"));
+	delete parser;
+
+	parser = new JSONParser("\" \" ");
+	TRY(assertStringEqual(atom, " "));
+	delete parser;
+
+	parser = new JSONParser("\"\\\"\" ");
+	TRY(assertStringEqual(atom, "\\\""));
+	delete parser;
+
+	parser = new JSONParser("\"te\\nst\" ");
+	TRY(assertStringEqual(atom, "te\\nst"));
+	delete parser;
+
+	parser = new JSONParser("\" ");
+	TRY_SHOULD_FAIL();
+	delete parser;
+
+	parser = new JSONParser("\"\\ \" ");
+	TRY_SHOULD_FAIL();
+	delete parser;
+
+	parser = new JSONParser("\"\n\" ");
+	TRY_SHOULD_FAIL();
+	delete parser;
+}
+
+#undef TRY_SHOULD_FAIL
+#undef TRY
 
 #ifdef __cplusplus
 extern "C"
@@ -216,6 +281,7 @@ BEGIN_REGISTER_TESTS()
 	TEST(testLiteral)
 	TEST(testIntNumber)
 	TEST(testFloatNumber)
+	TEST(testString)
 END_REGISTER_TESTS()
 
 #ifdef __cplusplus
