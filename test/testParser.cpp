@@ -44,13 +44,13 @@ try \
 } \
 catch (JSONParserError &err) \
 { \
-	delete parser;
+	delete parser; \
 	fail(err.error()); \
 } \
 catch (JSONTypeError &err) \
 { \
-	delete atom;
-	delete parser;
+	delete atom; \
+	delete parser; \
 	fail(err.error()); \
 }
 
