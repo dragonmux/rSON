@@ -27,8 +27,8 @@ SOMIN = $(SOMAJ)$(VERMAJ)
 SOREV = $(SOMIN)$(VERMIN)
 SO = $(SOREV)$(VERREV)
 A = librSON.a
-PC = librSON.pc
-IN = librSON.pc.in
+PC = rSON.pc
+IN = rSON.pc.in
 
 default: all
 
