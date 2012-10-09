@@ -4,7 +4,7 @@ LIBTESTMAKE = libTestMake
 ifeq ($(BUILD_VERBOSE), 0)
 	LIBTESTMAKE += -q
 endif
-LIBTESTMAKE += -o../JSONAtom.o -o../JSONErrors.o
+LIBTESTMAKE += -o../JSONAtom.o -o../JSONErrors.o -o../String.o -o../Memory.o
 LIBTEST = libTest
 
 TESTS = testJSONNull.so testJSONBool.so testJSONInt.so testJSONFloat.so testJSONString.so testJSONObject.so testJSONArray.so
