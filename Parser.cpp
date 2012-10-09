@@ -161,12 +161,13 @@ char *JSONParser::string()
 {
 	size_t len;
 	char *str;
-	const char *end, *start = next;
+	const char *start, *end;
 	bool slash = false;
 
 	match('"', false);
+	start = next;
 
-	while (IsQuote(currentChar()) == false && slash == false)
+	while (IsQuote(currentChar()) == false || slash == true)
 	{
 		if (slash)
 		{
@@ -187,10 +188,16 @@ char *JSONParser::string()
 				default:
 					throw JSONParserError(JSON_PARSER_BAD_JSON);
 			}
+			slash = false;
 		}
-		slash = IsSlash(currentChar());
-		if (slash == false && IsAllowedAlpha(currentChar()) == false)
-			throw JSONParserError(JSON_PARSER_BAD_JSON);
+		else
+		{
+			slash = IsSlash(currentChar());
+			if (slash == false && IsAllowedAlpha(currentChar()) == false)
+			{
+				throw JSONParserError(JSON_PARSER_BAD_JSON);
+			}
+		}
 		nextChar();
 	}
 
