@@ -18,6 +18,8 @@ public:
 	size_t number();
 } JSONParser;
 
+extern JSONAtom *object(JSONParser *parser);
+extern JSONAtom *array(JSONParser *parser);
 extern size_t power10(size_t power);
 extern JSONAtom *literal(JSONParser *parser);
 extern JSONAtom *number(JSONParser *parser);
@@ -269,6 +271,169 @@ void testString()
 
 #undef TRY_SHOULD_FAIL
 #undef TRY
+#define TRY(tests) \
+try \
+{ \
+	atom = object(parser); \
+	assertNotNull(atom); \
+	objectAtom = atom->asObject(); \
+	tests; \
+	delete atom; \
+} \
+catch (JSONParserError &err) \
+{ \
+	delete parser; \
+	fail(err.error()); \
+}
+#define TRY_SHOULD_FAIL() \
+try \
+{ \
+	atom = object(parser); \
+	delete atom; \
+	delete parser; \
+	fail("The parser failed to throw an exception on invalid object"); \
+} \
+catch (JSONParserError &err) \
+{ \
+}
+
+void testObject()
+{
+	JSONParser *parser;
+	JSONAtom *atom;
+	JSONObject *objectAtom;
+
+	parser = new JSONParser("{}");
+	TRY(assertIntEqual(objectAtom->size(), 0));
+	delete parser;
+
+	parser = new JSONParser("{\"testKey\": 0}");
+	TRY(
+		assertIntEqual(objectAtom->size(), 1);
+		assertNotNull((*objectAtom)["testKey"]);
+		assertIntEqual((*objectAtom)["testKey"]->asInt(), 0)
+	);
+	delete parser;
+
+	parser = new JSONParser("{\"testInt\": 0, \"testBool\": true}");
+	TRY(
+		assertIntEqual(objectAtom->size(), 2);
+		assertNotNull((*objectAtom)["testInt"]);
+		assertIntEqual((*objectAtom)["testInt"]->asInt(), 0);
+		assertNotNull((*objectAtom)["testBool"]);
+		assertTrue((*objectAtom)["testBool"]->asBool())
+	);
+	delete parser;
+
+	parser = new JSONParser("{true}");
+	TRY_SHOULD_FAIL();
+	delete parser;
+
+	parser = new JSONParser("{true: 0}");
+	TRY_SHOULD_FAIL();
+	delete parser;
+
+	parser = new JSONParser("{");
+	TRY_SHOULD_FAIL();
+	delete parser;
+
+	parser = new JSONParser("{\"key\"}");
+	TRY_SHOULD_FAIL();
+	delete parser;
+
+	parser = new JSONParser("{\"key\": }");
+	TRY_SHOULD_FAIL();
+	delete parser;
+
+	parser = new JSONParser("{\"key\": ,}");
+	TRY_SHOULD_FAIL();
+	delete parser;
+
+	parser = new JSONParser("{\"key\": junk}");
+	TRY_SHOULD_FAIL();
+	delete parser;
+
+	parser = new JSONParser("{\"key\": null, }");
+	TRY_SHOULD_FAIL();
+	delete parser;
+}
+
+#undef TRY_SHOULD_FAIL
+#undef TRY
+#define TRY(tests) \
+try \
+{ \
+	atom = array(parser); \
+	assertNotNull(atom); \
+	arrayAtom = atom->asArray(); \
+	tests; \
+	delete atom; \
+} \
+catch (JSONParserError &err) \
+{ \
+	delete parser; \
+	fail(err.error()); \
+}
+#define TRY_SHOULD_FAIL() \
+try \
+{ \
+	atom = array(parser); \
+	delete atom; \
+	delete parser; \
+	fail("The parser failed to throw an exception on invalid array"); \
+} \
+catch (JSONParserError &err) \
+{ \
+}
+
+void testArray()
+{
+	JSONParser *parser;
+	JSONAtom *atom;
+	JSONArray *arrayAtom;
+
+	parser = new JSONParser("[]");
+	TRY(assertIntEqual(arrayAtom->size(), 0));
+	delete parser;
+
+	parser = new JSONParser("[0]");
+	TRY(
+		assertIntEqual(arrayAtom->size(), 1);
+		assertNotNull((*arrayAtom)[0]);
+		assertIntEqual((*arrayAtom)[0]->asInt(), 0)
+	);
+	delete parser;
+
+	parser = new JSONParser("[0, true]");
+	TRY(
+		assertIntEqual(arrayAtom->size(), 2);
+		assertNotNull((*arrayAtom)[0]);
+		assertIntEqual((*arrayAtom)[0]->asInt(), 0);
+		assertNotNull((*arrayAtom)[1]);
+		assertTrue((*arrayAtom)[1]->asBool())
+	);
+	delete parser;
+
+	parser = new JSONParser("[");
+	TRY_SHOULD_FAIL();
+	delete parser;
+
+	parser = new JSONParser("[,]");
+	TRY_SHOULD_FAIL();
+	delete parser;
+
+	parser = new JSONParser("[, true]");
+	TRY_SHOULD_FAIL();
+	delete parser;
+
+	parser = new JSONParser("[null, ]");
+	TRY_SHOULD_FAIL();
+	delete parser;
+
+	parser = new JSONParser("[null, ");
+	TRY_SHOULD_FAIL();
+	delete parser;
+}
 
 #ifdef __cplusplus
 extern "C"
@@ -282,6 +447,8 @@ BEGIN_REGISTER_TESTS()
 	TEST(testIntNumber)
 	TEST(testFloatNumber)
 	TEST(testString)
+	TEST(testObject)
+	TEST(testArray)
 END_REGISTER_TESTS()
 
 #ifdef __cplusplus
