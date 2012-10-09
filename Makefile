@@ -37,7 +37,7 @@ all: $(SO)
 
 install: all
 	$(call run-cmd,install_file,$(SO),$(LIBDIR))
-	$(call run-cmd,install_file,$(PC),$(PKGDIR))
+	-$(call run-cmd,install_file,$(PC),$(PKGDIR))
 	$(call run-cmd,install_file,$(H),$(PKGDIR))
 	$(call run-cmd,ln,$(LIBDIR)/$(SO),$(LIBDIR)/$(SOREV))
 	$(call run-cmd,ln,$(LIBDIR)/$(SOREV),$(LIBDIR)/$(SOMIN))
