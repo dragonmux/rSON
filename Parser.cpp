@@ -10,12 +10,15 @@ private:
 	const char *json;
 	const char *next;
 	const char *jsonEnd;
+	bool lastWasComma;
 
 public:
 	JSONParser(const char *toParse);
 	void nextChar();
 	void skipWhite();
 	void match(char x, bool skip);
+	bool lastTokenComma();
+	void lastNoComma();
 	char currentChar();
 	char *literal();
 	char *string();
@@ -94,6 +97,7 @@ JSONParser::JSONParser(const char *toParse)
 	json = toParse;
 	next = json;
 	jsonEnd = json + strlen(json);
+	lastWasComma = false;
 }
 
 void JSONParser::nextChar()
@@ -121,12 +125,26 @@ void JSONParser::match(char x, bool skip)
 {
 	if (currentChar() == x)
 	{
+		if (x == ',')
+			lastWasComma = true;
+		else
+			lastWasComma = false;
 		nextChar();
 		if (skip)
 			skipWhite();
 	}
 	else
 		throw JSONParserError(JSON_PARSER_BAD_JSON);
+}
+
+bool JSONParser::lastTokenComma()
+{
+	return lastWasComma;
+}
+
+void JSONParser::lastNoComma()
+{
+	lastWasComma = false;
 }
 
 char JSONParser::currentChar()
@@ -247,6 +265,8 @@ JSONAtom *object(JSONParser *parser)
 			parser->match(':', true);
 			object->add(key, expression(parser));
 		}
+		if (parser->lastTokenComma())
+			throw JSONParserError(JSON_PARSER_BAD_JSON);
 		parser->match('}', true);
 	}
 	catch (JSONParserError &err)
@@ -265,6 +285,8 @@ JSONAtom *array(JSONParser *parser)
 		parser->match('[', true);
 		while (IsArrayEnd(parser->currentChar()) == false)
 			array->add(expression(parser));
+		if (parser->lastTokenComma())
+			throw JSONParserError(JSON_PARSER_BAD_JSON);
 		parser->match(']', true);
 	}
 	catch (JSONParserError &err)
@@ -385,8 +407,10 @@ JSONAtom *expression(JSONParser *parser, bool matchComma)
 			atom = literal(parser);
 	}
 
-	if (matchComma)
+	if (matchComma && IsObjectEnd(parser->currentChar()) == false && IsArrayEnd(parser->currentChar()) == false)
 		parser->match(',', true);
+	else
+		parser->lastNoComma();
 	return atom;
 }
 

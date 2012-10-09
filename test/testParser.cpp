@@ -6,12 +6,15 @@ private:
 	const char *json;
 	const char *next;
 	const char *jsonEnd;
+	bool lastWasComma;
 
 public:
 	JSONParser(const char *toParse);
 	void nextChar();
 	void skipWhite();
 	void match(char x, bool skip);
+	bool lastTokenComma();
+	void lastNoComma();
 	char currentChar();
 	char *literal();
 	char *string();
