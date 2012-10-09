@@ -25,7 +25,7 @@ clean:
 	$(call run-cmd,rm,tests,$(TESTS))
 
 testJSONObject.so testJSONArray.so: LIBTESTMAKE += -o../JSONInt.o
-testParser.so: LIBTESTMAKE += -o../JSONNull.o -o../JSONBool.o -o../JSONInt.o -o../JSONFloat.o
+testParser.so: LIBTESTMAKE += -o../JSONNull.o -o../JSONBool.o -o../JSONInt.o -o../JSONFloat.o -o../JSONString.o -o../JSONObject.o -o../JSONArray.o
 $(TESTS): O_FILE = ../$(subst test,,$(@:.so=)).o
 %.so: %.cpp
 	$(call run-cmd,testMake,$(O_FILE),$<)
