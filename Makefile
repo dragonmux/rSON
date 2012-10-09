@@ -17,7 +17,7 @@ PKGDIR = $(LIBDIR)/pkgconfig/
 INCDIR = /usr/include/
 
 H = rSON.h
-O = JSONErrors.o JSONAtom.o JSONNull.o JSONBool.o JSONInt.o JSONFloat.o JSONString.o JSONObject.o JSONArray.o
+O = JSONErrors.o JSONAtom.o JSONNull.o JSONBool.o JSONInt.o JSONFloat.o JSONString.o JSONObject.o JSONArray.o Memory.o String.o
 VERMAJ = .0
 VERMIN = .0
 VERREV = .1
