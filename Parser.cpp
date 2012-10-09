@@ -19,7 +19,7 @@ public:
 	char currentChar();
 	char *literal();
 	char *string();
-	int number();
+	size_t number();
 } JSONParser;
 
 JSONAtom *expression(JSONParser *parser, bool matchComma = true);
@@ -204,9 +204,9 @@ char *JSONParser::string()
 	return str;
 }
 
-int JSONParser::number()
+size_t JSONParser::number()
 {
-	int num = 0;
+	size_t num = 0;
 
 	if (IsNumber(currentChar()) == false)
 		throw JSONParserError(JSON_PARSER_BAD_JSON);
@@ -266,7 +266,7 @@ JSONAtom *array(JSONParser *parser)
 	return array;
 }
 
-int power10(int power)
+size_t power10(size_t power)
 {
 	size_t i, ret = 1;
 	for (i = 0; i < power; i++)
@@ -277,7 +277,8 @@ int power10(int power)
 JSONAtom *number(JSONParser *parser)
 {
 	bool sign = false, mulSign = false;
-	int integer = 0, decimal = 0, multiplier = 0;
+	int integer = 0;
+	size_t decimal = 0, multiplier = 0;
 	bool decimalValid = false;
 
 	if (parser->currentChar() == '-')
@@ -317,7 +318,7 @@ JSONAtom *number(JSONParser *parser)
 	}
 	else
 	{
-		int mul = pow10(multiplier);
+		size_t mul = pow10(multiplier);
 		double num = decimal;
 		while (decimal < 0.0)
 			decimal /= 10.0;
