@@ -25,7 +25,7 @@ void testOperatorString()
 	assertNotNull(testString);
 	// TODO: assertConstNotNull()
 	assertNotNull((char *)testString->operator const char *());
-//	assertStringEqual(*testString, "testValue");
+	assertStringEqual(*testString, "testValue");
 }
 
 void testConversions()
@@ -35,8 +35,10 @@ void testConversions()
 	UNWANTED_TYPE(testString, Int)
 	UNWANTED_TYPE(testString, Float)
 	// TODO: assertConstNotNull()
-	WANTED_TYPE(assertNotNull((char *)testString->asString()))
-	// WANTED_TYPE(assertStringEqual
+	WANTED_TYPE( \
+		assertNotNull((char *)testString->asString()); \
+		assertStringEqual(testString->asString(), "testValue")
+	)
 	UNWANTED_TYPE(testString, Object)
 	UNWANTED_TYPE(testString, Array)
 }
