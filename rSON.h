@@ -36,10 +36,10 @@ namespace rSON
 	{
 	private:
 		char *errorStr;
-		JSONAtomType actual, expected;
+		const char *typeToString(JSONAtomType type) const;
 
 	public:
-		JSONTypeError(JSONAtomType actualType, JSONAtomType expectedType);
+		JSONTypeError(JSONAtomType actual, JSONAtomType expected);
 		~JSONTypeError();
 		const char *error() const;
 	};

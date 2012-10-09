@@ -1,14 +1,39 @@
 #include <exception>
+#include <malloc.h>
 
 #include "internal.h"
+#include "String.h"
 
-JSONTypeError::JSONTypeError(JSONAtomType actualType, JSONAtomType expectedType) : actual(actualType), expected(expectedType)
+JSONTypeError::JSONTypeError(JSONAtomType actual, JSONAtomType expected)
 {
+	errorStr = formatString("Expecting %s, found %s", typeToString(expected), typeToString(actual));
 }
 
 JSONTypeError::~JSONTypeError()
 {
-	delete errorStr;
+	free(errorStr);
+}
+
+const char *JSONTypeError::typeToString(JSONAtomType type) const
+{
+	switch (type)
+	{
+		case JSON_TYPE_NULL:
+			return "Null";
+		case JSON_TYPE_BOOL:
+			return "Bool";
+		case JSON_TYPE_INT:
+			return "Int";
+		case JSON_TYPE_FLOAT:
+			return "Float";
+		case JSON_TYPE_STRING:
+			return "String";
+		case JSON_TYPE_OBJECT:
+			return "Object";
+		case JSON_TYPE_ARRAY:
+			return "Array";
+	}
+	throw std::exception();
 }
 
 const char *JSONTypeError::error() const
