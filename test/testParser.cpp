@@ -34,20 +34,23 @@ void testPower10()
 	assertIntEqual(power10(4), 10000);
 }
 
-#define TRY(what, tests) \
+#define TRY(tests) \
 try \
 { \
-	atom = what; \
+	atom = literal(parser); \
 	assertNotNull(atom); \
 	tests; \
 	delete atom; \
 } \
 catch (JSONParserError &err) \
 { \
+	delete parser;
 	fail(err.error()); \
 } \
 catch (JSONTypeError &err) \
 { \
+	delete atom;
+	delete parser;
 	fail(err.error()); \
 }
 
@@ -56,10 +59,33 @@ void testLiteral()
 	JSONParser *parser;
 	JSONAtom *atom;
 
-	parser = new JSONParser("true");
-	TRY(literal(parser), assertTrue(atom->asBool()));
+	parser = new JSONParser("true ");
+	TRY(assertTrue(atom->asBool()));
+	delete parser;
+
+	parser = new JSONParser("false ");
+	TRY(assertFalse(atom->asBool()));
+	delete parser;
+
+	parser = new JSONParser("null ");
+	TRY(assertNull(atom->asNull()));
+	delete parser;
+
+	parser = new JSONParser("invalid ");
+	try
+	{
+		atom = literal(parser);
+		delete atom;
+		delete parser;
+		fail("The parser failed to throw an exception on invalid literal");
+	}
+	catch (JSONParserError &err)
+	{
+	}
 	delete parser;
 }
+
+#undef TRY
 
 #undef TRY
 
