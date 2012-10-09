@@ -148,7 +148,7 @@ char *JSONParser::literal()
 	while (IsLowerAlpha(currentChar()))
 		nextChar();
 
-	len = (size_t)(next - start);
+	len = (size_t)(next - start) + 1;
 	ret = new char[len]();
 	memcpy(ret, start, len - 1);
 	ret[len - 1] = 0;
@@ -197,7 +197,7 @@ char *JSONParser::string()
 	end = next;
 	match('"', true);
 
-	len = (size_t)(end - start);
+	len = (size_t)(end - start) + 1;
 	str = new char[len]();
 	memcpy(str, start, len - 1);
 	str[len - 1] = 0;
