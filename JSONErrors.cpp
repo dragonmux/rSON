@@ -12,6 +12,11 @@ JSONParserError::~JSONParserError()
 {
 }
 
+JSONParserErrorType JSONParserError::errorType() const
+{
+	return parserError;
+}
+
 const char *JSONParserError::error() const
 {
 	switch (parserError)
