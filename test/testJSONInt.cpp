@@ -8,7 +8,7 @@ void testConstruct()
 	{
 		testInt = new JSONInt(5);
 	}
-	catch (std::bad_alloc badAlloc)
+	catch (std::bad_alloc &badAlloc)
 	{
 		fail(badAlloc.what());
 	}

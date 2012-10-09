@@ -12,7 +12,7 @@ void testConstruct()
 	{
 		testString = new JSONString(testValue);
 	}
-	catch (std::bad_alloc badAlloc)
+	catch (std::bad_alloc &badAlloc)
 	{
 		delete [] testValue;
 		fail(badAlloc.what());

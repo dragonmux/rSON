@@ -8,7 +8,7 @@ void testConstruct()
 	{
 		testNull = new JSONNull();
 	}
-	catch (std::bad_alloc badAlloc)
+	catch (std::bad_alloc &badAlloc)
 	{
 		fail(badAlloc.what());
 	}

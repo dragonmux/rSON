@@ -8,7 +8,7 @@ void testConstructTrue()
 	{
 		testBool = new JSONBool(true);
 	}
-	catch (std::bad_alloc badAlloc)
+	catch (std::bad_alloc &badAlloc)
 	{
 		fail(badAlloc.what());
 	}
@@ -27,7 +27,7 @@ void testConstructFalse()
 	{
 		testBool = new JSONBool(false);
 	}
-	catch (std::bad_alloc badAlloc)
+	catch (std::bad_alloc &badAlloc)
 	{
 		fail(badAlloc.what());
 	}
