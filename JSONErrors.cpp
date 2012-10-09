@@ -4,6 +4,27 @@
 #include "internal.h"
 #include "String.h"
 
+JSONParserError::JSONParserError(JSONParserErrorType errorType) : parserError(errorType)
+{
+}
+
+JSONParserError::~JSONParserError()
+{
+}
+
+const char *JSONParserError::error() const
+{
+	switch (parserError)
+	{
+		case JSON_PARSER_EOF:
+			return "The JSON parser has reached the end of the data but failed to terminate";
+		case JSON_PARSER_BAD_JSON:
+			return "The JSON parser has determined it was fed with bad JSON";
+		default:
+			throw std::exception();
+	}
+}
+
 JSONTypeError::JSONTypeError(JSONAtomType actual, JSONAtomType expected)
 {
 	errorStr = formatString("Expecting %s, found %s", typeToString(expected), typeToString(actual));
