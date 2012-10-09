@@ -2,15 +2,19 @@
 #include <string.h>
 
 JSONString *testString = NULL;
+static const char *constTestValue = "testValue";
 
 void testConstruct()
 {
+	char *testValue = new char[strlen(constTestValue) + 1]();
+	strcpy(testValue, constTestValue);
 	try
 	{
-		testString = new JSONString(strdup("testValue"));
+		testString = new JSONString(testValue);
 	}
 	catch (std::bad_alloc badAlloc)
 	{
+		delete [] testValue;
 		fail(badAlloc.what());
 	}
 	assertNotNull(testString);
