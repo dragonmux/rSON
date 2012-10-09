@@ -7,7 +7,7 @@ endif
 LIBTESTMAKE += -o../JSONAtom.o -o../JSONErrors.o -o../String.o -o../Memory.o
 LIBTEST = libTest
 
-TESTS = testJSONNull.so testJSONBool.so testJSONInt.so testJSONFloat.so testJSONString.so testJSONObject.so testJSONArray.so
+TESTS = testJSONNull.so testJSONBool.so testJSONInt.so testJSONFloat.so testJSONString.so testJSONObject.so testJSONArray.so testParser.so
 
 quiet_cmd_testMake = -n
 cmd_testMake = $(LIBTESTMAKE) -o$(2) $(3)
@@ -25,6 +25,7 @@ clean:
 	$(call run-cmd,rm,tests,$(TESTS))
 
 testJSONObject.so testJSONArray.so: LIBTESTMAKE += -o../JSONInt.o
+testParser.so: LIBTESTMAKE += -o../JSONNull.o -o../JSONBool.o
 $(TESTS): O_FILE = ../$(subst test,,$(@:.so=)).o
 %.so: %.cpp
 	$(call run-cmd,testMake,$(O_FILE),$<)
