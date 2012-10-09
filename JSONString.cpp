@@ -6,7 +6,7 @@ JSONString::JSONString(char *strValue) : JSONAtom(JSON_TYPE_STRING), value(strVa
 
 JSONString::~JSONString()
 {
-	delete value;
+	delete [] value;
 }
 
 JSONString::operator const char *() const
