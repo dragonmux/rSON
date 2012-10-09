@@ -23,8 +23,7 @@ void testConstruct()
 void testOperatorString()
 {
 	assertNotNull(testString);
-	// TODO: assertConstNotNull()
-	assertNotNull((char *)testString->operator const char *());
+	assertConstNotNull(*testString);
 	assertStringEqual(*testString, "testValue");
 }
 
@@ -34,9 +33,8 @@ void testConversions()
 	UNWANTED_TYPE(testString, Bool)
 	UNWANTED_TYPE(testString, Int)
 	UNWANTED_TYPE(testString, Float)
-	// TODO: assertConstNotNull()
 	WANTED_TYPE( \
-		assertNotNull((char *)testString->asString()); \
+		assertConstNotNull(testString->asString()); \
 		assertStringEqual(testString->asString(), "testValue")
 	)
 	UNWANTED_TYPE(testString, Object)
