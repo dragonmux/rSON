@@ -124,7 +124,6 @@ void testIntNumber()
 	JSONParser *parser;
 	JSONAtom *atom;
 
-	// The integer tests
 	parser = new JSONParser("0 ");
 	TRY(assertIntEqual(atom->asInt(), 0));
 	delete parser;
@@ -151,6 +150,56 @@ void testIntNumber()
 	parser = new JSONParser("00 ");
 	TRY_SHOULD_FAIL();
 	delete parser;
+
+	parser = new JSONParser("0e00 ");
+	TRY_SHOULD_FAIL();
+	delete parser;
+}
+
+void testFloatNumber()
+{
+	JSONParser *parser;
+	JSONAtom *atom;
+
+	parser = new JSONParser("0.0 ");
+	TRY(assertDoubleEqual(atom->asFloat(), 0.0));
+	delete parser;
+
+	parser = new JSONParser("190.0 ");
+	TRY(assertDoubleEqual(atom->asFloat(), 190.0));
+	delete parser;
+
+	parser = new JSONParser("-0.0 ");
+	TRY(assertDoubleEqual(atom->asFloat(), -0.0));
+	delete parser;
+
+	parser = new JSONParser("-190.0 ");
+	TRY(assertDoubleEqual(atom->asFloat(), -190.0));
+	delete parser;
+
+	parser = new JSONParser("19.0e1 ");
+	TRY(assertDoubleEqual(atom->asFloat(), 190.0));
+	delete parser;
+
+	parser = new JSONParser("19.0e-1 ");
+	TRY(assertDoubleEqual(atom->asFloat(), 1.9));
+	delete parser;
+
+	parser = new JSONParser("19.0e+0 ");
+	TRY(assertDoubleEqual(atom->asFloat(), 19.0));
+	delete parser;
+
+	parser = new JSONParser("00.0 ");
+	TRY_SHOULD_FAIL();
+	delete parser;
+
+	parser = new JSONParser("0.00 ");
+	TRY_SHOULD_FAIL();
+	delete parser;
+
+	parser = new JSONParser("0.0e00 ");
+	TRY_SHOULD_FAIL();
+	delete parser;
 }
 
 #undef TRY_SHOULD_FAIL
@@ -166,6 +215,7 @@ BEGIN_REGISTER_TESTS()
 	TEST(testPower10)
 	TEST(testLiteral)
 	TEST(testIntNumber)
+	TEST(testFloatNumber)
 END_REGISTER_TESTS()
 
 #ifdef __cplusplus
