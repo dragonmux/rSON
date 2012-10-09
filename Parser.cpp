@@ -214,6 +214,8 @@ size_t JSONParser::number()
 	if (currentChar() == '0')
 	{
 		nextChar();
+		if (IsNumber(currentChar()))
+			throw JSONParserError(JSON_PARSER_BAD_JSON);
 		return 0;
 	}
 
@@ -295,6 +297,7 @@ JSONAtom *number(JSONParser *parser)
 	}
 	if (IsExponent(parser->currentChar()))
 	{
+		parser->nextChar();
 		if (parser->currentChar() == '-')
 		{
 			parser->match('-', false);
