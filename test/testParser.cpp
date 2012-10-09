@@ -20,6 +20,7 @@ public:
 
 extern size_t power10(size_t power);
 extern JSONAtom *literal(JSONParser *parser);
+extern JSONAtom *number(JSONParser *parser);
 
 void testParserViability()
 {
@@ -86,7 +87,73 @@ void testLiteral()
 }
 
 #undef TRY
+#define TRY(tests) \
+try \
+{ \
+	atom = number(parser); \
+	assertNotNull(atom); \
+	tests; \
+	delete atom; \
+} \
+catch (JSONParserError &err) \
+{ \
+	delete parser; \
+	fail(err.error()); \
+} \
+catch (JSONTypeError &err) \
+{ \
+	delete atom; \
+	delete parser; \
+	fail(err.error()); \
+}
 
+#define TRY_SHOULD_FAIL() \
+try \
+{ \
+	atom = number(parser); \
+	delete atom; \
+	delete parser; \
+	fail("The parser failed to throw an exception on invalid number"); \
+} \
+catch (JSONParserError &err) \
+{ \
+}
+
+void testIntNumber()
+{
+	JSONParser *parser;
+	JSONAtom *atom;
+
+	// The integer tests
+	parser = new JSONParser("0 ");
+	TRY(assertIntEqual(atom->asInt(), 0));
+	delete parser;
+
+	parser = new JSONParser("190 ");
+	TRY(assertIntEqual(atom->asInt(), 190));
+	delete parser;
+
+	parser = new JSONParser("-190 ");
+	TRY(assertIntEqual(atom->asInt(), -190));
+	delete parser;
+
+	parser = new JSONParser("-0 ");
+	TRY(assertIntEqual(atom->asInt(), -0));
+	delete parser;
+
+	parser = new JSONParser("19e1 ");
+	TRY(assertIntEqual(atom->asInt(), 190));
+	delete parser;
+
+	parser = new JSONParser("190e-1 ");
+	TRY(assertIntEqual(atom->asInt(), 19));
+
+	parser = new JSONParser("00 ");
+	TRY_SHOULD_FAIL();
+	delete parser;
+}
+
+#undef TRY_SHOULD_FAIL
 #undef TRY
 
 #ifdef __cplusplus
@@ -98,6 +165,7 @@ BEGIN_REGISTER_TESTS()
 	TEST(testParserViability)
 	TEST(testPower10)
 	TEST(testLiteral)
+	TEST(testIntNumber)
 END_REGISTER_TESTS()
 
 #ifdef __cplusplus
