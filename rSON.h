@@ -20,6 +20,12 @@ namespace rSON
 		JSON_TYPE_ARRAY
 	} JSONAtomType;
 
+	typedef enum JSONParserErrorType
+	{
+		JSON_PARSER_EOF,
+		JSON_PARSER_BAD_JSON
+	} JSONParserErrorType;
+
 	typedef enum JSONObjectErrorType
 	{
 		JSON_OBJECT_BAD_KEY
@@ -31,6 +37,18 @@ namespace rSON
 	} JSONArrayErrorType;
 
 	// Exception classes
+
+	class JSONParserError
+	{
+	private:
+		JSONParserErrorType parserError;
+
+	public:
+		JSONParserError(JSONParserErrorType errorType);
+		~JSONParserError();
+		JSONParserErrorType type() const;
+		const char *error() const;
+	};
 
 	class JSONTypeError
 	{
