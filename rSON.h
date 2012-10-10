@@ -6,6 +6,21 @@
 #include <vector>
 #include <string.h>
 
+#ifdef _WINDOWS
+	#ifdef __FC__
+		#define rSON_API __declspec(dllexport)
+	#else
+		#define rSON_API __declspec(dllimport)
+	#endif
+#else
+	#if __GNUC__ >= 4
+		#define DEFAULT_VISIBILITY __attribute__ ((visibility("default")))
+	#else
+		#define DEFAULT_VISIBILITY
+	#endif
+	#define rSON_API extern DEFAULT_VISIBILITY
+#endif
+
 namespace rSON
 {
 	// Enumerations
@@ -199,7 +214,7 @@ namespace rSON
 		size_t size();
 	};
 
-	JSONAtom *parseJSON(const char *json);
+	rSON_API JSONAtom *parseJSON(const char *json);
 }
 
 #endif /*__rSON_H__*/

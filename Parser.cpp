@@ -414,7 +414,7 @@ JSONAtom *expression(JSONParser *parser, bool matchComma)
 	return atom;
 }
 
-JSONAtom *parseJSON(const char *json)
+JSONAtom *rSON::parseJSON(const char *json)
 {
 	JSONAtom *ret = NULL;
 	JSONParser *parser = new JSONParser(json);
