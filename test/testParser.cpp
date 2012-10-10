@@ -26,6 +26,7 @@ extern JSONAtom *array(JSONParser *parser);
 extern size_t power10(size_t power);
 extern JSONAtom *literal(JSONParser *parser);
 extern JSONAtom *number(JSONParser *parser);
+extern JSONAtom *expression(JSONParser *parser, bool matchComma);
 
 void testParserViability()
 {
@@ -221,7 +222,14 @@ catch (JSONParserError &err) \
 { \
 	delete parser; \
 	fail(err.error()); \
+} \
+catch (JSONTypeError &err) \
+{ \
+	delete [] atom; \
+	delete parser; \
+	fail(err.error()); \
 }
+
 #define TRY_SHOULD_FAIL() \
 try \
 { \
@@ -287,7 +295,14 @@ catch (JSONParserError &err) \
 { \
 	delete parser; \
 	fail(err.error()); \
+} \
+catch (JSONTypeError &err) \
+{ \
+	delete atom; \
+	delete parser; \
+	fail(err.error()); \
 }
+
 #define TRY_SHOULD_FAIL() \
 try \
 { \
@@ -376,7 +391,14 @@ catch (JSONParserError &err) \
 { \
 	delete parser; \
 	fail(err.error()); \
+} \
+catch (JSONTypeError &err) \
+{ \
+	delete atom; \
+	delete parser; \
+	fail(err.error()); \
 }
+
 #define TRY_SHOULD_FAIL() \
 try \
 { \
