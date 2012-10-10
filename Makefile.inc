@@ -89,7 +89,7 @@ else
 endif
 CC = $(GCC) $(GCC_FLAGS)
 CHMOD = chmod 0755
-STRIP = strip
+STRIP = strip -x
 RM = rm -f
 AR = ar cr
 RANLIB = ranlib
