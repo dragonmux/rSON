@@ -480,11 +480,22 @@ catch (JSONTypeError &err) \
 	fail(err.error()); \
 }
 
+#define TRY_SHOULD_FAIL(testString) \
+try \
+{ \
+	atom = parseJSON(testString); \
+	delete atom; \
+	fail("The parser failed to throw an exception on invalid JSON"); \
+} \
+catch (JSONParserError &err) \
+{ \
+}
+
 void testParseJSON()
 {
 	JSONAtom *atom;
 	JSONObject *object;
-	JSONArray *array;
+	JSONArray *array, *innerArray;
 
 	TRY("{\n\t\"testInt\": 0,\n\t\"testArray\": [\n\t\tnull,\n\t\ttrue,\n\t\tfalse\n\t]\n}",
 		assertNotNull(atom);
@@ -494,6 +505,7 @@ void testParseJSON()
 		assertIntEqual((*object)["testInt"]->asInt(), 0);
 		assertNotNull((*object)["testArray"]);
 		array = (*object)["testArray"]->asArray();
+		assertIntEqual(array->size(), 3);
 		assertNotNull((*array)[0]);
 		assertNotNull((*array)[1]);
 		assertNotNull((*array)[2]);
@@ -501,8 +513,33 @@ void testParseJSON()
 		assertTrue((*array)[1]->asBool());
 		assertFalse((*array)[2]->asBool())
 	);
+
+	TRY("[\n\t0,\n\t\[\n\t\tnull,\n\t\ttrue,\n\t\tfalse\n\t]\n]",
+		assertNotNull(atom);
+		array = atom->asArray();
+		assertIntEqual(array->size(), 2);
+		assertNotNull((*array)[0]);
+		assertIntEqual((*array)[0]->asInt(), 0);
+		assertNotNull((*array)[1]);
+		innerArray = (*array)[1]->asArray();
+		assertIntEqual(innerArray->size(), 3);
+		assertNotNull((*innerArray)[0]);
+		assertNotNull((*innerArray)[1]);
+		assertNotNull((*innerArray)[2]);
+		assertNull((*innerArray)[0]->asNull());
+		assertTrue((*innerArray)[1]->asBool());
+		assertFalse((*innerArray)[2]->asBool())
+	);
+
+	TRY_SHOULD_FAIL("true");
+	TRY_SHOULD_FAIL("false");
+	TRY_SHOULD_FAIL("null");
+	TRY_SHOULD_FAIL("invalid");
+	TRY_SHOULD_FAIL("0");
+	TRY_SHOULD_FAIL("\"true\"");
 }
 
+#undef TRY_SHOULD_FAIL
 #undef TRY
 
 #ifdef __cplusplus
