@@ -460,6 +460,51 @@ void testArray()
 	delete parser;
 }
 
+#undef TRY_SHOULD_FAIL
+#undef TRY
+#define TRY(testString, tests) \
+try \
+{ \
+	atom = parseJSON(testString); \
+	assertNotNull(atom); \
+	tests; \
+	delete atom; \
+} \
+catch (JSONParserError &err) \
+{ \
+	fail(err.error()); \
+} \
+catch (JSONTypeError &err) \
+{ \
+	delete atom; \
+	fail(err.error()); \
+}
+
+void testParseJSON()
+{
+	JSONAtom *atom;
+	JSONObject *object;
+	JSONArray *array;
+
+	TRY("{\n\t\"testInt\": 0,\n\t\"testArray\": [\n\t\tnull,\n\t\ttrue,\n\t\tfalse\n\t]\n}",
+		assertNotNull(atom);
+		object = atom->asObject();
+		assertIntEqual(object->size(), 2);
+		assertNotNull((*object)["testInt"]);
+		assertIntEqual((*object)["testInt"]->asInt(), 0);
+		assertNotNull((*object)["testArray"]);
+		array = (*object)["testArray"]->asArray();
+		assertNotNull((*array)[0]);
+		assertNotNull((*array)[1]);
+		assertNotNull((*array)[2]);
+		assertNull((*array)[0]->asNull());
+		assertTrue((*array)[1]->asBool());
+		assertFalse((*array)[2]->asBool())
+	);
+}
+
+#undef TRY
+
 #ifdef __cplusplus
 extern "C"
 {
@@ -474,6 +519,7 @@ BEGIN_REGISTER_TESTS()
 	TEST(testString)
 	TEST(testObject)
 	TEST(testArray)
+	TEST(testParseJSON)
 END_REGISTER_TESTS()
 
 #ifdef __cplusplus
