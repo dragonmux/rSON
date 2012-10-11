@@ -12,13 +12,15 @@
 	#else
 		#define rSON_API __declspec(dllimport)
 	#endif
+	#define rSON_CLS_API	rSON_API
 #else
 	#if __GNUC__ >= 4
 		#define DEFAULT_VISIBILITY __attribute__ ((visibility("default")))
 	#else
 		#define DEFAULT_VISIBILITY
 	#endif
-	#define rSON_API extern DEFAULT_VISIBILITY
+	#define rSON_CLS_API DEFAULT_VISIBILITY
+	#define rSON_API extern rSON_CLS_API
 #endif
 
 namespace rSON
@@ -54,7 +56,7 @@ namespace rSON
 
 	// Exception classes
 
-	class JSONParserError
+	class rSON_CLS_API JSONParserError
 	{
 	private:
 		JSONParserErrorType parserError;
@@ -66,7 +68,7 @@ namespace rSON
 		const char *error() const;
 	};
 
-	class JSONTypeError
+	class rSON_CLS_API JSONTypeError
 	{
 	private:
 		char *errorStr;
@@ -78,7 +80,7 @@ namespace rSON
 		const char *error() const;
 	};
 
-	class JSONObjectError
+	class rSON_CLS_API JSONObjectError
 	{
 	private:
 		JSONObjectErrorType objectError;
@@ -89,7 +91,7 @@ namespace rSON
 		const char *error() const;
 	};
 
-	class JSONArrayError
+	class rSON_CLS_API JSONArrayError
 	{
 	private:
 		JSONArrayErrorType arrayError;
@@ -114,7 +116,7 @@ namespace rSON
 	class JSONObject;
 	class JSONArray;
 
-	class JSONAtom
+	class rSON_CLS_API JSONAtom
 	{
 	private:
 		JSONAtomType type;
@@ -136,14 +138,14 @@ namespace rSON
 		JSONArray *asArray() const;
 	};
 
-	class JSONNull : public JSONAtom
+	class rSON_CLS_API JSONNull : public JSONAtom
 	{
 	public:
 		JSONNull();
 		~JSONNull();
 	};
 
-	class JSONFloat : public JSONAtom
+	class rSON_CLS_API JSONFloat : public JSONAtom
 	{
 		double value;
 
@@ -153,7 +155,7 @@ namespace rSON
 		operator double() const;
 	};
 
-	class JSONInt : public JSONAtom
+	class rSON_CLS_API JSONInt : public JSONAtom
 	{
 	private:
 		int value;
@@ -164,7 +166,7 @@ namespace rSON
 		operator int() const;
 	};
 
-	class JSONString : public JSONAtom
+	class rSON_CLS_API JSONString : public JSONAtom
 	{
 	private:
 		char *value;
@@ -175,7 +177,7 @@ namespace rSON
 		operator const char *() const;
 	};
 
-	class JSONBool : public JSONAtom
+	class rSON_CLS_API JSONBool : public JSONAtom
 	{
 	private:
 		bool value;
@@ -186,7 +188,7 @@ namespace rSON
 		operator bool() const;
 	};
 
-	class JSONObject : public JSONAtom
+	class rSON_CLS_API JSONObject : public JSONAtom
 	{
 	private:
 		typedef std::map<char *, JSONAtom *, StringLess> atomMap;
@@ -201,7 +203,7 @@ namespace rSON
 		size_t size();
 	};
 
-	class JSONArray : public JSONAtom
+	class rSON_CLS_API JSONArray : public JSONAtom
 	{
 	private:
 		std::vector<JSONAtom *> children;
