@@ -1,10 +1,7 @@
 include Makefile.inc
 
-EXTRA_DEFINE = -D__rSON__
-EXTRA_CFLAGS = 
-CFLAGS = -c $(OPTIM_FLAGS) -pedantic -Wall $(EXTRA_CFLAGS) $(EXTRA_DEFINE) -o $@ $<
-LIBS = 
-LFLAGS = -shared $(O) $(LIBS) -Wl,-soname,$(SOMAJ) -o $(SO)
+CFLAGS = -c $(OPTIM_FLAGS) -pedantic -Wall -D__rSON__ -o $@ $<
+LFLAGS = -shared $(O) -Wl,-soname,$(SOMAJ) -o $(SO)
 
 SED = sed -e 's:@LIBDIR@:$(LIBDIR):g'
 
