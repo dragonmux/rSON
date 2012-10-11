@@ -1,13 +1,9 @@
 include Makefile.inc
 
-PKG_CONFIG_PKGS = 
 EXTRA_DEFINE = -D__rSON__
 EXTRA_CFLAGS = 
-#$(shell pkg-config --cflags $(PKG_CONFIG_PKGS))
 CFLAGS = -c $(OPTIM_FLAGS) -pedantic -Wall $(EXTRA_CFLAGS) $(EXTRA_DEFINE) -o $@ $<
-EXTRA_LIBS = $(shell pkg-config --libs $(PKG_CONFIG_PKGS))
 LIBS = 
-#$(EXTRA_LIBS)
 LFLAGS = -shared $(O) $(LIBS) -Wl,-soname,$(SOMAJ) -o $(SO)
 
 SED = sed -e 's:@LIBDIR@:$(LIBDIR):g'
@@ -32,12 +28,11 @@ IN = rSON.pc.in
 
 default: all
 
-all: $(SO)
-# $(PC)
+all: $(SO) $(PC)
 
 install: all
 	$(call run-cmd,install_file,$(SO),$(LIBDIR))
-	-$(call run-cmd,install_file,$(PC),$(PKGDIR))
+	$(call run-cmd,install_file,$(PC),$(PKGDIR))
 	$(call run-cmd,install_file,$(H),$(INCDIR))
 	$(call run-cmd,ln,$(LIBDIR)/$(SO),$(LIBDIR)/$(SOREV))
 	$(call run-cmd,ln,$(LIBDIR)/$(SOREV),$(LIBDIR)/$(SOMIN))
@@ -55,7 +50,7 @@ $(SO): $(O)
 	$(call run-cmd,ccld,$(LFLAGS))
 	$(call debug-strip,$(SO))
 
-libTest.pc: $(IN)
+$(PC): $(IN)
 	$(call run-cmd,sed,$(IN),$(PC))
 
 clean: test

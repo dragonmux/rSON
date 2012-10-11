@@ -1,0 +1,14 @@
+# rSON pkg-config file
+
+prefix=/usr
+exec_prefix=${prefix}
+libdir=@LIBDIR@
+includedir=${prefix}/include
+
+Name: rSON
+Description: A simple but effective JSON parser for C++
+Version: 0.0.1
+Requires:
+Conflicts:
+Libs: -L${libdir} -lrSON
+Cflags: -I${includedir}
