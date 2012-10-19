@@ -135,7 +135,9 @@ namespace rSON
 		double asFloat() const;
 		const char *asString() const;
 		JSONObject *asObject() const;
+		JSONObject &asObjectRef() const;
 		JSONArray *asArray() const;
+		JSONArray &asArrayRef() const;
 	};
 
 	class rSON_CLS_API JSONNull : public JSONAtom

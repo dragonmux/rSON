@@ -59,9 +59,19 @@ JSONObject *JSONAtom::asObject() const
 	return (JSONObject *)this;
 }
 
+JSONObject &JSONAtom::asObjectRef() const
+{
+	return *asObject();
+}
+
 JSONArray *JSONAtom::asArray() const
 {
 	if (type != JSON_TYPE_ARRAY)
 		throw JSONTypeError(type, JSON_TYPE_ARRAY);
 	return (JSONArray *)this;
+}
+
+JSONArray &JSONAtom::asArrayRef() const
+{
+	return *asArray();
 }
