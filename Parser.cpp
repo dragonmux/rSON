@@ -417,7 +417,10 @@ JSONAtom *expression(JSONParser *parser, bool matchComma)
 JSONAtom *rSON::parseJSON(const char *json)
 {
 	JSONAtom *ret = NULL;
-	JSONParser *parser = new JSONParser(json);
+	JSONParser *parser;
+	if (json == NULL)
+		return NULL;
+	parser = new JSONParser(json);
 
 	if (IsObjectBegin(parser->currentChar()) || IsArrayBegin(parser->currentChar()))
 	{
