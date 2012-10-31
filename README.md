@@ -1,6 +1,8 @@
-# rSON
+# rSON 0.0.1
 
 The project was conceived after surveying the C/C++ based JSON implementations for something that was lightweight and easy to use (and by that, I mean requires no setup code and simply works to produce output that is easy to access the structure of and grab data out from) and comming up very short.
+
+*WARNING:* This software is currently a beta as it was written in 3 days flat, and although the test suit is extensive and has good coverage I give no guarantee that it's caught all the bugs
 
 ## The Idea
 
