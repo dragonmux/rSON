@@ -51,7 +51,13 @@ These exceptions are:
 They both provide an error() function for displaying a message of what was wrong, and JSONParserError provides way to get the raw error constants if you wish to write your own messages.
 The other exceptions, although possible, are not disuessed here as they are involved in the lookup systems for JSONArray and JSONObject and should only arrise from the JSON not being what was expected during data extraction.
 
-## The license
+## The License
 
 As stated in the code, I have licensed the library using LGPL v3+.
 Please report bugs to dx-mon@users.sourceforge.net
+
+## Known Bugs
+
+ *	JSONParser::string() fails to implement a check that there are 4 valid ASCII hexadecimal characters following a \\u sequence
+	*	Wasn't needed in my initial application, hence the omission
+	*	Requires test cases for every possible \\ sequence including checking that \\u is correctly strongly checked with an exception generated from the parser when the syntax in the input is incorrect
