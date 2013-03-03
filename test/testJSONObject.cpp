@@ -82,6 +82,14 @@ void testAdd()
 	assertIntEqual(testObject->size(), 2);
 }
 
+void testKeys()
+{
+	std::vector<const char *> keys = testObject->keys();
+
+	assertIntEqual(strcmp(keys[0], testKey1), 0);
+	assertIntEqual(strcmp(keys[1], testKey2), 0);
+}
+
 void testLookup()
 {
 	JSONAtom *child;
@@ -114,6 +122,7 @@ BEGIN_REGISTER_TESTS()
 	TEST(testConversions)
 	TEST(testSize)
 	TEST(testAdd)
+	TEST(testKeys)
 	TEST(testLookup)
 	TEST(testDistruct)
 END_REGISTER_TESTS()

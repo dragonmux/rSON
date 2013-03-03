@@ -29,6 +29,7 @@ JSONObject::~JSONObject()
 		delete i->first;
 		delete i->second;
 	}
+	mapKeys.clear();
 	children.clear();
 }
 
@@ -38,6 +39,7 @@ void JSONObject::add(char *key, JSONAtom *value)
 	if (node != children.end())
 		return;
 	children[key] = value;
+	mapKeys.push_back((const char *)key);
 }
 
 JSONAtom *JSONObject::operator [](const char *key)
@@ -51,4 +53,9 @@ JSONAtom *JSONObject::operator [](const char *key)
 size_t JSONObject::size()
 {
 	return children.size();
+}
+
+std::vector<const char *> &JSONObject::keys()
+{
+	return mapKeys;
 }

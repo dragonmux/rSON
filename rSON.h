@@ -214,12 +214,14 @@ namespace rSON
 		typedef std::map<char *, JSONAtom *, StringLess> atomMap;
 		typedef atomMap::iterator atomMapIter;
 		atomMap children;
+		std::vector<const char *> mapKeys;
 
 	public:
 		JSONObject();
 		~JSONObject();
 		void add(char *key, JSONAtom *value);
 		JSONAtom *operator [](const char *key);
+		std::vector<const char *> &keys();
 		size_t size();
 	};
 
