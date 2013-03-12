@@ -249,9 +249,7 @@ char *JSONParser::string()
 		{
 			slash = isSlash(currentChar());
 			if (slash == false && isAllowedAlpha(currentChar()) == false)
-			{
 				throw JSONParserError(JSON_PARSER_BAD_JSON);
-			}
 		}
 		nextChar();
 	}
