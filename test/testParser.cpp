@@ -214,11 +214,14 @@ void testFloatNumber()
 	TRY(assertDoubleEqual(atom->asFloat(), 19.0));
 	delete parser;
 
-	parser = new JSONParser("00.0 ");
-	TRY_SHOULD_FAIL();
+	parser = new JSONParser("0.00 ");
+	TRY(assertDoubleEqual(atom->asFloat(), 0.0));
 	delete parser;
 
-	parser = new JSONParser("0.00 ");
+	parser = new JSONParser("0.0015 ");
+	TRY(assertDoubleEqual(atom->asFloat(), 0.0015));
+
+	parser = new JSONParser("00.0 ");
 	TRY_SHOULD_FAIL();
 	delete parser;
 
