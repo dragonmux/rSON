@@ -170,6 +170,7 @@ void testIntNumber()
 
 	parser = new JSONParser("190e-1 ");
 	TRY(assertIntEqual(atom->asInt(), 19));
+	delete parser;
 
 	parser = new JSONParser("00 ");
 	TRY_SHOULD_FAIL();
