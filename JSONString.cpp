@@ -105,6 +105,7 @@ JSONString::JSONString(char *strValue) : JSONAtom(JSON_TYPE_STRING), value(strVa
 						*writePos = '\t';
 						readPos++;
 						writePos++;
+						break;
 					case '"':
 					case '\\':
 					case '/':
@@ -117,6 +118,7 @@ JSONString::JSONString(char *strValue) : JSONAtom(JSON_TYPE_STRING), value(strVa
 						*writePos = '\x08';
 						readPos++;
 						writePos++;
+						break;
 					case 'f':
 						*writePos = '\x0C';
 						readPos++;
