@@ -43,6 +43,7 @@ public:
 	char *literal();
 	char *string();
 	size_t number(bool zeroSpecial);
+	const char *currentPtr() const;
 } JSONParser;
 
 JSONAtom *expression(JSONParser *parser, bool matchComma = true);
@@ -288,6 +289,11 @@ size_t JSONParser::number(bool zeroSpecial)
 	return num;
 }
 
+const char *JSONParser::currentPtr() const
+{
+	return next;
+}
+
 JSONAtom *object(JSONParser *parser)
 {
 	JSONObject *object = new JSONObject();
@@ -344,7 +350,7 @@ JSONAtom *number(JSONParser *parser)
 {
 	bool sign = false, mulSign = false;
 	int integer = 0;
-	size_t decimal = 0, multiplier = 0;
+	size_t decimal = 0, decDigits = 0, multiplier = 0;
 	bool decimalValid = false;
 
 	if (parser->currentChar() == '-')
@@ -356,7 +362,9 @@ JSONAtom *number(JSONParser *parser)
 	if (parser->currentChar() == '.')
 	{
 		parser->match('.', false);
+		const char * const start = parser->currentPtr();
 		decimal = parser->number(false);
+		decDigits = parser->currentPtr() - start;
 		decimalValid = true;
 	}
 	if (isExponent(parser->currentChar()))
@@ -386,9 +394,7 @@ JSONAtom *number(JSONParser *parser)
 	else
 	{
 		size_t mul = pow10(multiplier);
-		double num = decimal;
-		while (decimal < 0.0)
-			decimal /= 10.0;
+		double num = decimal / pow10(decDigits);
 		num += integer;
 		if (mulSign)
 			num /= mul;
