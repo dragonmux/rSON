@@ -58,6 +58,6 @@ Please report bugs to dx-mon@users.sourceforge.net
 
 ## Known Bugs
 
- *	JSONParser::string() fails to implement a check that there are 4 valid ASCII hexadecimal characters following a \\u sequence
+ *	JSONParser::string() unicode validator untested
 	*	Wasn't needed in my initial application, hence the omission
 	*	Requires test cases for every possible \\ sequence including checking that \\u is correctly strongly checked with an exception generated from the parser when the syntax in the input is incorrect
