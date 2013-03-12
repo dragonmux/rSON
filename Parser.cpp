@@ -47,69 +47,69 @@ public:
 
 JSONAtom *expression(JSONParser *parser, bool matchComma = true);
 
-bool IsLowerAlpha(char x)
+inline bool isLowerAlpha(char x)
 {
 	return x >= 'a' && x <= 'z';
 }
 
-bool IsControl(char x)
+inline bool isControl(char x)
 {
 	return (x >= 0 && x <= 0x1F) || x == 0x7F;
 }
 
-bool IsAllowedAlpha(char x)
+inline bool isAllowedAlpha(char x)
 {
-	return x != '"' && x != '\\' && IsControl(x) == false;
+	return x != '"' && x != '\\' && isControl(x) == false;
 }
 
-bool IsNumber(char x)
+inline bool isNumber(char x)
 {
 	return x >= '0' && x <= '9';
 }
 
-bool IsObjectBegin(char x)
+inline bool isObjectBegin(char x)
 {
 	return x == '{';
 }
 
-bool IsObjectEnd(char x)
+inline bool isObjectEnd(char x)
 {
 	return x == '}';
 }
 
-bool IsArrayBegin(char x)
+inline bool isArrayBegin(char x)
 {
 	return x == '[';
 }
 
-bool IsArrayEnd(char x)
+inline bool isArrayEnd(char x)
 {
 	return x == ']';
 }
 
-bool IsSlash(char x)
+inline bool isSlash(char x)
 {
 	return x == '\\';
 }
 
-bool IsQuote(char x)
+inline bool isQuote(char x)
 {
 	return x == '"';
 }
 
-bool IsExponent(char x)
+inline bool isExponent(char x)
 {
 	return x == 'e' || x == 'E';
 }
 
-bool IsNewLine(char x)
+inline bool isNewLine(char x)
 {
 	return x == '\n' || x == '\r';
 }
 
-bool IsWhiteSpace(char x)
+inline bool isWhiteSpace(char x)
 {
-	return x == ' ' || x == '\t' || IsNewLine(x);
+	return x == ' ' || x == '\t' || isNewLine(x);
 }
 
 inline bool isHex(char x)
@@ -140,7 +140,7 @@ void JSONParser::skipWhite()
 {
 	try
 	{
-		while (IsWhiteSpace(currentChar()))
+		while (isWhiteSpace(currentChar()))
 			nextChar();
 	}
 	catch (JSONParserError &err)
@@ -188,9 +188,9 @@ char *JSONParser::literal()
 	char *ret;
 	const char *start = next;
 
-	if (IsLowerAlpha(currentChar()) == false)
+	if (isLowerAlpha(currentChar()) == false)
 		throw JSONParserError(JSON_PARSER_BAD_JSON);
-	while (IsLowerAlpha(currentChar()))
+	while (isLowerAlpha(currentChar()))
 		nextChar();
 
 	len = (size_t)(next - start) + 1;
@@ -221,7 +221,7 @@ char *JSONParser::string()
 	match('"', false);
 	start = next;
 
-	while (IsQuote(currentChar()) == false || slash == true)
+	while (isQuote(currentChar()) == false || slash == true)
 	{
 		if (slash)
 		{
@@ -247,8 +247,8 @@ char *JSONParser::string()
 		}
 		else
 		{
-			slash = IsSlash(currentChar());
-			if (slash == false && IsAllowedAlpha(currentChar()) == false)
+			slash = isSlash(currentChar());
+			if (slash == false && isAllowedAlpha(currentChar()) == false)
 			{
 				throw JSONParserError(JSON_PARSER_BAD_JSON);
 			}
@@ -270,18 +270,18 @@ size_t JSONParser::number()
 {
 	size_t num = 0;
 
-	if (IsNumber(currentChar()) == false)
+	if (isNumber(currentChar()) == false)
 		throw JSONParserError(JSON_PARSER_BAD_JSON);
 
 	if (currentChar() == '0')
 	{
 		nextChar();
-		if (IsNumber(currentChar()))
+		if (isNumber(currentChar()))
 			throw JSONParserError(JSON_PARSER_BAD_JSON);
 		return 0;
 	}
 
-	while (IsNumber(currentChar()))
+	while (isNumber(currentChar()))
 	{
 		num *= 10;
 		num += currentChar() - '0';
@@ -296,7 +296,7 @@ JSONAtom *object(JSONParser *parser)
 	try
 	{
 		parser->match('{', true);
-		while (IsObjectEnd(parser->currentChar()) == false)
+		while (isObjectEnd(parser->currentChar()) == false)
 		{
 			char *key = parser->string();
 			parser->match(':', true);
@@ -320,7 +320,7 @@ JSONAtom *array(JSONParser *parser)
 	try
 	{
 		parser->match('[', true);
-		while (IsArrayEnd(parser->currentChar()) == false)
+		while (isArrayEnd(parser->currentChar()) == false)
 			array->add(expression(parser));
 		if (parser->lastTokenComma())
 			throw JSONParserError(JSON_PARSER_BAD_JSON);
@@ -361,7 +361,7 @@ JSONAtom *number(JSONParser *parser)
 		decimal = parser->number();
 		decimalValid = true;
 	}
-	if (IsExponent(parser->currentChar()))
+	if (isExponent(parser->currentChar()))
 	{
 		parser->nextChar();
 		if (parser->currentChar() == '-')
@@ -438,13 +438,13 @@ JSONAtom *expression(JSONParser *parser, bool matchComma)
 
 	if (atom == NULL)
 	{
-		if (IsNumber(parser->currentChar()))
+		if (isNumber(parser->currentChar()))
 			atom = number(parser);
 		else
 			atom = literal(parser);
 	}
 
-	if (matchComma && IsObjectEnd(parser->currentChar()) == false && IsArrayEnd(parser->currentChar()) == false)
+	if (matchComma && isObjectEnd(parser->currentChar()) == false && isArrayEnd(parser->currentChar()) == false)
 		parser->match(',', true);
 	else
 		parser->lastNoComma();
@@ -459,7 +459,7 @@ JSONAtom *rSON::parseJSON(const char *json)
 		return NULL;
 	parser = new JSONParser(json);
 
-	if (IsObjectBegin(parser->currentChar()) || IsArrayBegin(parser->currentChar()))
+	if (isObjectBegin(parser->currentChar()) || isArrayBegin(parser->currentChar()))
 	{
 		try
 		{
