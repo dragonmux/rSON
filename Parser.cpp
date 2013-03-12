@@ -30,6 +30,8 @@ private:
 	const char *jsonEnd;
 	bool lastWasComma;
 
+	void validateUnicodeSequence();
+
 public:
 	JSONParser(const char *toParse);
 	void nextChar();
@@ -108,6 +110,13 @@ bool IsNewLine(char x)
 bool IsWhiteSpace(char x)
 {
 	return x == ' ' || x == '\t' || IsNewLine(x);
+}
+
+inline bool isHex(char x)
+{
+	return (x >= '0' && x <= '9') ||
+		(x >= 'A' && x <= 'F') ||
+		(x >= 'a' && x <= 'f');
 }
 
 JSONParser::JSONParser(const char *toParse)
@@ -193,6 +202,15 @@ char *JSONParser::literal()
 	return ret;
 }
 
+void JSONParser::validateUnicodeSequence()
+{
+	char len = 0;
+	for (len = 0; len < 4 && isHex(next[1]); len++)
+		nextChar();
+	if (len != 4)
+		throw JSONParserError(JSON_PARSER_BAD_JSON);
+}
+
 char *JSONParser::string()
 {
 	size_t len;
@@ -219,6 +237,7 @@ char *JSONParser::string()
 				case 't':
 					break;
 				case 'u':
+					validateUnicodeSequence();
 					// Make sure there are 4 hex characters here
 					break;
 				default:
