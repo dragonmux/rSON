@@ -42,7 +42,7 @@ public:
 	char currentChar();
 	char *literal();
 	char *string();
-	size_t number();
+	size_t number(bool zeroSpecial);
 } JSONParser;
 
 JSONAtom *expression(JSONParser *parser, bool matchComma = true);
@@ -264,14 +264,14 @@ char *JSONParser::string()
 	return str;
 }
 
-size_t JSONParser::number()
+size_t JSONParser::number(bool zeroSpecial)
 {
 	size_t num = 0;
 
 	if (isNumber(currentChar()) == false)
 		throw JSONParserError(JSON_PARSER_BAD_JSON);
 
-	if (currentChar() == '0')
+	if (zeroSpecial && currentChar() == '0')
 	{
 		nextChar();
 		if (isNumber(currentChar()))
@@ -352,11 +352,11 @@ JSONAtom *number(JSONParser *parser)
 		parser->match('-', false);
 		sign = true;
 	}
-	integer = parser->number();
+	integer = parser->number(true);
 	if (parser->currentChar() == '.')
 	{
 		parser->match('.', false);
-		decimal = parser->number();
+		decimal = parser->number(false);
 		decimalValid = true;
 	}
 	if (isExponent(parser->currentChar()))
@@ -369,7 +369,7 @@ JSONAtom *number(JSONParser *parser)
 		}
 		else if (parser->currentChar() == '+')
 			parser->match('+', false);
-		multiplier = parser->number();
+		multiplier = parser->number(true);
 	}
 
 	if (decimalValid == false)
