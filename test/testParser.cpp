@@ -220,6 +220,11 @@ void testFloatNumber()
 
 	parser = new JSONParser("0.0015 ");
 	TRY(assertDoubleEqual(atom->asFloat(), 0.0015));
+	delete parser;
+
+	parser = new JSONParser("0.00150 ");
+	TRY(assertDoubleEqual(atom->asFloat(), 0.0015));
+	delete parser;
 
 	parser = new JSONParser("00.0 ");
 	TRY_SHOULD_FAIL();
