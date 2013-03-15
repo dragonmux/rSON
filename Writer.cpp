@@ -39,7 +39,7 @@ size_t JSONInt::length()
 
 void JSONInt::store(char *str)
 {
-	snprintf(str, length(), "%d", value);
+	snprintf(str, length() + 1, "%d", value);
 }
 
 size_t JSONFloat::length()
@@ -49,7 +49,7 @@ size_t JSONFloat::length()
 
 void JSONFloat::store(char *str)
 {
-	snprintf(str, length(), "%f", value);
+	snprintf(str, length() + 1, "%f", value);
 }
 
 size_t JSONString::length()
