@@ -36,3 +36,13 @@ char *formatString(const char *format, ...)
 	va_end(args);
 	return ret;
 }
+
+size_t formatLen(const char *format, ...)
+{
+	size_t len;
+	va_list args;
+	va_start(args, format);
+	len = vsnprintf(NULL, 0, format, args);
+	va_end(args);
+	return len;
+}

@@ -19,6 +19,9 @@
 #ifndef __STRING_H__
 #define __STRING_H__
 
+#include <stdlib.h>
+
 extern char *formatString(const char *format, ...);
+extern size_t formatLen(const char *format, ...);
 
 #endif /*__STRING_H__*/
