@@ -51,6 +51,20 @@ void testBool()
 	delete bFalse;
 }
 
+void testInt()
+{
+	JSONInt *num = new JSONInt(8192);
+	doTest(num, "8192");
+	delete num;
+}
+
+void testFloat()
+{
+	JSONFloat *num = new JSONFloat(8192.016384);
+	doTest(num, "8192.016384");
+	delete num;
+}
+
 void testObject()
 {
 	char *key;
@@ -90,6 +104,8 @@ extern "C"
 BEGIN_REGISTER_TESTS()
 	TEST(testNull)
 	TEST(testBool)
+	TEST(testInt)
+	TEST(testFloat)
 	TEST(testObject)
 	TEST(testArray)
 END_REGISTER_TESTS()
