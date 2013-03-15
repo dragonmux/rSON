@@ -146,6 +146,8 @@ namespace rSON
 	public:
 		virtual ~JSONAtom();
 		JSONAtomType getType();
+		virtual void store(char *str) = 0;
+		virtual size_t length() = 0;
 
 		void *asNull() const;
 		bool asBool() const;
@@ -163,6 +165,8 @@ namespace rSON
 	public:
 		JSONNull();
 		~JSONNull();
+		size_t length();
+		void store(char *str);
 	};
 
 	class rSON_CLS_API JSONFloat : public JSONAtom
@@ -173,6 +177,8 @@ namespace rSON
 		JSONFloat(double floatValue);
 		~JSONFloat();
 		operator double() const;
+		size_t length();
+		void store(char *str);
 	};
 
 	class rSON_CLS_API JSONInt : public JSONAtom
@@ -184,6 +190,8 @@ namespace rSON
 		JSONInt(int intValue);
 		~JSONInt();
 		operator int() const;
+		size_t length();
+		void store(char *str);
 	};
 
 	class rSON_CLS_API JSONString : public JSONAtom
@@ -195,6 +203,8 @@ namespace rSON
 		JSONString(char *strValue);
 		~JSONString();
 		operator const char *() const;
+		size_t length();
+		void store(char *str);
 	};
 
 	class rSON_CLS_API JSONBool : public JSONAtom
@@ -206,6 +216,8 @@ namespace rSON
 		JSONBool(bool boolValue);
 		~JSONBool();
 		operator bool() const;
+		size_t length();
+		void store(char *str);
 	};
 
 	class rSON_CLS_API JSONObject : public JSONAtom
@@ -223,6 +235,8 @@ namespace rSON
 		JSONAtom *operator [](const char *key);
 		std::vector<const char *> &keys();
 		size_t size();
+		size_t length();
+		void store(char *str);
 	};
 
 	class rSON_CLS_API JSONArray : public JSONAtom
@@ -236,9 +250,14 @@ namespace rSON
 		void add(JSONAtom *value);
 		JSONAtom *operator [](size_t key);
 		size_t size();
+		size_t length();
+		void store(char *str);
 	};
 
 	rSON_API JSONAtom *parseJSON(const char *json);
+
+	rSON_API char *writeJSON(JSONAtom *atom);
+	rSON_API void freeString(char **str);
 }
 
 #endif /*__rSON_H__*/
