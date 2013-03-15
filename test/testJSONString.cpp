@@ -38,6 +38,55 @@ void testConstruct()
 	assertNotNull(testString);
 }
 
+#define TRY(seq, tests) \
+try \
+{ \
+	str = new char[sizeof(seq)]; \
+	strcpy(str, seq); \
+	string = new JSONString(str); \
+	assertNotNull(string); \
+	str = (char *)string->operator const char *(); \
+	tests; \
+} \
+catch (JSONParserError &err) \
+{ \
+	delete string; \
+	fail(err.error()); \
+} \
+delete string
+
+#define TRY_SHOULD_FAIL(seq) \
+try \
+{ \
+	string = new JSONString(seq); \
+	delete string; \
+	fail("JSONString failed to throw an exception on invalid string"); \
+} \
+catch (JSONParserError &err) \
+{ \
+}
+
+void testEscapes()
+{
+	JSONString *string;
+	char *str;
+
+	TRY("\\\"", assertStringEqual(str, "\""));
+	TRY("\\t\\r\\n", assertStringEqual(str, "\t\r\n"));
+	TRY("\\b", assertStringEqual(str, "\x08"));
+	TRY("\\f", assertStringEqual(str, "\x0C"));
+	TRY("\\/", assertStringEqual(str, "/"));
+	TRY("\\\\", assertStringEqual(str, "\\"));
+	TRY("\\u0050", assertStringEqual(str, "\x50"));
+	TRY("\\u0000", assertStringEqual(str, "\xC0\x80"));
+	TRY("\\u0155", assertStringEqual(str, "\xC5\x95"));
+	TRY("\\u5555", assertStringEqual(str, "\xE5\x95\x95"));
+	TRY("\\u5A5A", assertStringEqual(str, "\xE5\xA9\x9A"));
+}
+
+#undef TRY_SHOULD_FAIL
+#undef TRY
+
 void testOperatorString()
 {
 	assertNotNull(testString);
@@ -72,6 +121,7 @@ extern "C"
 
 BEGIN_REGISTER_TESTS()
 	TEST(testConstruct)
+	TEST(testEscapes)
 	TEST(testOperatorString)
 	TEST(testConversions)
 	TEST(testDistruct)
