@@ -24,7 +24,7 @@
 
 char *formatString(const char *format, ...)
 {
-	int len;
+	size_t len;
 	char *ret;
 	va_list args;
 	va_start(args, format);
