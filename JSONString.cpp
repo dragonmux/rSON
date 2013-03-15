@@ -68,25 +68,25 @@ JSONString::JSONString(char *strValue) : JSONAtom(JSON_TYPE_STRING), value(strVa
 							writePos[1] = 0x80;
 							writePos += 2;
 						}
-						else if (charVal < 0x007F)
+						else if (charVal <= 0x007F)
 						{
-							*writePos = charVal & 0x7F;
+							writePos[0] = charVal & 0x7F;
 							writePos++;
 						}
-						else if (charVal < 0x07FF)
+						else if (charVal <= 0x07FF)
 						{
-							writePos[0] = 0xC0 | (charVal & 0x1F);
-							charVal >>= 5;
 							writePos[1] = 0x80 | (charVal & 0x3F);
+							charVal >>= 6;
+							writePos[0] = 0xC0 | (charVal & 0x1F);
 							writePos += 2;
 						}
 						else
 						{
-							writePos[0] = 0xE0 | (charVal & 0x0F);
-							charVal >>= 4;
+							writePos[2] = 0x80 | (charVal & 0x3F);
+							charVal >>= 6;
 							writePos[1] = 0x80 | (charVal & 0x3F);
 							charVal >>= 6;
-							writePos[2] = 0x80 | (charVal & 0x3F);
+							writePos[0] = 0xE0 | (charVal & 0x0F);
 							writePos += 3;
 						}
 						break;
@@ -114,7 +114,6 @@ JSONString::JSONString(char *strValue) : JSONAtom(JSON_TYPE_STRING), value(strVa
 						writePos++;
 						break;
 					case 'b':
-						break;
 						*writePos = '\x08';
 						readPos++;
 						writePos++;
