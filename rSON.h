@@ -25,7 +25,7 @@
 #include <string.h>
 
 #ifdef _WINDOWS
-	#ifdef __FC__
+	#ifdef __rSON__
 		#define rSON_API __declspec(dllexport)
 	#else
 		#define rSON_API __declspec(dllimport)
