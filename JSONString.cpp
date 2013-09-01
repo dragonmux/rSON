@@ -17,6 +17,7 @@
  */
 
 #include "internal.h"
+#include <stdio.h>
 #include <ctype.h>
 
 uint8_t hex2int(char c)
