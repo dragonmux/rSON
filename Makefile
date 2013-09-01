@@ -19,11 +19,11 @@ include Makefile.inc
 CFLAGS = -c $(OPTIM_FLAGS) -pedantic -Wall -D__rSON__ -o $@ $<
 LFLAGS = -shared $(O) -Wl,-soname,$(SOMAJ) -o $(SO)
 
-SED = sed -e 's:@LIBDIR@:$(LIBDIR):g'
+SED = sed -e 's:@LIBDIR@:$(LIBDIR):g' -e 's:@PREFIX@:$(PREFIX):g'
 
-LIBDIR ?= /usr/lib
+LIBDIR ?= $(PREFIX)/lib
 PKGDIR = $(LIBDIR)/pkgconfig/
-INCDIR = /usr/include/
+INCDIR = $(PREFIX)/include/
 
 H = rSON.h
 O = JSONErrors.o JSONAtom.o JSONNull.o JSONBool.o JSONInt.o JSONFloat.o JSONString.o JSONObject.o JSONArray.o Memory.o String.o Parser.o Writer.o
