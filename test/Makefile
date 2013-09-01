@@ -16,7 +16,7 @@
 
 include ../Makefile.inc
 
-LIBTESTMAKE = libTestMake $(shell pkg-config --cflags libTest)
+LIBTESTMAKE = libTestMake $(shell pkg-config --cflags --libs libTest)
 ifeq ($(BUILD_VERBOSE), 0)
 	LIBTESTMAKE += -q
 endif
