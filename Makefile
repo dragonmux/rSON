@@ -43,7 +43,16 @@ default: all
 
 all: $(SO) $(PC)
 
-install: all
+$(LIBDIR):
+	$(call run-cmd,install_dir,$(LIBDIR))
+
+$(PKGDIR):
+	$(call run-cmd,install_dir,$(PKGDIR))
+
+$(INCDIR):
+	$(call run-cmd,install_dir,$(INCDIR))
+
+install: all $(LIBDIR) $(PKGDIR) $(INCDIR)
 	$(call run-cmd,install_file,$(SO),$(LIBDIR))
 	$(call run-cmd,install_file,$(PC),$(PKGDIR))
 	$(call run-cmd,install_file,$(H),$(INCDIR))
