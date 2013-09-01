@@ -59,7 +59,7 @@ install: all $(LIBDIR) $(PKGDIR) $(INCDIR)
 	$(call run-cmd,ln,$(LIBDIR)/$(SO),$(LIBDIR)/$(SOREV))
 	$(call run-cmd,ln,$(LIBDIR)/$(SOREV),$(LIBDIR)/$(SOMIN))
 	$(call run-cmd,ln,$(LIBDIR)/$(SOMIN),$(LIBDIR)/$(SOMAJ))
-	$(call run-cmd,ldconfig)
+	$(call ldconfig)
 
 uninstall:
 	rm $(LIBDIR)/$(SOMAJ)*
