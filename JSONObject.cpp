@@ -24,6 +24,8 @@ JSONObject::JSONObject() : JSONAtom(JSON_TYPE_OBJECT)
 
 JSONObject::~JSONObject()
 {
+	if (this == NULL)
+		return;
 	for (atomMapIter i = children.begin(); i != children.end(); i++)
 	{
 		delete i->first;
