@@ -22,6 +22,10 @@
 #include <string.h>
 #include <math.h>
 
+#ifdef _MSC_VER
+#define pow10(x) pow(10.0, (int)x)
+#endif
+
 typedef struct JSONParser
 {
 private:

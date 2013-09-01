@@ -22,6 +22,10 @@
 #include <string.h>
 #include <math.h>
 
+#ifdef _MSC_VER
+#define snprintf _snprintf
+#endif
+
 size_t JSONNull::length()
 {
 	return 4;
