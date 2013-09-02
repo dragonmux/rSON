@@ -16,11 +16,12 @@
 
 include ../Makefile.inc
 
-LIBTESTMAKE = libTestMake $(shell pkg-config --cflags --libs libTest)
+LIBTESTMAKE = libTestMake $(shell pkg-config --cflags --libs libTest) -lstdc++ -lm
 ifeq ($(BUILD_VERBOSE), 0)
 	LIBTESTMAKE += -q
 endif
-LIBTESTMAKE += -o../JSONAtom.o -o../JSONErrors.o -o../String.o -o../Memory.o
+LIBTESTMAKE += -o../JSONAtom.o -o../JSONErrors.o -o../String.o -o../Memory.o -o../Writer.o
+LIBTESTMAKE += -o../JSONNull.o -o../JSONBool.o -o../JSONInt.o -o../JSONFloat.o -o../JSONString.o -o../JSONObject.o -o../JSONArray.o
 LIBTEST = libTest
 
 READER_TESTS = testJSONNull.so testJSONBool.so testJSONInt.so testJSONFloat.so testJSONString.so testJSONObject.so testJSONArray.so testParser.so
@@ -41,10 +42,7 @@ check: all
 clean:
 	$(call run-cmd,rm,tests,$(TESTS))
 
-testJSONObject.so testJSONArray.so: LIBTESTMAKE += -o../JSONInt.o
-testParser.so testWriter.so: LIBTESTMAKE += -o../JSONNull.o -o../JSONBool.o -o../JSONInt.o -o../JSONFloat.o -o../JSONString.o -o../JSONObject.o -o../JSONArray.o
-$(READER_TESTS): LIBTESTMAKE += -o../Writer.o
-$(TESTS): O_FILE = ../$(subst test,,$(@:.so=)).o
+testParser.so: LIBTESTMAKE += -o../Parser.o
 %.so: %.cpp
 	$(call run-cmd,testMake,$(O_FILE),$<)
 
