@@ -16,35 +16,35 @@
 
 include ../Makefile.inc
 
-LIBTESTMAKE = libTestMake $(shell pkg-config --cflags --libs libTest) -lstdc++ -lm
+CRUNCHMAKE = crunchMake $(shell pkg-config --cflags --libs crunch) -lstdc++ -lm
 ifeq ($(BUILD_VERBOSE), 0)
-	LIBTESTMAKE += -q
+	CRUNCHMAKE += -q
 endif
-LIBTESTMAKE += -o../JSONAtom.o -o../JSONErrors.o -o../String.o -o../Memory.o -o../Writer.o
-LIBTESTMAKE += -o../JSONNull.o -o../JSONBool.o -o../JSONInt.o -o../JSONFloat.o -o../JSONString.o -o../JSONObject.o -o../JSONArray.o
-LIBTEST = libTest
+CRUNCHMAKE += -o../JSONAtom.o -o../JSONErrors.o -o../String.o -o../Memory.o -o../Writer.o
+CRUNCHMAKE += -o../JSONNull.o -o../JSONBool.o -o../JSONInt.o -o../JSONFloat.o -o../JSONString.o -o../JSONObject.o -o../JSONArray.o
+CRUNCH = crunch
 
 READER_TESTS = testJSONNull.so testJSONBool.so testJSONInt.so testJSONFloat.so testJSONString.so testJSONObject.so testJSONArray.so testParser.so
 TESTS = $(READER_TESTS) testWriter.so
 
-quiet_cmd_testMake = -n
-cmd_testMake = $(LIBTESTMAKE) -o$(2) $(3)
-quiet_cmd_test = -n
-cmd_test = $(LIBTEST) $(2)
+quiet_cmd_crunchMake = -n
+cmd_crunchMake = $(CRUNCHMAKE) -o$(2) $(3)
+quiet_cmd_crunch = -n
+cmd_crunch = $(CRUNCH) $(2)
 
 default: all
 
 all: $(TESTS)
 
 check: all
-	$(call run-cmd,test,$(subst .so,,$(TESTS)))
+	$(call run-cmd,crunch,$(subst .so,,$(TESTS)))
 
 clean:
 	$(call run-cmd,rm,tests,$(TESTS))
 
-testParser.so: LIBTESTMAKE += -o../Parser.o
+testParser.so: CRUNCHMAKE += -o../Parser.o
 %.so: %.cpp
-	$(call run-cmd,testMake,$(O_FILE),$<)
+	$(call run-cmd,crunchMake,$(O_FILE),$<)
 
 .PHONY: default all check clean
 .SUFFIXES: .cpp .so
