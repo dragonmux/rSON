@@ -225,13 +225,16 @@ namespace rSON
 	private:
 		typedef std::map<char *, JSONAtom *, StringLess> atomMap;
 		typedef atomMap::iterator atomMapIter;
+		typedef std::vector<const char *> keyType;
+		typedef keyType::iterator keyTypeIter;
 		atomMap children;
-		std::vector<const char *> mapKeys;
+		keyType mapKeys;
 
 	public:
 		JSONObject();
 		~JSONObject();
 		void add(char *key, JSONAtom *value);
+		void del(const char *key);
 		JSONAtom *operator [](const char *key);
 		std::vector<const char *> &keys();
 		size_t size();
@@ -242,12 +245,16 @@ namespace rSON
 	class rSON_CLS_API JSONArray : public JSONAtom
 	{
 	private:
-		std::vector<JSONAtom *> children;
+		typedef std::vector<JSONAtom *> childType;
+		typedef childType::iterator childTypeIter;
+		childType children;
 
 	public:
 		JSONArray();
 		~JSONArray();
 		void add(JSONAtom *value);
+		void del(size_t key);
+		void del(JSONAtom *value);
 		JSONAtom *operator [](size_t key);
 		size_t size();
 		size_t length();

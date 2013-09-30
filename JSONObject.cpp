@@ -28,7 +28,7 @@ JSONObject::~JSONObject()
 		return;
 	for (atomMapIter i = children.begin(); i != children.end(); i++)
 	{
-		delete i->first;
+		delete [] i->first;
 		delete i->second;
 	}
 	mapKeys.clear();
@@ -42,6 +42,26 @@ void JSONObject::add(char *key, JSONAtom *value)
 		return;
 	children[key] = value;
 	mapKeys.push_back((const char *)key);
+}
+
+void JSONObject::del(const char *key)
+{
+	atomMapIter node = children.find((char *)key);
+	if (node != children.end())
+	{
+		keyTypeIter i;
+		delete [] node->first;
+		delete node->second;
+		children.erase(node);
+		for (i = mapKeys.begin(); i != mapKeys.end(); i++)
+		{
+			if (strcmp(key, *i) == 0)
+			{
+				mapKeys.erase(i);
+				break;
+			}
+		}
+	}
 }
 
 JSONAtom *JSONObject::operator [](const char *key)

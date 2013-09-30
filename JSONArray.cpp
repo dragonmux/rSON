@@ -36,6 +36,31 @@ void JSONArray::add(JSONAtom *value)
 	children.push_back(value);
 }
 
+void JSONArray::del(size_t key)
+{
+	childTypeIter i;
+	if (key >= children.size())
+		throw JSONArrayError(JSON_ARRAY_OOB);
+
+	i = children.begin() + key;
+	delete *i;
+	children.erase(i);
+}
+
+void JSONArray::del(JSONAtom *value)
+{
+	childTypeIter i;
+	for (i = children.begin(); i != children.end(); i++)
+	{
+		if (*i == value)
+		{
+			delete value;
+			children.erase(i);
+			break;
+		}
+	}
+}
+
 JSONAtom *JSONArray::operator [](size_t key)
 {
 	if (key >= children.size())
