@@ -65,9 +65,9 @@ void JSONString::store(char *str)
 {
 	size_t len = strlen(value);
 
-	value[0] = '"';
+	str[0] = '"';
 	memcpy(str + 1, value, len);
-	value[len + 1] = '"';
+	str[len + 1] = '"';
 }
 
 size_t JSONBool::length()
