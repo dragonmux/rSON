@@ -52,71 +52,85 @@ public:
 
 JSONAtom *expression(JSONParser *parser, bool matchComma = true);
 
+// Recognise lower-case letters
 inline bool isLowerAlpha(char x)
 {
 	return x >= 'a' && x <= 'z';
 }
 
+// Recognise ASCII control characters
 inline bool isControl(char x)
 {
 	return (x >= 0 && x <= 0x1F) || x == 0x7F;
 }
 
+// Recognise characters in the file which are deemed in the JSON alphabet
 inline bool isAllowedAlpha(char x)
 {
 	return x != '"' && x != '\\' && isControl(x) == false;
 }
 
+// Recognise standard English numbers
 inline bool isNumber(char x)
 {
 	return x >= '0' && x <= '9';
 }
 
+// Recognise the beginning of an object
 inline bool isObjectBegin(char x)
 {
 	return x == '{';
 }
 
+// Recognise the end of an object
 inline bool isObjectEnd(char x)
 {
 	return x == '}';
 }
 
+// Recognise the beginning of an array
 inline bool isArrayBegin(char x)
 {
 	return x == '[';
 }
 
+// Recognise the end of an array
 inline bool isArrayEnd(char x)
 {
 	return x == ']';
 }
 
+// Recognise a back-slash
 inline bool isSlash(char x)
 {
 	return x == '\\';
 }
 
+// Recognise a double-quote
 inline bool isQuote(char x)
 {
 	return x == '"';
 }
 
+// Recognise an exponent delimiter
 inline bool isExponent(char x)
 {
 	return x == 'e' || x == 'E';
 }
 
+// Recognise a new line character OS agnoistically
 inline bool isNewLine(char x)
 {
 	return x == '\n' || x == '\r';
 }
 
+// Recognise whitespace
 inline bool isWhiteSpace(char x)
 {
 	return x == ' ' || x == '\t' || isNewLine(x);
 }
 
+// Recognise a hexadecimal digit
 inline bool isHex(char x)
 {
 	return (x >= '0' && x <= '9') ||
@@ -153,6 +167,8 @@ void JSONParser::skipWhite()
 	}
 }
 
+// Match the current character with x, and skip whitespace if skip == true.
+// Throws an exception if x and the current character do not match.
 void JSONParser::match(char x, bool skip)
 {
 	if (currentChar() == x)
@@ -187,6 +203,7 @@ char JSONParser::currentChar()
 	return ret;
 }
 
+// Parses an alpha-numeric literal
 char *JSONParser::literal()
 {
 	size_t len;
@@ -207,6 +224,7 @@ char *JSONParser::literal()
 	return ret;
 }
 
+// Verifies a \u sequence
 void JSONParser::validateUnicodeSequence()
 {
 	char len = 0;
@@ -216,6 +234,7 @@ void JSONParser::validateUnicodeSequence()
 		throw JSONParserError(JSON_PARSER_BAD_JSON);
 }
 
+// Parses a string per the JSON string rules
 char *JSONParser::string()
 {
 	size_t len;
@@ -269,6 +288,7 @@ char *JSONParser::string()
 	return str;
 }
 
+// Parses a positive natural number
 size_t JSONParser::number(bool zeroSpecial)
 {
 	size_t num = 0;
@@ -298,6 +318,7 @@ const char *JSONParser::currentPtr() const
 	return next;
 }
 
+// Parses an object
 JSONAtom *object(JSONParser *parser)
 {
 	JSONObject *object = new JSONObject();
@@ -322,6 +343,7 @@ JSONAtom *object(JSONParser *parser)
 	return object;
 }
 
+// Parses an array
 JSONAtom *array(JSONParser *parser)
 {
 	JSONArray *array = new JSONArray();
@@ -342,6 +364,8 @@ JSONAtom *array(JSONParser *parser)
 	return array;
 }
 
+// Raise 10 to the power of power.
+// This is intentionally limited to the positive natural numbers.
 size_t power10(size_t power)
 {
 	size_t i, ret = 1;
@@ -350,6 +374,7 @@ size_t power10(size_t power)
 	return ret;
 }
 
+// Parses a JSON number, using the positive natural parser.
 JSONAtom *number(JSONParser *parser)
 {
 	bool sign = false, mulSign = false;
@@ -410,6 +435,7 @@ JSONAtom *number(JSONParser *parser)
 	}
 }
 
+// Parses the literals "true", "false" and "null"
 JSONAtom *literal(JSONParser *parser)
 {
 	JSONAtom *ret = NULL;
@@ -428,6 +454,7 @@ JSONAtom *literal(JSONParser *parser)
 	return ret;
 }
 
+// Parses an expression of some sort
 JSONAtom *expression(JSONParser *parser, bool matchComma)
 {
 	JSONAtom *atom = NULL;
@@ -459,6 +486,11 @@ JSONAtom *expression(JSONParser *parser, bool matchComma)
 	return atom;
 }
 
+// The parser entry point
+// This verifies the first character in the string to parse is the beginning of either an array or an object
+// It then performs a try-catch in which expression() is invoked. if an exception is thrown or needs to be thrown,
+// the parser object this temporarily creates is cleaned up before the exception is (re)thrown.
+// If everything went OK, this then cleans up the parser object and returns the resulting JSONAtom tree.
 JSONAtom *rSON::parseJSON(const char *json)
 {
 	JSONAtom *ret = NULL;
