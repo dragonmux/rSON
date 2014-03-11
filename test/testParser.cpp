@@ -566,6 +566,48 @@ void testParseJSON()
 	TRY_SHOULD_FAIL("\"true\"");
 }
 
+#undef TRY
+#undef TRY_SHOULD_FAIL
+#define TRY(testFile, tests) \
+try \
+{ \
+	atom = parseJSONFile(testFile); \
+	assertNotNull(atom); \
+	tests; \
+	delete atom; \
+} \
+catch (JSONParserError &err) \
+{ \
+	fail(err.error()); \
+} \
+catch (JSONTypeError &err) \
+{ \
+	delete atom; \
+	fail(err.error()); \
+}
+
+#define TRY_SHOULD_FAIL(testFile) \
+try \
+{ \
+	atom = parseJSONFile(testFile); \
+	delete atom; \
+	fail("The parser failed to throw an exception on invalid JSON"); \
+} \
+catch (JSONParserError &err) \
+{ \
+}
+
+
+void testParseJSONFile()
+{
+	JSONAtom *atom;
+
+	TRY_SHOULD_FAIL("nonExistant.json");
+	fclose(fopen("test.json", "wb"));
+	TRY_SHOULD_FAIL("test.json");
+	unlink("test.json");
+}
+
 #undef TRY_SHOULD_FAIL
 #undef TRY
 
@@ -584,6 +626,7 @@ BEGIN_REGISTER_TESTS()
 	TEST(testObject)
 	TEST(testArray)
 	TEST(testParseJSON)
+	TEST(testParseJSONFile)
 END_REGISTER_TESTS()
 
 #ifdef __cplusplus
