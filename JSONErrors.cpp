@@ -43,6 +43,8 @@ const char *JSONParserError::error() const
 			return "The JSON parser has reached the end of the data but failed to terminate";
 		case JSON_PARSER_BAD_JSON:
 			return "The JSON parser has determined it was fed with bad JSON";
+		case JSON_PARSER_BAD_FILE:
+			return "The JSON parser could not read the file it was asked to parse";
 		default:
 			throw std::exception();
 	}

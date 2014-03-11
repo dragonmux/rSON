@@ -59,7 +59,8 @@ namespace rSON
 	typedef enum JSONParserErrorType
 	{
 		JSON_PARSER_EOF,
-		JSON_PARSER_BAD_JSON
+		JSON_PARSER_BAD_JSON,
+		JSON_PARSER_BAD_FILE
 	} JSONParserErrorType;
 
 	typedef enum JSONObjectErrorType
@@ -262,6 +263,7 @@ namespace rSON
 	};
 
 	rSON_API JSONAtom *parseJSON(const char *json);
+	rSON_API JSONAtom *parseJSONFile(const char *file);
 
 	rSON_API char *writeJSON(JSONAtom *atom);
 	rSON_API void freeString(char **str);

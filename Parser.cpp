@@ -21,9 +21,15 @@
 #include "Memory.h"
 #include <string.h>
 #include <math.h>
+#include <stdio.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 
 #ifdef _MSC_VER
 #define pow10(x) pow(10.0, (int)x)
+#else
+#include <unistd.h>
 #endif
 
 typedef struct JSONParser
@@ -518,5 +524,41 @@ JSONAtom *rSON::parseJSON(const char *json)
 	}
 
 	delete parser;
+	return ret;
+}
+
+// This is the file-wide alternative for the above entry point.
+// This automates the process of reading a file and parsing it to produce the JSONAtom *
+// so that application code only has to call this rather than writing it's own file IO routines
+JSONAtom *rSON::parseJSONFile(const char *file)
+{
+	struct stat fileStat;
+	JSONAtom *ret;
+	int jsonFD;
+	char *json = NULL;
+
+	jsonFD = open(file, O_RDONLY | O_EXCL | O_NOCTTY);
+	if (jsonFD == -1)
+		throw JSONParserError(JSON_PARSER_BAD_FILE);
+
+	fstat(jsonFD, &fileStat);
+	json = new char[fileStat.st_size]();
+	if ((read(jsonFD, json, fileStat.st_size) | close(jsonFD)) == -1)
+	{
+		delete [] json;
+		throw JSONParserError(JSON_PARSER_BAD_FILE);
+	}
+
+	try
+	{
+		ret = rSON::parseJSON(json);
+	}
+	catch (...)
+	{
+		delete [] json;
+		throw;
+	}
+
+	delete [] json;
 	return ret;
 }
