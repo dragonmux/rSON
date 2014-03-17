@@ -226,6 +226,7 @@ namespace rSON
 	private:
 		typedef std::map<char *, JSONAtom *, StringLess> atomMap;
 		typedef atomMap::iterator atomMapIter;
+		typedef atomMap::const_iterator atomMapConstIter;
 		typedef std::vector<const char *> keyType;
 		typedef keyType::iterator keyTypeIter;
 		atomMap children;
@@ -236,9 +237,9 @@ namespace rSON
 		~JSONObject();
 		void add(char *key, JSONAtom *value);
 		void del(const char *key);
-		JSONAtom *operator [](const char *key);
-		std::vector<const char *> &keys();
-		size_t size();
+		JSONAtom *operator [](const char *key) const;
+		const std::vector<const char *> &keys() const;
+		size_t size() const;
 		size_t length();
 		void store(char *str);
 	};

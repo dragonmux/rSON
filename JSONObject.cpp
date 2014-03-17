@@ -64,20 +64,20 @@ void JSONObject::del(const char *key)
 	}
 }
 
-JSONAtom *JSONObject::operator [](const char *key)
+JSONAtom *JSONObject::operator [](const char *key) const
 {
-	atomMapIter node = children.find((char *)key);
+	atomMapConstIter node = children.find((char *)key);
 	if (node == children.end())
 		throw JSONObjectError(JSON_OBJECT_BAD_KEY);
 	return node->second;
 }
 
-size_t JSONObject::size()
+size_t JSONObject::size() const
 {
 	return children.size();
 }
 
-std::vector<const char *> &JSONObject::keys()
+const std::vector<const char *> &JSONObject::keys() const
 {
 	return mapKeys;
 }
