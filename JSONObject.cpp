@@ -81,3 +81,9 @@ const std::vector<const char *> &JSONObject::keys() const
 {
 	return mapKeys;
 }
+
+bool JSONObject::exists(const char *key) const
+{
+	atomMapConstIter node = children.find((char *)key);
+	return node != children.end();
+}

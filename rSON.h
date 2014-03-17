@@ -239,6 +239,7 @@ namespace rSON
 		void del(const char *key);
 		JSONAtom *operator [](const char *key) const;
 		const std::vector<const char *> &keys() const;
+		bool exists(const char *key) const;
 		size_t size() const;
 		size_t length();
 		void store(char *str);
