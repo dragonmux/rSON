@@ -414,6 +414,7 @@ JSONAtom *number(JSONParser *parser)
 			parser->match('+', false);
 		multiplier = parser->number(true);
 	}
+	parser->skipWhite();
 
 	if (decimalValid == false)
 	{
