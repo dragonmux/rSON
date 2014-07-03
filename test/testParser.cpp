@@ -355,7 +355,7 @@ void testObject()
 	parser = new JSONParser("{\"testKey\": 0}");
 	TRY(
 		assertIntEqual(objectAtom->size(), 1);
-		assertNotNull((*objectAtom)["testKey"]);
+		assertTrue(objectAtom->exists("testKey"));
 		assertIntEqual((*objectAtom)["testKey"]->asInt(), 0)
 	);
 	delete parser;
@@ -363,9 +363,9 @@ void testObject()
 	parser = new JSONParser("{\"testInt\": 0, \"testBool\": true}");
 	TRY(
 		assertIntEqual(objectAtom->size(), 2);
-		assertNotNull((*objectAtom)["testInt"]);
+		assertTrue(objectAtom->exists("testInt"));
 		assertIntEqual((*objectAtom)["testInt"]->asInt(), 0);
-		assertNotNull((*objectAtom)["testBool"]);
+		assertTrue(objectAtom->exists("testBool"));
 		assertTrue((*objectAtom)["testBool"]->asBool())
 	);
 	delete parser;
@@ -528,9 +528,9 @@ void testParseJSON()
 		assertNotNull(atom);
 		object = atom->asObject();
 		assertIntEqual(object->size(), 2);
-		assertNotNull((*object)["testInt"]);
+		assertTrue(object->exists("testInt"));
 		assertIntEqual((*object)["testInt"]->asInt(), 0);
-		assertNotNull((*object)["testArray"]);
+		assertTrue(object->exists("testArray"));
 		array = (*object)["testArray"]->asArray();
 		assertIntEqual(array->size(), 3);
 		assertNotNull((*array)[0]);
@@ -596,7 +596,6 @@ try \
 catch (JSONParserError &err) \
 { \
 }
-
 
 void testParseJSONFile()
 {
