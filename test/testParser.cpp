@@ -558,6 +558,14 @@ void testParseJSON()
 		assertFalse((*innerArray)[2]->asBool())
 	);
 
+	TRY("[\n\t0,\n\t1\n]",
+		assertNotNull(atom);
+		array = atom->asArray();
+		assertIntEqual(array->size(), 2);
+		assertIntEqual((*array)[0]->asInt(), 0);
+		assertIntEqual((*array)[1]->asInt(), 1)
+	);
+
 	TRY_SHOULD_FAIL("true");
 	TRY_SHOULD_FAIL("false");
 	TRY_SHOULD_FAIL("null");
