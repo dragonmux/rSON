@@ -147,3 +147,9 @@ JSONString::operator const char *() const
 {
 	return value;
 }
+
+void JSONString::set(char *strValue)
+{
+	delete [] value;
+	value = strValue;
+}

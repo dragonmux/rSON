@@ -205,6 +205,7 @@ namespace rSON
 		JSONString(char *strValue);
 		~JSONString();
 		operator const char *() const;
+		void set(char *strValue);
 		size_t length();
 		void store(char *str);
 	};
