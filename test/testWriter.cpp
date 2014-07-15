@@ -95,9 +95,7 @@ void testArray()
 	doTest(arr, "[null, true]");
 	outerArr = new JSONArray();
 	outerArr->add(arr);
-	arr = new JSONArray();
-	arr->add(new JSONNull());
-	outerArr->add(arr);
+	outerArr->add(new JSONNull());
 	doTest(outerArr, "[[null, true], null]");
 	delete outerArr;
 }

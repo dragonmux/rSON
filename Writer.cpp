@@ -128,7 +128,7 @@ size_t JSONArray::length()
 {
 	size_t i, len = 2;
 	for (i = 0; i < size(); i++)
-		len += children[i]->length() + 2;
+		len += children[i]->length();
 	if (size() > 0)
 		len += (size() - 1) * 2;
 	return len;
