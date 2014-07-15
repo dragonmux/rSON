@@ -86,14 +86,20 @@ void testObject()
 
 void testArray()
 {
-	JSONArray *arr;
+	JSONArray *arr, *outerArr;
 	arr = new JSONArray();
 	doTest(arr, "[]");
 	arr->add(new JSONNull());
 	doTest(arr, "[null]");
 	arr->add(new JSONBool(true));
 	doTest(arr, "[null, true]");
-	delete arr;
+	outerArr = new JSONArray();
+	outerArr->add(arr);
+	arr = new JSONArray();
+	arr->add(new JSONNull());
+	outerArr->add(arr);
+	doTest(outerArr, "[[null, true], null]");
+	delete outerArr;
 }
 
 #ifdef __cplusplus
