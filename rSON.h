@@ -218,6 +218,7 @@ namespace rSON
 		JSONBool(bool boolValue);
 		~JSONBool();
 		operator bool() const;
+		void set(bool boolValue);
 		size_t length();
 		void store(char *str);
 	};

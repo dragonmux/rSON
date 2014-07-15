@@ -30,3 +30,8 @@ JSONBool::operator bool() const
 {
 	return value;
 }
+
+void JSONBool::set(bool boolValue)
+{
+	value = boolValue;
+}
