@@ -30,3 +30,8 @@ JSONInt::operator int() const
 {
 	return value;
 }
+
+void JSONInt::set(int intValue)
+{
+	value = intValue;
+}

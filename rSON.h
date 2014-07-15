@@ -191,6 +191,7 @@ namespace rSON
 		JSONInt(int intValue);
 		~JSONInt();
 		operator int() const;
+		void set(int intValue);
 		size_t length();
 		void store(char *str);
 	};
