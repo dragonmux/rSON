@@ -26,7 +26,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 
-#if defined(_MSC_VER) || defined(__MACOS__) || defined(__MACOSX__)
+#if defined(_MSC_VER) || defined(__MACOS__) || defined(__MACOSX__) || defined(__APPLE__)
 #define pow10(x) pow(10.0, (int)x)
 #else
 #include <unistd.h>
