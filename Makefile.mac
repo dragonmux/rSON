@@ -18,7 +18,7 @@ include Makefile
 
 LFLAGS = -shared $(O) -undefined error -o $(SO) -lstdc++ -lm
 INSTALL_SO = $(INSTALL_FILE)
-SOMAJ = rSON.dylib
+SOMAJ = librSON.dylib
 
 define ldconfig
 	$(call run-cmd,ln,$(SO),$(LIBDIR)/$(SOMAJ))
