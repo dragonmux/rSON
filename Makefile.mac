@@ -16,7 +16,7 @@
 
 include Makefile
 
-LFLAGS = -shared $(O) -undefined error -o $(SO) -lstdc++ -lm -z defs
+LFLAGS = -shared $(O) -undefined error -o $(SO) -lstdc++ -lm
 INSTALL_SO = $(INSTALL_FILE)
 SOMAJ = rSON.dylib
 
