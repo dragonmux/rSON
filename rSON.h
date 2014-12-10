@@ -237,6 +237,7 @@ namespace rSON
 
 	public:
 		JSONObject();
+		JSONObject(JSONObject &object);
 		~JSONObject();
 		void add(char *key, JSONAtom *value);
 		void del(const char *key);
@@ -257,6 +258,7 @@ namespace rSON
 
 	public:
 		JSONArray();
+		JSONArray(JSONArray &array);
 		~JSONArray();
 		void add(JSONAtom *value);
 		void del(size_t key);

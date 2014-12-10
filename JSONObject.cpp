@@ -44,7 +44,7 @@ JSONObject::JSONObject(JSONObject &object) : JSONAtom(JSON_TYPE_OBJECT)
 				value = new JSONFloat(*((JSONFloat *)i->second));
 				break;
 			case JSON_TYPE_STRING:
-				value = new JSONString(*((JSONString *)i->second));
+				value = new JSONString(strNewDup(*((JSONString *)i->second)));
 				break;
 			case JSON_TYPE_OBJECT:
 				value = new JSONObject(*((JSONObject *)i->second));

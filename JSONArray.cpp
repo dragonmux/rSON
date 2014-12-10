@@ -17,6 +17,7 @@
  */
 
 #include "internal.h"
+#include "String.h"
 
 JSONArray::JSONArray() : JSONAtom(JSON_TYPE_ARRAY)
 {
@@ -42,7 +43,7 @@ JSONArray::JSONArray(JSONArray &object) : JSONAtom(JSON_TYPE_ARRAY)
 				value = new JSONFloat(*((JSONFloat *)child));
 				break;
 			case JSON_TYPE_STRING:
-				value = new JSONString(*((JSONString *)child));
+				value = new JSONString(strNewDup(*((JSONString *)child)));
 				break;
 			case JSON_TYPE_OBJECT:
 				value = new JSONObject(*((JSONObject *)child));
