@@ -23,5 +23,6 @@
 
 extern char *formatString(const char *format, ...);
 extern size_t formatLen(const char *format, ...);
+extern char *strNewDup(const char *str);
 
 #endif /*__STRING_H__*/

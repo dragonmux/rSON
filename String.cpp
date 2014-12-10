@@ -46,3 +46,10 @@ size_t formatLen(const char *format, ...)
 	va_end(args);
 	return len;
 }
+
+char *strNewDup(const char *str)
+{
+	char *ret = new char[strlen(str) + 1];
+	strcpy(ret, str);
+	return ret;
+}
