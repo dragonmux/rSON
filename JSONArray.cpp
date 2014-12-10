@@ -22,6 +22,41 @@ JSONArray::JSONArray() : JSONAtom(JSON_TYPE_ARRAY)
 {
 }
 
+JSONArray::JSONArray(JSONArray &object) : JSONAtom(JSON_TYPE_ARRAY)
+{
+	for (size_t i = 0; i < object.children.size(); i++)
+	{
+		JSONAtom *value, *child = object.children[i];
+		switch (child->getType())
+		{
+			case JSON_TYPE_NULL:
+				value = new JSONNull();
+				break;
+			case JSON_TYPE_BOOL:
+				value = new JSONBool(*((JSONBool *)child));
+				break;
+			case JSON_TYPE_INT:
+				value = new JSONInt(*((JSONInt *)child));
+				break;
+			case JSON_TYPE_FLOAT:
+				value = new JSONFloat(*((JSONFloat *)child));
+				break;
+			case JSON_TYPE_STRING:
+				value = new JSONString(*((JSONString *)child));
+				break;
+			case JSON_TYPE_OBJECT:
+				value = new JSONObject(*((JSONObject *)child));
+				break;
+			case JSON_TYPE_ARRAY:
+				value = new JSONArray(*((JSONArray *)child));
+				break;
+			default:
+				throw JSONObjectError(JSON_OBJECT_BAD_KEY);
+		}
+		children.push_back(value);
+	}
+}
+
 JSONArray::~JSONArray()
 {
 	if (this == NULL)

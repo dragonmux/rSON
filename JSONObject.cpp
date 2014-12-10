@@ -17,9 +17,46 @@
  */
 
 #include "internal.h"
+#include "String.h"
 
 JSONObject::JSONObject() : JSONAtom(JSON_TYPE_OBJECT)
 {
+}
+
+JSONObject::JSONObject(JSONObject &object) : JSONAtom(JSON_TYPE_OBJECT)
+{
+	for (atomMapIter i = object.children.begin(); i != object.children.end(); i++)
+	{
+		char *key = strNewDup(i->first);
+		JSONAtom *value;
+		switch (i->second->getType())
+		{
+			case JSON_TYPE_NULL:
+				value = new JSONNull();
+				break;
+			case JSON_TYPE_BOOL:
+				value = new JSONBool(*((JSONBool *)i->second));
+				break;
+			case JSON_TYPE_INT:
+				value = new JSONInt(*((JSONInt *)i->second));
+				break;
+			case JSON_TYPE_FLOAT:
+				value = new JSONFloat(*((JSONFloat *)i->second));
+				break;
+			case JSON_TYPE_STRING:
+				value = new JSONString(*((JSONString *)i->second));
+				break;
+			case JSON_TYPE_OBJECT:
+				value = new JSONObject(*((JSONObject *)i->second));
+				break;
+			case JSON_TYPE_ARRAY:
+				value = new JSONArray(*((JSONArray *)i->second));
+				break;
+			default:
+				throw JSONObjectError(JSON_OBJECT_BAD_KEY);
+		}
+		children[key] = value;
+	}
 }
 
 JSONObject::~JSONObject()
