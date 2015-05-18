@@ -146,7 +146,7 @@ namespace rSON
 
 	public:
 		virtual ~JSONAtom();
-		JSONAtomType getType();
+		JSONAtomType getType() const;
 		virtual void store(char *str) = 0;
 		virtual size_t length() = 0;
 

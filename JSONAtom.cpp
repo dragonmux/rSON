@@ -30,7 +30,7 @@ JSONAtom::~JSONAtom()
 {
 }
 
-JSONAtomType JSONAtom::getType()
+JSONAtomType JSONAtom::getType() const
 {
 	return type;
 }
