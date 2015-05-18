@@ -104,7 +104,17 @@ JSONAtom *JSONArray::operator [](size_t key)
 	return children[key];
 }
 
-size_t JSONArray::size()
+size_t JSONArray::size() const
 {
 	return children.size();
+}
+
+JSONArray::iterator JSONArray::begin() const
+{
+	return children.begin();
+}
+
+JSONArray::iterator JSONArray::end() const
+{
+	return children.end();
 }

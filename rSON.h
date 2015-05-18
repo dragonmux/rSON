@@ -257,6 +257,8 @@ namespace rSON
 		childType children;
 
 	public:
+		typedef childType::const_iterator iterator;
+
 		JSONArray();
 		JSONArray(JSONArray &array);
 		~JSONArray();
@@ -264,7 +266,9 @@ namespace rSON
 		void del(size_t key);
 		void del(JSONAtom *value);
 		JSONAtom *operator [](size_t key);
-		size_t size();
+		size_t size() const;
+		iterator begin() const;
+		iterator end() const;
 		size_t length();
 		void store(char *str);
 	};
