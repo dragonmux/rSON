@@ -36,7 +36,8 @@ void testConstructTrue()
 void testOperatorBoolTrue()
 {
 	assertNotNull(testBool);
-	assertTrue(*testBool);
+	assertTrue(bool(*testBool));
+	assertTrue(testBool->asBool());
 }
 
 void testConstructFalse()
@@ -55,7 +56,8 @@ void testConstructFalse()
 void testOperatorBoolFalse()
 {
 	assertNotNull(testBool);
-	assertFalse(*testBool);
+	assertFalse(bool(*testBool));
+	assertFalse(testBool->asBool());
 }
 
 void testDistruct()

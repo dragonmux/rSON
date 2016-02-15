@@ -150,17 +150,23 @@ namespace rSON
 		virtual void store(char *str) = 0;
 		virtual size_t length() = 0;
 
-		operator JSONAtom *() const;
-
 		void *asNull() const;
-		bool asBool() const;
-		int asInt() const;
-		double asFloat() const;
-		const char *asString() const;
+		bool asBool() const { return *this; }
+		int asInt() const { return *this; }
+		double asFloat() const { return *this; }
+		const char *asString() const { return *this; }
 		JSONObject *asObject() const;
-		JSONObject &asObjectRef() const;
+		JSONObject &asObjectRef() const { return *this; }
 		JSONArray *asArray() const;
-		JSONArray &asArrayRef() const;
+		JSONArray &asArrayRef() const { return *this; }
+
+		operator JSONAtom *() const;
+		operator bool() const;
+		operator int() const;
+		operator double() const;
+		operator const char *() const;
+		operator JSONObject &() const;
+		operator JSONArray &() const;
 	};
 
 	class rSON_CLS_API JSONNull : public JSONAtom

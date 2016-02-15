@@ -47,28 +47,28 @@ void *JSONAtom::asNull() const
 	return nullptr;
 }
 
-bool JSONAtom::asBool() const
+JSONAtom::operator bool() const
 {
 	if (type != JSON_TYPE_BOOL)
 		throw JSONTypeError(type, JSON_TYPE_BOOL);
 	return *((JSONBool *)this);
 }
 
-int JSONAtom::asInt() const
+JSONAtom::operator int() const
 {
 	if (type != JSON_TYPE_INT)
 		throw JSONTypeError(type, JSON_TYPE_INT);
 	return *((JSONInt *)this);
 }
 
-double JSONAtom::asFloat() const
+JSONAtom::operator double() const
 {
 	if (type != JSON_TYPE_FLOAT)
 		throw JSONTypeError(type, JSON_TYPE_FLOAT);
 	return *((JSONFloat *)this);
 }
 
-const char *JSONAtom::asString() const
+JSONAtom::operator const char *() const
 {
 	if (type != JSON_TYPE_STRING)
 		throw JSONTypeError(type, JSON_TYPE_STRING);
@@ -82,7 +82,7 @@ JSONObject *JSONAtom::asObject() const
 	return (JSONObject *)this;
 }
 
-JSONObject &JSONAtom::asObjectRef() const
+JSONAtom::operator JSONObject &() const
 {
 	return *asObject();
 }
@@ -94,7 +94,7 @@ JSONArray *JSONAtom::asArray() const
 	return (JSONArray *)this;
 }
 
-JSONArray &JSONAtom::asArrayRef() const
+JSONAtom::operator JSONArray &() const
 {
 	return *asArray();
 }
