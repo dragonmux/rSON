@@ -1,0 +1,6 @@
+*.obj
+*.cod
+
+vc140.*
+*.tlog
+*.log
