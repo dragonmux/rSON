@@ -101,12 +101,12 @@ void JSONObject::del(const char *key)
 	}
 }
 
-JSONAtom *JSONObject::operator [](const char *key) const
+JSONAtom &JSONObject::operator [](const char *key) const
 {
 	atomMapConstIter node = children.find((char *)key);
 	if (node == children.end())
 		throw JSONObjectError(JSON_OBJECT_BAD_KEY);
-	return node->second;
+	return *node->second;
 }
 
 size_t JSONObject::size() const

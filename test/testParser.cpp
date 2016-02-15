@@ -356,7 +356,7 @@ void testObject()
 	TRY(
 		assertIntEqual(objectAtom->size(), 1);
 		assertTrue(objectAtom->exists("testKey"));
-		assertIntEqual((*objectAtom)["testKey"]->asInt(), 0)
+		assertIntEqual((*objectAtom)["testKey"].asInt(), 0)
 	);
 	delete parser;
 
@@ -364,9 +364,9 @@ void testObject()
 	TRY(
 		assertIntEqual(objectAtom->size(), 2);
 		assertTrue(objectAtom->exists("testInt"));
-		assertIntEqual((*objectAtom)["testInt"]->asInt(), 0);
+		assertIntEqual((*objectAtom)["testInt"].asInt(), 0);
 		assertTrue(objectAtom->exists("testBool"));
-		assertTrue((*objectAtom)["testBool"]->asBool())
+		assertTrue((*objectAtom)["testBool"].asBool())
 	);
 	delete parser;
 
@@ -452,7 +452,7 @@ void testArray()
 	TRY(
 		assertIntEqual(arrayAtom->size(), 1);
 		assertNotNull((*arrayAtom)[0]);
-		assertIntEqual((*arrayAtom)[0]->asInt(), 0)
+		assertIntEqual((*arrayAtom)[0].asInt(), 0)
 	);
 	delete parser;
 
@@ -460,9 +460,9 @@ void testArray()
 	TRY(
 		assertIntEqual(arrayAtom->size(), 2);
 		assertNotNull((*arrayAtom)[0]);
-		assertIntEqual((*arrayAtom)[0]->asInt(), 0);
+		assertIntEqual((*arrayAtom)[0].asInt(), 0);
 		assertNotNull((*arrayAtom)[1]);
-		assertTrue((*arrayAtom)[1]->asBool())
+		assertTrue((*arrayAtom)[1].asBool())
 	);
 	delete parser;
 
@@ -529,16 +529,16 @@ void testParseJSON()
 		object = atom->asObject();
 		assertIntEqual(object->size(), 2);
 		assertTrue(object->exists("testInt"));
-		assertIntEqual((*object)["testInt"]->asInt(), 0);
+		assertIntEqual((*object)["testInt"].asInt(), 0);
 		assertTrue(object->exists("testArray"));
-		array = (*object)["testArray"]->asArray();
+		array = (*object)["testArray"].asArray();
 		assertIntEqual(array->size(), 3);
 		assertNotNull((*array)[0]);
 		assertNotNull((*array)[1]);
 		assertNotNull((*array)[2]);
-		assertNull((*array)[0]->asNull());
-		assertTrue((*array)[1]->asBool());
-		assertFalse((*array)[2]->asBool())
+		assertNull((*array)[0].asNull());
+		assertTrue((*array)[1].asBool());
+		assertFalse((*array)[2].asBool())
 	);
 
 	TRY("[\n\t0,\n\t\[\n\t\tnull,\n\t\ttrue,\n\t\tfalse\n\t]\n]",
@@ -546,24 +546,24 @@ void testParseJSON()
 		array = atom->asArray();
 		assertIntEqual(array->size(), 2);
 		assertNotNull((*array)[0]);
-		assertIntEqual((*array)[0]->asInt(), 0);
+		assertIntEqual((*array)[0].asInt(), 0);
 		assertNotNull((*array)[1]);
-		innerArray = (*array)[1]->asArray();
+		innerArray = (*array)[1].asArray();
 		assertIntEqual(innerArray->size(), 3);
 		assertNotNull((*innerArray)[0]);
 		assertNotNull((*innerArray)[1]);
 		assertNotNull((*innerArray)[2]);
-		assertNull((*innerArray)[0]->asNull());
-		assertTrue((*innerArray)[1]->asBool());
-		assertFalse((*innerArray)[2]->asBool())
+		assertNull((*innerArray)[0].asNull());
+		assertTrue((*innerArray)[1].asBool());
+		assertFalse((*innerArray)[2].asBool())
 	);
 
 	TRY("[\n\t0,\n\t1\n]",
 		assertNotNull(atom);
 		array = atom->asArray();
 		assertIntEqual(array->size(), 2);
-		assertIntEqual((*array)[0]->asInt(), 0);
-		assertIntEqual((*array)[1]->asInt(), 1)
+		assertIntEqual((*array)[0].asInt(), 0);
+		assertIntEqual((*array)[1].asInt(), 1)
 	);
 
 	TRY_SHOULD_FAIL("true");

@@ -35,11 +35,16 @@ JSONAtomType JSONAtom::getType() const
 	return type;
 }
 
+JSONAtom::operator JSONAtom *() const
+{
+	return const_cast<JSONAtom *>(this);
+}
+
 void *JSONAtom::asNull() const
 {
 	if (type != JSON_TYPE_NULL)
 		throw JSONTypeError(type, JSON_TYPE_NULL);
-	return NULL;
+	return nullptr;
 }
 
 bool JSONAtom::asBool() const

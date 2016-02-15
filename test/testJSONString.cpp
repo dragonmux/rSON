@@ -90,7 +90,7 @@ void testEscapes()
 void testOperatorString()
 {
 	assertNotNull(testString);
-	assertConstNotNull(*testString);
+	assertConstNotNull(static_cast<const char *>(*testString));
 	assertStringEqual(*testString, "testValue");
 }
 

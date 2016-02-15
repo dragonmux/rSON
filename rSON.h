@@ -150,6 +150,8 @@ namespace rSON
 		virtual void store(char *str) = 0;
 		virtual size_t length() = 0;
 
+		operator JSONAtom *() const;
+
 		void *asNull() const;
 		bool asBool() const;
 		int asInt() const;
@@ -241,7 +243,7 @@ namespace rSON
 		~JSONObject();
 		void add(char *key, JSONAtom *value);
 		void del(const char *key);
-		JSONAtom *operator [](const char *key) const;
+		JSONAtom &operator [](const char *key) const;
 		const std::vector<const char *> &keys() const;
 		bool exists(const char *key) const;
 		size_t size() const;
@@ -265,7 +267,7 @@ namespace rSON
 		void add(JSONAtom *value);
 		void del(size_t key);
 		void del(JSONAtom *value);
-		JSONAtom *operator [](size_t key);
+		JSONAtom &operator [](size_t key);
 		size_t size() const;
 		iterator begin() const;
 		iterator end() const;
