@@ -31,6 +31,9 @@
 #endif
 #ifndef _MSC_VER
 #include <unistd.h>
+#else
+#include <io.h>
+#define O_NOCTTY O_BINARY
 #endif
 
 typedef struct JSONParser

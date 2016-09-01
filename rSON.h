@@ -19,7 +19,7 @@
 #ifndef __rSON_H__
 #define __rSON_H__
 
-#include <inttypes.h>
+#include <stdint.h>
 #include <map>
 #include <vector>
 #include <string.h>
