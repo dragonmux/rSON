@@ -1,4 +1,4 @@
-# rSON 0.0.1
+# rSON 0.1.0
 
 The project was conceived after surveying the C/C++ based JSON implementations for something that was lightweight and easy to use (and by that, I mean requires no setup code and simply works to produce output that is easy to access the structure of and grab data out from) and comming up very short.
 
