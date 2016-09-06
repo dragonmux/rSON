@@ -68,11 +68,21 @@ JSONAtom::operator double() const
 	return *((JSONFloat *)this);
 }
 
-JSONAtom::operator const char *() const
+JSONString &JSONAtom::asStringRef() const
 {
 	if (type != JSON_TYPE_STRING)
 		throw JSONTypeError(type, JSON_TYPE_STRING);
 	return *((JSONString *)this);
+}
+
+JSONAtom::operator JSONString &() const
+{
+	return asStringRef();
+}
+
+JSONAtom::operator const char *() const
+{
+	return asStringRef();
 }
 
 JSONObject *JSONAtom::asObject() const

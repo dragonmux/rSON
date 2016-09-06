@@ -132,6 +132,7 @@ namespace rSON
 
 	// Hierachy types
 
+	class JSONString;
 	class JSONObject;
 	class JSONArray;
 
@@ -155,6 +156,7 @@ namespace rSON
 		int asInt() const { return *this; }
 		double asFloat() const { return *this; }
 		const char *asString() const { return *this; }
+		JSONString &asStringRef() const;
 		JSONObject *asObject() const;
 		JSONObject &asObjectRef() const { return *this; }
 		JSONArray *asArray() const;
@@ -165,6 +167,7 @@ namespace rSON
 		operator int() const;
 		operator double() const;
 		operator const char *() const;
+		operator JSONString &() const;
 		operator JSONObject &() const;
 		operator JSONArray &() const;
 
