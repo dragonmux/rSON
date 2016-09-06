@@ -101,7 +101,7 @@ void JSONObject::del(const char *key)
 	}
 }
 
-JSONAtom &JSONObject::operator [](const char *key) const
+JSONAtom &JSONObject::operator [](const char *const key) const
 {
 	atomMapConstIter node = children.find((char *)key);
 	if (node == children.end())

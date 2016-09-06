@@ -97,7 +97,7 @@ void JSONArray::del(JSONAtom *value)
 	}
 }
 
-JSONAtom &JSONArray::operator [](size_t key)
+JSONAtom &JSONArray::operator [](const size_t key) const
 {
 	if (key >= children.size())
 		throw JSONArrayError(JSON_ARRAY_OOB);

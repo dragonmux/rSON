@@ -167,6 +167,11 @@ namespace rSON
 		operator const char *() const;
 		operator JSONObject &() const;
 		operator JSONArray &() const;
+
+		// Turns out that it is useful to allow this type to be indexed.
+		// These two operator index's automatically convert the JSONAtom as we can know if the index is for an array or object based on the index type.
+		JSONAtom &operator [](const char *const key) const;
+		JSONAtom &operator [](const size_t key) const;
 	};
 
 	class rSON_CLS_API JSONNull : public JSONAtom
@@ -249,7 +254,7 @@ namespace rSON
 		~JSONObject();
 		void add(char *key, JSONAtom *value);
 		void del(const char *key);
-		JSONAtom &operator [](const char *key) const;
+		JSONAtom &operator [](const char *const key) const;
 		const std::vector<const char *> &keys() const;
 		bool exists(const char *key) const;
 		size_t size() const;
@@ -273,7 +278,7 @@ namespace rSON
 		void add(JSONAtom *value);
 		void del(size_t key);
 		void del(JSONAtom *value);
-		JSONAtom &operator [](size_t key);
+		JSONAtom &operator [](const size_t key) const;
 		size_t size() const;
 		iterator begin() const;
 		iterator end() const;

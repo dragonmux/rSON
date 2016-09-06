@@ -98,3 +98,13 @@ JSONAtom::operator JSONArray &() const
 {
 	return *asArray();
 }
+
+JSONAtom &JSONAtom::operator [](const char *const key) const
+{
+	return asObjectRef()[key];
+}
+
+JSONAtom &JSONAtom::operator [](const size_t key) const
+{
+	return asArrayRef()[key];
+}
