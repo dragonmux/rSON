@@ -16,7 +16,9 @@
 
 include Makefile.inc
 
-CFLAGS = -c $(OPTIM_FLAGS) -pedantic -Wall -Wextra -std=c++11 -D__rSON__ -o $@ $<
+DEFS = $(OPTIM_FLAGS) -pedantic -Wall -Wextra -std=c++11 -D__rSON__
+CFLAGS = -c $(DEFS) -o $@ $<
+DEPFLAGS = -E -MM $(DEFS) -o .dep/$*.d $<
 LFLAGS = -shared $(O) -Wl,-soname,$(SOMAJ) -o $(SO) -lstdc++ -lm -z defs
 
 SED = sed -e 's:@LIBDIR@:$(LIBDIR):g' -e 's:@PREFIX@:$(PREFIX):g'
@@ -39,9 +41,14 @@ A = librSON.a
 PC = rSON.pc
 IN = rSON.pc.in
 
+DEPS = .dep
+
 default: all
 
-all: $(SO) $(PC)
+all: $(DEPS) $(SO) $(PC)
+
+$(DEPS):
+	$(call run-cmd,install_dir,$@)
 
 $(LIBDIR):
 	$(call run-cmd,install_dir,$(LIBDIR))
@@ -75,17 +82,22 @@ $(SO): $(O)
 $(PC): $(IN)
 	$(call run-cmd,sed,$(IN),$(PC))
 
-clean: test
-	@cd test && $(MAKE) clean
+clean: test $(DEPS)
+	@$(MAKE) -C test clean
 	$(call run-cmd,rm,rSON,*.o $(SOMAJ)* $(A) $(PC))
+	$(call run-cmd,rm,makedep,.dep/*.d)
 
 tests: all test
-	@cd test && $(MAKE)
+	@$(MAKE) -C test
 
 check: all test
-	@cd test && $(MAKE) check
+	@$(MAKE) -C test check
 
-.cpp.o:
+.cpp.o: $(DEPS)
+	$(call makedep,$(CXX),$(DEPFLAGS))
 	$(call run-cmd,cxx,$(CFLAGS))
 
 .PHONY: clean librSON.pc install all uninstall default .cpp.o tests check
+.SUFFIXES: .cpp .so .o
+
+-include .dep/*.d

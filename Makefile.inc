@@ -16,7 +16,7 @@
 
 # Makefile include for librSON. Set V to something other than 0 for more detailed build output.
 
-ifeq ($(MAKELEVEL), 0)
+#ifeq ($(MAKELEVEL), 0)
 
 # Silence the tools
 ifeq ("$(origin V)", "command line")
@@ -41,7 +41,7 @@ endif
 
 export quiet Q BUILD_VERBOSE
 
-endif
+#endif
 
 quiet_cmd_cc = " CC    $@"
 cmd_cc = $(CC) $(2)
@@ -49,6 +49,7 @@ quiet_cmd_cxx = " CXX   $@"
 cmd_cxx = $(CXX) $(2)
 quiet_cmd_ccld = " CCLD  $@"
 cmd_ccld = $(CXX) $(2)
+cmd_makedep = $(1) $(2)
 quiet_cmd_strip = " STRIP $@"
 cmd_strip = $(STRIP) $(1)
 quiet_cmd_ar = " AR    $(2)"
@@ -79,6 +80,10 @@ cmd_ldconfig = ldconfig
 define run-cmd
 	@echo $($(quiet)cmd_$(1))
 	@$(cmd_$(1))
+endef
+
+define makedep
+	$(Q)$(cmd_makedep)
 endef
 
 define debug-strip
