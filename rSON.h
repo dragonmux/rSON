@@ -139,15 +139,15 @@ namespace rSON
 	class rSON_CLS_API JSONAtom
 	{
 	private:
-		JSONAtomType type;
+		const JSONAtomType type;
 
 	protected:
-		JSONAtom();
-		JSONAtom(JSONAtomType type);
+		constexpr JSONAtom() noexcept : type(JSON_TYPE_NULL) { }
+		constexpr JSONAtom(const JSONAtomType atomType) noexcept : type(atomType) { }
 
 	public:
-		virtual ~JSONAtom();
-		JSONAtomType getType() const;
+		virtual ~JSONAtom() { }
+		JSONAtomType getType() const noexcept { return type; }
 		virtual void store(char *str) = 0;
 		virtual size_t length() = 0;
 

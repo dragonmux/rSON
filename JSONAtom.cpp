@@ -18,23 +18,6 @@
 
 #include "internal.h"
 
-JSONAtom::JSONAtom() : type(JSON_TYPE_NULL)
-{
-}
-
-JSONAtom::JSONAtom(JSONAtomType atomType) : type(atomType)
-{
-}
-
-JSONAtom::~JSONAtom()
-{
-}
-
-JSONAtomType JSONAtom::getType() const
-{
-	return type;
-}
-
 JSONAtom::operator JSONAtom *() const
 {
 	return const_cast<JSONAtom *>(this);
