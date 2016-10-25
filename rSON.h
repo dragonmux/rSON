@@ -175,6 +175,10 @@ namespace rSON
 		// These two operator index's automatically convert the JSONAtom as we can know if the index is for an array or object based on the index type.
 		JSONAtom &operator [](const char *const key) const;
 		JSONAtom &operator [](const size_t key) const;
+
+		// Utility functions to help with type checking (validation)
+		bool typeIs(const JSONAtomType atomType) const noexcept { return type == atomType; }
+		bool typeIsOrNull(const JSONAtomType atomType) const noexcept { return type == atomType || type == JSON_TYPE_NULL; }
 	};
 
 	class rSON_CLS_API JSONNull : public JSONAtom
@@ -294,6 +298,10 @@ namespace rSON
 
 	rSON_API char *writeJSON(JSONAtom *atom);
 	rSON_API void freeString(char **str);
+
+	// Utility templates to help with type checking (validation)
+	template<JSONAtomType type> bool typeIs(const JSONAtom &atom) noexcept { return atom.typeIs(type); }
+	template<JSONAtomType type> bool typeIsOrNull(const JSONAtom &atom) noexcept { return atom.typeIsOrNull(type); }
 }
 
 #endif /*__rSON_H__*/
