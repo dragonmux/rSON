@@ -28,7 +28,7 @@ PKGDIR = $(LIBDIR)/pkgconfig/
 INCDIR = $(PREFIX)/include/
 
 H = rSON.h
-O = JSONErrors.o JSONAtom.o JSONNull.o JSONBool.o JSONInt.o JSONFloat.o JSONString.o JSONObject.o JSONArray.o Memory.o String.o Parser.o Writer.o
+O = JSONErrors.o JSONAtom.o JSONNull.o JSONBool.o JSONInt.o JSONFloat.o JSONString.o JSONObject.o JSONArray.o Memory.o String.o Stream.o Parser.o Writer.o
 VERMAJ = .0
 VERMIN = .1
 VERREV = .0

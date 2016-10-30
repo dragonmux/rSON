@@ -43,6 +43,77 @@
 
 namespace rSON
 {
+	struct rSON_CLS_API notImplemented_t : public std::exception { };
+
+	// Stream types for JSON IO
+	struct stream_t
+	{
+	public:
+		stream_t() = default;
+		stream_t(const stream_t &) = default;
+		stream_t(stream_t &&) = default;
+		virtual ~stream_t() = default;
+		stream_t &operator =(const stream_t &) = default;
+		stream_t &operator =(stream_t &&) = default;
+
+		template<typename T> bool read(T &value)
+			{ return read(&value, sizeof(T)); }
+		template<typename T, size_t N> bool read(std::array<T, N> &value)
+			{ return read(value.data(), N); }
+
+		template<typename T> bool write(const T &value)
+			{ return write(&value, sizeof(T)); }
+		template<typename T, size_t N> bool write(const std::array<T, N> &value)
+			{ return write(value.data(), N); }
+
+		bool read(void *const value, const size_t valueLen)
+		{
+			size_t actualLen = 0;
+			if (!read(value, valueLen, actualLen))
+				return false;
+			return valueLen == actualLen;
+		}
+
+		virtual bool read(void *const, const size_t, size_t &) { throw notImplemented_t(); }
+		virtual bool write(const void *const, size_t) { throw notImplemented_t(); }
+		virtual bool atEOF() const { throw notImplemented_t(); }
+	};
+
+	struct rSON_CLS_API fileStream_t final : public stream_t
+	{
+	private:
+		int fd;
+		size_t length;
+		bool eof;
+		int32_t mode;
+
+	public:
+		fileStream_t(const char *const fileName, const int32_t mode);
+		fileStream_t(const fileStream_t &) = delete;
+		fileStream_t(fileStream_t &&) = default;
+		~fileStream_t() noexcept final override;
+		fileStream_t &operator =(const fileStream_t &) = delete;
+		fileStream_t &operator =(fileStream_t &&) = default;
+
+		bool read(void *const value, const size_t valueLen, size_t &actualLen) final override;
+		bool write(const void *const value, const size_t valueLen) final override;
+		bool atEOF() const noexcept final override { return eof; }
+	};
+
+	struct rSON_CLS_API memoryStream_t final : public stream_t
+	{
+	private:
+		char *const memory;
+		const size_t length;
+		size_t pos;
+
+	public:
+		memoryStream_t(void *const stream, const size_t streamLength) noexcept;
+
+		bool read(void *const value, const size_t valueLen, size_t &actualLen) noexcept final override;
+		bool atEOF() const noexcept final override { return pos == length; }
+	};
+
 	// Enumerations
 
 	typedef enum JSONAtomType
