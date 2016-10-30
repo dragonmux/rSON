@@ -23,7 +23,7 @@ includedir=${prefix}/include
 
 Name: rSON
 Description: A simple but effective JSON parser for C++
-Version: 0.1.0
+Version: 0.2.0
 Requires:
 Conflicts:
 Libs: -L${libdir} -lrSON
