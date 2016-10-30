@@ -2,8 +2,6 @@
 
 The project was conceived after surveying the C/C++ based JSON implementations for something that was lightweight and easy to use (and by that, I mean requires no setup code and simply works to produce output that is easy to access the structure of and grab data out from) and comming up very short.
 
-*WARNING:* This software is currently a beta as it was written in 3 days flat, and although the test suit is extensive and has good coverage I give no guarantee that it's caught all the bugs
-
 ## The Idea
 
 rSON implements a configuration-less JSON complient parser which does literally all the donkey work. an example call works like:
@@ -34,11 +32,16 @@ JSONAtom implements the following conversion functions:
  *	`int asInt()`
  *	`double asFloat()` - The return type for this is forced by the numerical requirements of the standard
  *	`const char *asString()` - do not call `free()` or `delete` on this as cleanup is automatic when you delete the root JSONAtom
+ *	`JSONString &asStringRef()`
  *	`JSONArray *asArray()` and `JSONArray &asArrayRef()`
  *	`JSONObject *asObject()` and `JSONObject &asObjectRef()`
  
-The last two pairs of functions are the odd ones out in that they convert between rSON types rather than directly to C++ types for use directly in your programs.
+The last three sets of functions are the odd ones out in that they convert between rSON types rather than directly to C++ types for use directly in your programs.
 This is done to allow rSON to provide a nicer interface as JSONArray and JSONObject implement various operator overrides to allow transparent lookup of JSONAtom's held by each via either numerical index (JSONArray) or associative style string index (JSONObject)
+This is also done to allow direct access to a JSONString object for std::string-like use
+
+The JSONAtom also fully supports indexing if the real type it represents would also - so for JSONArray and JSONObject nodes, no manual conversion is required for indexing into complex trees (as of 0.1.0)
+This further allows elegant code through rSON in user programs.
 
 rSON attempts (and I hope succeeds) to provide a fully Associative Array style interface to JSONObject. I have to implement `->get()` methods though for when this is too bulky or doesn't fit nicely when using rSON.
 
