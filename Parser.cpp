@@ -50,98 +50,98 @@ public:
 	JSONParser(const char *toParse);
 	void nextChar();
 	void skipWhite();
-	void match(char x, bool skip);
+	void match(const char x, const bool skip);
 	bool lastTokenComma();
 	void lastNoComma();
 	char currentChar();
 	char *literal();
 	char *string();
-	size_t number(bool zeroSpecial);
+	size_t number(const bool zeroSpecial);
 	const char *currentPtr() const;
 } JSONParser;
 
 JSONAtom *expression(JSONParser *parser, bool matchComma = true);
 
 // Recognise lower-case letters
-inline bool isLowerAlpha(char x)
+inline bool isLowerAlpha(const char x) noexcept
 {
 	return x >= 'a' && x <= 'z';
 }
 
 // Recognise ASCII control characters
-inline bool isControl(char x)
+inline bool isControl(const char x) noexcept
 {
 	return (x >= 0 && x <= 0x1F) || x == 0x7F;
 }
 
 // Recognise characters in the file which are deemed in the JSON alphabet
-inline bool isAllowedAlpha(char x)
+inline bool isAllowedAlpha(const char x) noexcept
 {
 	return x != '"' && x != '\\' && isControl(x) == false;
 }
 
 // Recognise standard English numbers
-inline bool isNumber(char x)
+inline bool isNumber(const char x) noexcept
 {
 	return x >= '0' && x <= '9';
 }
 
 // Recognise the beginning of an object
-inline bool isObjectBegin(char x)
+inline bool isObjectBegin(const char x) noexcept
 {
 	return x == '{';
 }
 
 // Recognise the end of an object
-inline bool isObjectEnd(char x)
+inline bool isObjectEnd(const char x) noexcept
 {
 	return x == '}';
 }
 
 // Recognise the beginning of an array
-inline bool isArrayBegin(char x)
+inline bool isArrayBegin(const char x) noexcept
 {
 	return x == '[';
 }
 
 // Recognise the end of an array
-inline bool isArrayEnd(char x)
+inline bool isArrayEnd(const char x) noexcept
 {
 	return x == ']';
 }
 
 // Recognise a back-slash
-inline bool isSlash(char x)
+inline bool isSlash(const char x) noexcept
 {
 	return x == '\\';
 }
 
 // Recognise a double-quote
-inline bool isQuote(char x)
+inline bool isQuote(const char x) noexcept
 {
 	return x == '"';
 }
 
 // Recognise an exponent delimiter
-inline bool isExponent(char x)
+inline bool isExponent(const char x) noexcept
 {
 	return x == 'e' || x == 'E';
 }
 
 // Recognise a new line character OS agnoistically
-inline bool isNewLine(char x)
+inline bool isNewLine(const char x) noexcept
 {
 	return x == '\n' || x == '\r';
 }
 
 // Recognise whitespace
-inline bool isWhiteSpace(char x)
+inline bool isWhiteSpace(const char x) noexcept
 {
 	return x == ' ' || x == '\t' || isNewLine(x);
 }
 
 // Recognise a hexadecimal digit
-inline bool isHex(char x)
+inline bool isHex(const char x) noexcept
 {
 	return (x >= '0' && x <= '9') ||
 		(x >= 'A' && x <= 'F') ||
@@ -179,7 +179,7 @@ void JSONParser::skipWhite()
 
 // Match the current character with x, and skip whitespace if skip == true.
 // Throws an exception if x and the current character do not match.
-void JSONParser::match(char x, bool skip)
+void JSONParser::match(const char x, const bool skip)
 {
 	if (currentChar() == x)
 	{
@@ -299,7 +299,7 @@ char *JSONParser::string()
 }
 
 // Parses a positive natural number
-size_t JSONParser::number(bool zeroSpecial)
+size_t JSONParser::number(const bool zeroSpecial)
 {
 	size_t num = 0;
 
