@@ -39,7 +39,7 @@ bool fileStream_t::write(const void *const value, const size_t valueLen)
 	if (ret < 0)
 		throw std::system_error(errno, std::system_category());
 	eof = ret == 0;
-	return true;
+	return !eof;
 }
 
 memoryStream_t::memoryStream_t(void *const stream, const size_t streamLength) noexcept :
