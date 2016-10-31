@@ -46,7 +46,7 @@ private:
 	const char *jsonEnd;
 	bool lastWasComma;
 
-	void validateUnicodeSequence();
+	void validateUnicodeSequence(std::queue<char> &result);
 
 public:
 	JSONParser(const char *toParse);
@@ -230,11 +230,16 @@ char *JSONParser::literal()
 }
 
 // Verifies a \u sequence
-void JSONParser::validateUnicodeSequence()
+void JSONParser::validateUnicodeSequence(std::queue<char> &result)
 {
 	char len = 0;
-	for (len = 0; len < 4 && isHex(next[1]); len++)
+	for (len = 0; len < 4; len++)
+	{
+		result.push(currentChar());
 		nextChar();
+		if (!isHex(currentChar()))
+			break;
+	}
 	if (len != 4)
 		throw JSONParserError(JSON_PARSER_BAD_JSON);
 }
@@ -242,13 +247,9 @@ void JSONParser::validateUnicodeSequence()
 // Parses a string per the JSON string rules
 char *JSONParser::string()
 {
-	size_t len;
-	char *str;
-	const char *start, *end;
-	bool slash = false;
-
 	match('"', false);
-	start = next;
+	bool slash = false;
+	std::queue<char> result;
 
 	while (isQuote(currentChar()) == false || slash == true)
 	{
@@ -266,7 +267,7 @@ char *JSONParser::string()
 				case 't':
 					break;
 				case 'u':
-					validateUnicodeSequence();
+					validateUnicodeSequence(result);
 					// Make sure there are 4 hex characters here
 					break;
 				default:
@@ -280,17 +281,18 @@ char *JSONParser::string()
 			if (slash == false && isAllowedAlpha(currentChar()) == false)
 				throw JSONParserError(JSON_PARSER_BAD_JSON);
 		}
+		result.push(currentChar());
 		nextChar();
 	}
 
-	end = next;
 	match('"', true);
-
-	len = (size_t)(end - start) + 1;
-	str = new char[len]();
-	memcpy(str, start, len - 1);
-	str[len - 1] = 0;
-	return str;
+	return [&](char *const string) noexcept -> char *
+	{
+		string[result.size()] = 0;
+		for (size_t i = 0; !result.empty(); ++i)
+			string[i] = pop(result);
+		return string;
+	}(new char[result.size() + 1]);
 }
 
 // Parses a positive natural number
