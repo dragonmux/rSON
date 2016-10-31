@@ -41,15 +41,15 @@
 typedef struct JSONParser
 {
 private:
-	const char *json;
-	const char *next;
+	stream_t &json;
+	char next;
 	const char *jsonEnd;
 	bool lastWasComma;
 
 	void validateUnicodeSequence(std::queue<char> &result);
 
 public:
-	JSONParser(const char *toParse);
+	JSONParser(stream_t &toParse);
 	void nextChar();
 	void skipWhite();
 	void match(const char x, const bool skip);
@@ -62,6 +62,7 @@ public:
 } JSONParser;
 
 JSONAtom *expression(JSONParser *parser, bool matchComma = true);
+inline size_t length(const char *const str) noexcept { return strlen(str) + 1; }
 
 // Recognise lower-case letters
 inline bool isLowerAlpha(const char x) noexcept
@@ -149,19 +150,14 @@ inline bool isHex(const char x) noexcept
 		(x >= 'a' && x <= 'f');
 }
 
-JSONParser::JSONParser(const char *toParse)
-{
-	json = toParse;
-	next = json;
-	jsonEnd = json + strlen(json);
-	lastWasComma = false;
-}
+JSONParser::JSONParser(stream_t &toParse) : json(toParse), next(0), lastWasComma(false)
+	{ nextChar(); }
 
 void JSONParser::nextChar()
 {
-	if (next == jsonEnd)
+	if (json.atEOF())
 		throw JSONParserError(JSON_PARSER_EOF);
-	next++;
+	json.read(next);
 }
 
 // This function intentionally ignores EOF to prevent the
@@ -193,10 +189,9 @@ void JSONParser::lastNoComma() noexcept { lastWasComma = false; }
 
 char JSONParser::currentChar()
 {
-	char ret = *next;
-	if (next == jsonEnd)
+	if (json.atEOF())
 		throw JSONParserError(JSON_PARSER_EOF);
-	return ret;
+	return next;
 }
 
 inline char pop(std::queue<char> &queue) noexcept
@@ -498,34 +493,19 @@ JSONAtom *expression(JSONParser *parser, bool matchComma)
 // It then performs a try-catch in which expression() is invoked. if an exception is thrown or needs to be thrown,
 // the parser object this temporarily creates is cleaned up before the exception is (re)thrown.
 // If everything went OK, this then cleans up the parser object and returns the resulting JSONAtom tree.
+JSONAtom *rSON::parseJSON(stream_t &json)
+{
+	JSONParser parser(json);
+	if (isObjectBegin(parser.currentChar()) || isArrayBegin(parser.currentChar()))
+		return expression(&parser, false);
+	else
+		throw JSONParserError(JSON_PARSER_BAD_JSON);
+}
+
 JSONAtom *rSON::parseJSON(const char *json)
 {
-	JSONAtom *ret = NULL;
-	JSONParser *parser;
-	if (json == NULL)
-		return NULL;
-	parser = new JSONParser(json);
-
-	if (isObjectBegin(parser->currentChar()) || isArrayBegin(parser->currentChar()))
-	{
-		try
-		{
-			ret = expression(parser, false);
-		}
-		catch (JSONParserError &err)
-		{
-			delete parser;
-			throw;
-		}
-	}
-	else
-	{
-		delete parser;
-		throw JSONParserError(JSON_PARSER_BAD_JSON);
-	}
-
-	delete parser;
-	return ret;
+	memoryStream_t stream(const_cast<char *const>(json), length(json));
+	return rSON::parseJSON(stream);
 }
 
 // This is the file-wide alternative for the above entry point.
