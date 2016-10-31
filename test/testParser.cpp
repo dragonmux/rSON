@@ -133,80 +133,54 @@ void testFloatNumber()
 	tryNumberFail("0.0e00 ");
 }
 
-#undef TRY_SHOULD_FAIL
-#undef TRY
-#define TRY(tests) \
-try \
-{ \
-	atom = parser->string(); \
-	assertNotNull(atom); \
-	tests; \
-	delete [] atom; \
-} \
-catch (JSONParserError &err) \
-{ \
-	delete parser; \
-	fail(err.error()); \
-} \
-catch (JSONTypeError &err) \
-{ \
-	delete [] atom; \
-	delete parser; \
-	fail(err.error()); \
+void tryStringOk(const char *const json, void tests(const char *const))
+{
+	try
+	{
+		memoryStream_t stream(const_cast<char *const>(json), length(json));
+		JSONParser parser(stream);
+		std::unique_ptr<char []> atom(parser.string());
+		assertNotNull(atom.get());
+		tests(atom.get());
+	}
+	catch (const JSONParserError &err)
+		{ fail(err.error()); }
+	catch (const JSONTypeError &err)
+		{ fail(err.error()); }
+	catch (const std::bad_alloc &err)
+		{ fail(err.what()); }
 }
 
-#define TRY_SHOULD_FAIL() \
-try \
-{ \
-	atom = parser->string(); \
-	delete [] atom; \
-	delete parser; \
-	fail("The parser failed to throw an exception on invalid string"); \
-} \
-catch (JSONParserError &err) \
-{ \
+void tryStringFail(const char *const json)
+{
+	try
+	{
+		memoryStream_t stream(const_cast<char *const>(json), length(json));
+		JSONParser parser(stream);
+		std::unique_ptr<char []> atom(parser.string());
+		fail("The parser failed to throw an exception on invalid string");
+	}
+	catch (const JSONParserError &err)
+		{ fail(err.error()); }
+	catch (const std::bad_alloc &err)
+		{ fail(err.what()); }
 }
 
 void testString()
 {
 	JSONParser *parser;
-	char *atom;
 
-	parser = new JSONParser("\"test\" ");
-	TRY(assertStringEqual(atom, "test"));
-	delete parser;
+	tryStringOk("\"test\" ", [](const char *const atom) { assertStringEqual(atom, "test"); });
+	tryStringOk("\"\\\\\" ", [](const char *const atom) { assertStringEqual(atom, "\\\\"); });
+	tryStringOk("\" \" ", [](const char *const atom) { assertStringEqual(atom, " "); });
+	tryStringOk("\"\\\"\" ", [](const char *const atom) { assertStringEqual(atom, "\\\""); });
+	tryStringOk("\"te\\nst\" ", [](const char *const atom) { assertStringEqual(atom, "te\\nst"); });
 
-	parser = new JSONParser("\"\\\\\" ");
-	TRY(assertStringEqual(atom, "\\\\"));
-	delete parser;
-
-	parser = new JSONParser("\" \" ");
-	TRY(assertStringEqual(atom, " "));
-	delete parser;
-
-	parser = new JSONParser("\"\\\"\" ");
-	TRY(assertStringEqual(atom, "\\\""));
-	delete parser;
-
-	parser = new JSONParser("\"te\\nst\" ");
-	TRY(assertStringEqual(atom, "te\\nst"));
-	delete parser;
-
-	parser = new JSONParser("\" ");
-	TRY_SHOULD_FAIL();
-	delete parser;
-
-	parser = new JSONParser("\"\\ \" ");
-	TRY_SHOULD_FAIL();
-	delete parser;
-
-	parser = new JSONParser("\"\n\" ");
-	TRY_SHOULD_FAIL();
-	delete parser;
+	tryStringFail("\" ");
+	tryStringFail("\"\\ \" ");
+	tryStringFail("\"\n\" ");
 }
 
-#undef TRY_SHOULD_FAIL
-#undef TRY
 #define TRY(tests) \
 try \
 { \
