@@ -340,24 +340,16 @@ JSONAtom *object(JSONParser &parser)
 }
 
 // Parses an array
-JSONAtom *array(JSONParser *parser)
+JSONAtom *array(JSONParser &parser)
 {
-	JSONArray *array = new JSONArray();
-	try
-	{
-		parser->match('[', true);
-		while (isArrayEnd(parser->currentChar()) == false)
-			array->add(expression(parser));
-		if (parser->lastTokenComma())
-			throw JSONParserError(JSON_PARSER_BAD_JSON);
-		parser->match(']', true);
-	}
-	catch (JSONParserError &err)
-	{
-		delete array;
-		throw;
-	}
-	return array;
+	std::unique_ptr<JSONArray> array(new JSONArray());
+	parser.match('[', true);
+	while (isArrayEnd(parser.currentChar()) == false)
+		array->add(expression(&parser));
+	if (parser.lastTokenComma())
+		throw JSONParserError(JSON_PARSER_BAD_JSON);
+	parser.match(']', true);
+	return array.release();
 }
 
 // Raise 10 to the power of power.
@@ -453,7 +445,7 @@ JSONAtom *expression(JSONParser *parser, bool matchComma)
 			atom = object(*parser);
 			break;
 		case '[':
-			atom = array(parser);
+			atom = array(*parser);
 			break;
 		case '"':
 			atom = new JSONString(parser->string());

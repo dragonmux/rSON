@@ -248,37 +248,37 @@ void testObject()
 	tryObjectFail("{\"key\": null, }");
 }
 
-#define TRY(tests) \
-try \
-{ \
-	atom = array(parser); \
-	assertNotNull(atom); \
-	arrayAtom = atom->asArray(); \
-	tests; \
-	delete atom; \
-} \
-catch (JSONParserError &err) \
-{ \
-	delete parser; \
-	fail(err.error()); \
-} \
-catch (JSONTypeError &err) \
-{ \
-	delete atom; \
-	delete parser; \
-	fail(err.error()); \
+void tryArrayOk(const char *const json, void tests(const JSONArray &))
+{
+	try
+	{
+		memoryStream_t stream(const_cast<char *const>(json), length(json));
+		JSONParser parser(stream);
+		std::unique_ptr<JSONAtom> atom(array(parser));
+		assertNotNull(atom.get());
+		tests(atom->asArrayRef());
+	}
+	catch (const JSONParserError &err)
+		{ fail(err.error()); }
+	catch (const JSONTypeError &err)
+		{ fail(err.error()); }
+	catch (const std::bad_alloc &err)
+		{ fail(err.what()); }
 }
 
-#define TRY_SHOULD_FAIL() \
-try \
-{ \
-	atom = array(parser); \
-	delete atom; \
-	delete parser; \
-	fail("The parser failed to throw an exception on invalid array"); \
-} \
-catch (JSONParserError &err) \
-{ \
+void tryArrayFail(const char *const json)
+{
+	try
+	{
+		memoryStream_t stream(const_cast<char *const>(json), length(json));
+		JSONParser parser(stream);
+		std::unique_ptr<JSONAtom> atom(array(parser));
+		fail("The parser failed to throw an exception on invalid array");
+	}
+	catch (const JSONParserError &err)
+		{ fail(err.error()); }
+	catch (const std::bad_alloc &err)
+		{ fail(err.what()); }
 }
 
 void testArray()
@@ -287,51 +287,31 @@ void testArray()
 	JSONAtom *atom;
 	JSONArray *arrayAtom;
 
-	parser = new JSONParser("[]");
-	TRY(assertIntEqual(arrayAtom->size(), 0));
-	delete parser;
+	tryArrayOk("[]", [](const JSONArray &arrayAtom) { assertIntEqual(arrayAtom.size(), 0); });
 
-	parser = new JSONParser("[0]");
-	TRY(
-		assertIntEqual(arrayAtom->size(), 1);
-		assertNotNull((*arrayAtom)[0]);
-		assertIntEqual((*arrayAtom)[0].asInt(), 0)
-	);
-	delete parser;
+	tryArrayOk("[0]", [](const JSONArray &arrayAtom)
+	{
+		assertIntEqual(arrayAtom.size(), 1);
+		assertNotNull(arrayAtom[0]);
+		assertIntEqual(arrayAtom[0].asInt(), 0);
+	});
 
-	parser = new JSONParser("[0, true]");
-	TRY(
-		assertIntEqual(arrayAtom->size(), 2);
-		assertNotNull((*arrayAtom)[0]);
-		assertIntEqual((*arrayAtom)[0].asInt(), 0);
-		assertNotNull((*arrayAtom)[1]);
-		assertTrue((*arrayAtom)[1].asBool())
-	);
-	delete parser;
+	tryArrayOk("[0, true]", [](const JSONArray &arrayAtom)
+	{
+		assertIntEqual(arrayAtom.size(), 2);
+		assertNotNull(arrayAtom[0]);
+		assertIntEqual(arrayAtom[0].asInt(), 0);
+		assertNotNull(arrayAtom[1]);
+		assertTrue(arrayAtom[1].asBool());
+	});
 
-	parser = new JSONParser("[");
-	TRY_SHOULD_FAIL();
-	delete parser;
-
-	parser = new JSONParser("[,]");
-	TRY_SHOULD_FAIL();
-	delete parser;
-
-	parser = new JSONParser("[, true]");
-	TRY_SHOULD_FAIL();
-	delete parser;
-
-	parser = new JSONParser("[null, ]");
-	TRY_SHOULD_FAIL();
-	delete parser;
-
-	parser = new JSONParser("[null, ");
-	TRY_SHOULD_FAIL();
-	delete parser;
+	tryArrayFail("[");
+	tryArrayFail("[,]");
+	tryArrayFail("[, true]");
+	tryArrayFail("[null, ]");
+	tryArrayFail("[null, ");
 }
 
-#undef TRY_SHOULD_FAIL
-#undef TRY
 #define TRY(testString, tests) \
 try \
 { \
