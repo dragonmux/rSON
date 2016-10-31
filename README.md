@@ -21,6 +21,8 @@ It also implements a set of classes that form the following tree structure to bu
 Internally the tree is very strongly typed, throwing exceptions that you can catch when you attempt an invalid conversion, but due to limitations in C++ itself has to present the entire tree as a set of JSONAtom's.
 To do the job of converting from those JSONAtom pointers/references, JSONAtom contains a set of as*() functions which perform the type conversions. Although mildly inconvinient, this still provides nice semantics in my honest opinion.
 
+rSON implements a stream-based interface (As of 0.2.0), which allows user programs to easilly plug unknown data sources via stream_t adapters into rSON to extract the JSON data into a node tree (and write it back out)
+
 ## The API
 
 The following should be everything you need to know without reading the header for imediately using rSON in your programs and using it effectively:
@@ -53,6 +55,10 @@ These exceptions are:
 
 They both provide an error() function for displaying a message of what was wrong, and JSONParserError provides way to get the raw error constants if you wish to write your own messages.
 The other exceptions, although possible, are not disuessed here as they are involved in the lookup systems for JSONArray and JSONObject and should only arrise from the JSON not being what was expected during data extraction.
+
+stream_t (new in 0.2.0) provides a simple but strong interface to any byte-based stream interfaces, be it a file, memory, some kind of socket (JSON-RPC), or anything else for which you can dream up an interface conforming to stream_t.
+As of 0.2.0, rSON::parseJSONFile() is deprecated in favour of using a stream object and passing that into rSON::parseJSON() to get a node tree.
+This change is designed to greatly simplify more complex use-cases so the user program doesn't have to worry about how to construct a buffer that the parser can deal with, which also helps speed the entire process up.
 
 ## The License
 

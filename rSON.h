@@ -40,6 +40,11 @@
 	#define rSON_CLS_API DEFAULT_VISIBILITY
 	#define rSON_API extern rSON_CLS_API
 #endif
+#if __cplusplus > 201103L
+#define DEPRECATE(reason) [[deprecated, reason]]
+#else
+#define DEPRECATE(reason)
+#endif
 
 namespace rSON
 {
@@ -364,8 +369,9 @@ namespace rSON
 		void store(char *str);
 	};
 
+	rSON_API JSONAtom *parseJSON(stream_t &json);
 	rSON_API JSONAtom *parseJSON(const char *json);
-	rSON_API JSONAtom *parseJSONFile(const char *file);
+	rSON_API DEPRECATE("parseJSON(stream_t &) fully replaces this call") JSONAtom *parseJSONFile(const char *file);
 
 	rSON_API char *writeJSON(JSONAtom *atom);
 	rSON_API void freeString(char **str);
