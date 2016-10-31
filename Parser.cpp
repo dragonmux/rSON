@@ -166,17 +166,12 @@ void JSONParser::nextChar()
 
 // This function intentionally ignores EOF to prevent the
 // parser from exiting via exception when it sees the final } or ]
-void JSONParser::skipWhite()
+void JSONParser::skipWhite() try
 {
-	try
-	{
-		while (isWhiteSpace(currentChar()))
-			nextChar();
-	}
-	catch (JSONParserError &err)
-	{
-	}
+	while (isWhiteSpace(currentChar()))
+		nextChar();
 }
+catch (const JSONParserError &) { }
 
 // Match the current character with x, and skip whitespace if skip == true.
 // Throws an exception if x and the current character do not match.
