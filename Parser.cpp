@@ -53,8 +53,8 @@ public:
 	void nextChar();
 	void skipWhite();
 	void match(const char x, const bool skip);
-	bool lastTokenComma();
-	void lastNoComma();
+	bool lastTokenComma() const noexcept;
+	void lastNoComma() noexcept;
 	char currentChar();
 	char *literal();
 	char *string();
@@ -184,10 +184,7 @@ void JSONParser::match(const char x, const bool skip)
 {
 	if (currentChar() == x)
 	{
-		if (x == ',')
-			lastWasComma = true;
-		else
-			lastWasComma = false;
+		lastWasComma = x == ',';
 		nextChar();
 		if (skip)
 			skipWhite();
@@ -196,15 +193,8 @@ void JSONParser::match(const char x, const bool skip)
 		throw JSONParserError(JSON_PARSER_BAD_JSON);
 }
 
-bool JSONParser::lastTokenComma()
-{
-	return lastWasComma;
-}
-
-void JSONParser::lastNoComma()
-{
-	lastWasComma = false;
-}
+bool JSONParser::lastTokenComma() const noexcept { return lastWasComma; }
+void JSONParser::lastNoComma() noexcept { lastWasComma = false; }
 
 char JSONParser::currentChar()
 {
