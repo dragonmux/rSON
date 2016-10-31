@@ -323,28 +323,20 @@ size_t JSONParser::number(const bool zeroSpecial, size_t *const decDigits)
 }
 
 // Parses an object
-JSONAtom *object(JSONParser *parser)
+JSONAtom *object(JSONParser &parser)
 {
-	JSONObject *object = new JSONObject();
-	try
+	std::unique_ptr<JSONObject> object(new JSONObject());
+	parser.match('{', true);
+	while (isObjectEnd(parser.currentChar()) == false)
 	{
-		parser->match('{', true);
-		while (isObjectEnd(parser->currentChar()) == false)
-		{
-			char *key = parser->string();
-			parser->match(':', true);
-			object->add(key, expression(parser));
-		}
-		if (parser->lastTokenComma())
-			throw JSONParserError(JSON_PARSER_BAD_JSON);
-		parser->match('}', true);
+		char *key = parser.string();
+		parser.match(':', true);
+		object->add(key, expression(&parser));
 	}
-	catch (JSONParserError &err)
-	{
-		delete object;
-		throw;
-	}
-	return object;
+	if (parser.lastTokenComma())
+		throw JSONParserError(JSON_PARSER_BAD_JSON);
+	parser.match('}', true);
+	return object.release();
 }
 
 // Parses an array
@@ -458,7 +450,7 @@ JSONAtom *expression(JSONParser *parser, bool matchComma)
 	switch (parser->currentChar())
 	{
 		case '{':
-			atom = object(parser);
+			atom = object(*parser);
 			break;
 		case '[':
 			atom = array(parser);

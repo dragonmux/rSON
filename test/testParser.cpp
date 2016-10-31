@@ -181,37 +181,37 @@ void testString()
 	tryStringFail("\"\n\" ");
 }
 
-#define TRY(tests) \
-try \
-{ \
-	atom = object(parser); \
-	assertNotNull(atom); \
-	objectAtom = atom->asObject(); \
-	tests; \
-	delete atom; \
-} \
-catch (JSONParserError &err) \
-{ \
-	delete parser; \
-	fail(err.error()); \
-} \
-catch (JSONTypeError &err) \
-{ \
-	delete atom; \
-	delete parser; \
-	fail(err.error()); \
+void tryObjectOk(const char *const json, void tests(const JSONObject &))
+{
+	try
+	{
+		memoryStream_t stream(const_cast<char *const>(json), length(json));
+		JSONParser parser(stream);
+		std::unique_ptr<JSONAtom> atom(object(parser));
+		assertNotNull(atom.get());
+		tests(atom->asObjectRef());
+	}
+	catch (const JSONParserError &err)
+		{ fail(err.error()); }
+	catch (const JSONTypeError &err)
+		{ fail(err.error()); }
+	catch (const std::bad_alloc &err)
+		{ fail(err.what()); }
 }
 
-#define TRY_SHOULD_FAIL() \
-try \
-{ \
-	atom = object(parser); \
-	delete atom; \
-	delete parser; \
-	fail("The parser failed to throw an exception on invalid object"); \
-} \
-catch (JSONParserError &err) \
-{ \
+void tryObjectFail(const char *const json)
+{
+	try
+	{
+		memoryStream_t stream(const_cast<char *const>(json), length(json));
+		JSONParser parser(stream);
+		std::unique_ptr<JSONAtom> atom(object(parser));
+		fail("The parser failed to throw an exception on invalid object");
+	}
+	catch (const JSONParserError &err)
+		{ fail(err.error()); }
+	catch (const std::bad_alloc &err)
+		{ fail(err.what()); }
 }
 
 void testObject()
@@ -220,63 +220,34 @@ void testObject()
 	JSONAtom *atom;
 	JSONObject *objectAtom;
 
-	parser = new JSONParser("{}");
-	TRY(assertIntEqual(objectAtom->size(), 0));
-	delete parser;
+	tryObjectOk("{}", [](const JSONObject &objectAtom) { assertIntEqual(objectAtom.size(), 0); });
 
-	parser = new JSONParser("{\"testKey\": 0}");
-	TRY(
-		assertIntEqual(objectAtom->size(), 1);
-		assertTrue(objectAtom->exists("testKey"));
-		assertIntEqual((*objectAtom)["testKey"].asInt(), 0)
-	);
-	delete parser;
+	tryObjectOk("{\"testKey\": 0}", [](const JSONObject &objectAtom)
+	{
+		assertIntEqual(objectAtom.size(), 1);
+		assertTrue(objectAtom.exists("testKey"));
+		assertIntEqual(objectAtom["testKey"].asInt(), 0);
+	});
 
-	parser = new JSONParser("{\"testInt\": 0, \"testBool\": true}");
-	TRY(
-		assertIntEqual(objectAtom->size(), 2);
-		assertTrue(objectAtom->exists("testInt"));
-		assertIntEqual((*objectAtom)["testInt"].asInt(), 0);
-		assertTrue(objectAtom->exists("testBool"));
-		assertTrue((*objectAtom)["testBool"].asBool())
-	);
-	delete parser;
+	tryObjectOk("{\"testInt\": 0, \"testBool\": true}", [](const JSONObject &objectAtom)
+	{
+		assertIntEqual(objectAtom.size(), 2);
+		assertTrue(objectAtom.exists("testInt"));
+		assertIntEqual(objectAtom["testInt"].asInt(), 0);
+		assertTrue(objectAtom.exists("testBool"));
+		assertTrue(objectAtom["testBool"].asBool());
+	});
 
-	parser = new JSONParser("{true}");
-	TRY_SHOULD_FAIL();
-	delete parser;
-
-	parser = new JSONParser("{true: 0}");
-	TRY_SHOULD_FAIL();
-	delete parser;
-
-	parser = new JSONParser("{");
-	TRY_SHOULD_FAIL();
-	delete parser;
-
-	parser = new JSONParser("{\"key\"}");
-	TRY_SHOULD_FAIL();
-	delete parser;
-
-	parser = new JSONParser("{\"key\": }");
-	TRY_SHOULD_FAIL();
-	delete parser;
-
-	parser = new JSONParser("{\"key\": ,}");
-	TRY_SHOULD_FAIL();
-	delete parser;
-
-	parser = new JSONParser("{\"key\": junk}");
-	TRY_SHOULD_FAIL();
-	delete parser;
-
-	parser = new JSONParser("{\"key\": null, }");
-	TRY_SHOULD_FAIL();
-	delete parser;
+	tryObjectFail("{true}");
+	tryObjectFail("{true: 0}");
+	tryObjectFail("{");
+	tryObjectFail("{\"key\"}");
+	tryObjectFail("{\"key\": }");
+	tryObjectFail("{\"key\": ,}");
+	tryObjectFail("{\"key\": junk}");
+	tryObjectFail("{\"key\": null, }");
 }
 
-#undef TRY_SHOULD_FAIL
-#undef TRY
 #define TRY(tests) \
 try \
 { \
