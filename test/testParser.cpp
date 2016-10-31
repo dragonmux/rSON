@@ -32,55 +32,39 @@ void testPower10()
 	assertIntEqual(power10(4), 10000);
 }
 
-#define TRY(tests) \
-try \
-{ \
-	atom = literal(parser); \
-	assertNotNull(atom); \
-	tests; \
-	delete atom; \
-} \
-catch (JSONParserError &err) \
-{ \
-	delete parser; \
-	fail(err.error()); \
-} \
-catch (JSONTypeError &err) \
-{ \
-	delete atom; \
-	delete parser; \
-	fail(err.error()); \
+void tryLiteralOk(const char *const json, void tests(const JSONAtom &))
+{
+	try
+	{
+		memoryStream_t stream(const_cast<char *const>(json), length(json));
+		JSONParser parser(stream);
+		std::unique_ptr<JSONAtom> atom(literal(parser));
+		assertNotNull(atom.get());
+		tests(*atom);
+	}
+	catch (const JSONParserError &err)
+		{ fail(err.error()); }
+	catch (const JSONTypeError &err)
+		{ fail(err.error()); }
+	catch (const std::bad_alloc &err)
+		{ fail(err.what()); }
 }
 
 void testLiteral()
 {
-	JSONParser *parser;
-	JSONAtom *atom;
+	tryLiteralOk("true ", [](const JSONAtom &atom) { assertTrue(atom.asBool()); });
+	tryLiteralOk("false ", [](const JSONAtom &atom) { assertFalse(atom.asBool()); });
+	tryLiteralOk("null ", [](const JSONAtom &atom) { assertNull(atom.asNull()); });
 
-	parser = new JSONParser("true ");
-	TRY(assertTrue(atom->asBool()));
-	delete parser;
-
-	parser = new JSONParser("false ");
-	TRY(assertFalse(atom->asBool()));
-	delete parser;
-
-	parser = new JSONParser("null ");
-	TRY(assertNull(atom->asNull()));
-	delete parser;
-
-	parser = new JSONParser("invalid ");
+	const char *const json = "invalid ";
+	memoryStream_t stream(const_cast<char *const>(json), length(json));
+	JSONParser parser(stream);
 	try
 	{
-		atom = literal(parser);
-		delete atom;
-		delete parser;
+		std::unique_ptr<JSONAtom> atom(literal(parser));
 		fail("The parser failed to throw an exception on invalid literal");
 	}
-	catch (JSONParserError &err)
-	{
-	}
-	delete parser;
+	catch (const JSONParserError &err) { }
 }
 
 #undef TRY

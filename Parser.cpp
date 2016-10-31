@@ -36,6 +36,7 @@
 #define O_NOCTTY O_BINARY
 #endif
 
+#include <memory>
 #include <queue>
 
 typedef struct JSONParser
@@ -438,22 +439,16 @@ JSONAtom *number(JSONParser *parser)
 }
 
 // Parses the literals "true", "false" and "null"
-JSONAtom *literal(JSONParser *parser)
+JSONAtom *literal(JSONParser &parser)
 {
-	JSONAtom *ret = NULL;
-	char *lit = parser->literal();
-
-	if (strcmp(lit, "true") == 0)
-		ret = new JSONBool(true);
-	else if (strcmp(lit, "false") == 0)
-		ret = new JSONBool(false);
-	else if (strcmp(lit, "null") == 0)
-		ret = new JSONNull();
-	delete [] lit;
-
-	if (ret == NULL)
-		throw JSONParserError(JSON_PARSER_BAD_JSON);
-	return ret;
+	std::unique_ptr<char []> lit(parser.literal());
+	if (strcmp(lit.get(), "true") == 0)
+		return new JSONBool(true);
+	else if (strcmp(lit.get(), "false") == 0)
+		return new JSONBool(false);
+	else if (strcmp(lit.get(), "null") == 0)
+		return new JSONNull();
+	throw JSONParserError(JSON_PARSER_BAD_JSON);
 }
 
 // Parses an expression of some sort
@@ -478,7 +473,7 @@ JSONAtom *expression(JSONParser *parser, bool matchComma)
 		if (isNumber(parser->currentChar()))
 			atom = number(parser);
 		else
-			atom = literal(parser);
+			atom = literal(*parser);
 	}
 
 	if (matchComma && isObjectEnd(parser->currentChar()) == false && isArrayEnd(parser->currentChar()) == false)
