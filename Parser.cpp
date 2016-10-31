@@ -56,8 +56,7 @@ public:
 	char currentChar();
 	char *literal();
 	char *string();
-	size_t number(const bool zeroSpecial);
-	const char *currentPtr() const;
+	size_t number(const bool zeroSpecial, size_t *const decDigits = nullptr);
 } JSONParser;
 
 JSONAtom *expression(JSONParser *parser, bool matchComma = true);
@@ -299,16 +298,22 @@ char *JSONParser::string()
 }
 
 // Parses a positive natural number
-size_t JSONParser::number(const bool zeroSpecial)
+size_t JSONParser::number(const bool zeroSpecial, size_t *const decDigits)
 {
 	size_t num = 0;
+	auto nextDigit = [=]()
+	{
+		nextChar();
+		if (decDigits)
+			++(*decDigits);
+	};
 
 	if (isNumber(currentChar()) == false)
 		throw JSONParserError(JSON_PARSER_BAD_JSON);
 
 	if (zeroSpecial && currentChar() == '0')
 	{
-		nextChar();
+		nextDigit();
 		if (isNumber(currentChar()))
 			throw JSONParserError(JSON_PARSER_BAD_JSON);
 		return 0;
@@ -318,14 +323,9 @@ size_t JSONParser::number(const bool zeroSpecial)
 	{
 		num *= 10;
 		num += currentChar() - '0';
-		nextChar();
+		nextDigit();
 	}
 	return num;
-}
-
-const char *JSONParser::currentPtr() const
-{
-	return next;
 }
 
 // Parses an object
@@ -401,9 +401,7 @@ JSONAtom *number(JSONParser *parser)
 	if (parser->currentChar() == '.')
 	{
 		parser->match('.', false);
-		const char * const start = parser->currentPtr();
-		decimal = parser->number(false);
-		decDigits = parser->currentPtr() - start;
+		decimal = parser->number(false, &decDigits);
 		decimalValid = true;
 	}
 	if (isExponent(parser->currentChar()))
