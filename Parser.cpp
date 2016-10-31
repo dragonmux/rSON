@@ -36,6 +36,8 @@
 #define O_NOCTTY O_BINARY
 #endif
 
+#include <queue>
+
 typedef struct JSONParser
 {
 private:
@@ -212,25 +214,34 @@ char JSONParser::currentChar()
 	return ret;
 }
 
+inline char pop(std::queue<char> &queue) noexcept
+{
+	char result = queue.front();
+	queue.pop();
+	return result;
+}
+
 // Parses an alpha-numeric literal
 char *JSONParser::literal()
 {
-	size_t len;
-	char *ret;
-	const char *start = next;
-
-	if (isLowerAlpha(currentChar()) == false)
+	if (!isLowerAlpha(currentChar()))
 		throw JSONParserError(JSON_PARSER_BAD_JSON);
-	while (isLowerAlpha(currentChar()))
-		nextChar();
+	std::queue<char> result;
 
-	len = (size_t)(next - start) + 1;
-	ret = new char[len]();
-	memcpy(ret, start, len - 1);
-	ret[len - 1] = 0;
+	while (isLowerAlpha(currentChar()))
+	{
+		result.push(currentChar());
+		nextChar();
+	}
 	skipWhite();
 
-	return ret;
+	return [&](char *const literal) noexcept -> char *
+	{
+		literal[result.size()] = 0;
+		for (size_t i = 0; !result.empty(); ++i)
+			literal[i] = pop(result);
+		return literal;
+	}(new char[result.size() + 1]);
 }
 
 // Verifies a \u sequence
