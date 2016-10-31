@@ -118,56 +118,19 @@ void testIntNumber()
 
 void testFloatNumber()
 {
-	JSONParser *parser;
-	JSONAtom *atom;
+	tryNumberOk("0.0 ", [](const JSONAtom &atom) { assertDoubleEqual(atom.asFloat(), 0.0); });
+	tryNumberOk("190.0 ", [](const JSONAtom &atom) { assertDoubleEqual(atom.asFloat(), 190.0); });
+	tryNumberOk("-0.0 ", [](const JSONAtom &atom) { assertDoubleEqual(atom.asFloat(), -0.0); });
+	tryNumberOk("-190.0 ", [](const JSONAtom &atom) { assertDoubleEqual(atom.asFloat(), -190.0); });
+	tryNumberOk("19.0e1 ", [](const JSONAtom &atom) { assertDoubleEqual(atom.asFloat(), 190.0); });
+	tryNumberOk("19.0e-1 ", [](const JSONAtom &atom) { assertDoubleEqual(atom.asFloat(), 1.9); });
+	tryNumberOk("19.0e+0 ", [](const JSONAtom &atom) { assertDoubleEqual(atom.asFloat(), 19.0); });
+	tryNumberOk("0.00 ", [](const JSONAtom &atom) { assertDoubleEqual(atom.asFloat(), 0.0); });
+	tryNumberOk("0.0015 ", [](const JSONAtom &atom) { assertDoubleEqual(atom.asFloat(), 0.0015); });
+	tryNumberOk("0.00150 ", [](const JSONAtom &atom) { assertDoubleEqual(atom.asFloat(), 0.0015); });
 
-	parser = new JSONParser("0.0 ");
-	TRY(assertDoubleEqual(atom->asFloat(), 0.0));
-	delete parser;
-
-	parser = new JSONParser("190.0 ");
-	TRY(assertDoubleEqual(atom->asFloat(), 190.0));
-	delete parser;
-
-	parser = new JSONParser("-0.0 ");
-	TRY(assertDoubleEqual(atom->asFloat(), -0.0));
-	delete parser;
-
-	parser = new JSONParser("-190.0 ");
-	TRY(assertDoubleEqual(atom->asFloat(), -190.0));
-	delete parser;
-
-	parser = new JSONParser("19.0e1 ");
-	TRY(assertDoubleEqual(atom->asFloat(), 190.0));
-	delete parser;
-
-	parser = new JSONParser("19.0e-1 ");
-	TRY(assertDoubleEqual(atom->asFloat(), 1.9));
-	delete parser;
-
-	parser = new JSONParser("19.0e+0 ");
-	TRY(assertDoubleEqual(atom->asFloat(), 19.0));
-	delete parser;
-
-	parser = new JSONParser("0.00 ");
-	TRY(assertDoubleEqual(atom->asFloat(), 0.0));
-	delete parser;
-
-	parser = new JSONParser("0.0015 ");
-	TRY(assertDoubleEqual(atom->asFloat(), 0.0015));
-	delete parser;
-
-	parser = new JSONParser("0.00150 ");
-	TRY(assertDoubleEqual(atom->asFloat(), 0.0015));
-	delete parser;
-
-	parser = new JSONParser("00.0 ");
-	TRY_SHOULD_FAIL();
-	delete parser;
-
-	parser = new JSONParser("0.0e00 ");
-	TRY_SHOULD_FAIL();
-	delete parser;
+	tryNumberFail("00.0 ");
+	tryNumberFail("0.0e00 ");
 }
 
 #undef TRY_SHOULD_FAIL
