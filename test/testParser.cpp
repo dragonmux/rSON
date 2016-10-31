@@ -17,34 +17,7 @@
  */
 
 #include "test.h"
-
-typedef struct JSONParser
-{
-private:
-	const char *json;
-	const char *next;
-	const char *jsonEnd;
-	bool lastWasComma;
-
-public:
-	JSONParser(const char *toParse);
-	void nextChar();
-	void skipWhite();
-	void match(char x, bool skip);
-	bool lastTokenComma();
-	void lastNoComma();
-	char currentChar();
-	char *literal();
-	char *string();
-	size_t number();
-} JSONParser;
-
-extern JSONAtom *object(JSONParser *parser);
-extern JSONAtom *array(JSONParser *parser);
-extern size_t power10(size_t power);
-extern JSONAtom *literal(JSONParser *parser);
-extern JSONAtom *number(JSONParser *parser);
-extern JSONAtom *expression(JSONParser *parser, bool matchComma);
+#include "../Parser.cpp"
 
 void testParserViability()
 {

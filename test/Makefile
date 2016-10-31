@@ -42,7 +42,7 @@ check: all
 clean:
 	$(call run-cmd,rm,tests,$(TESTS))
 
-testParser.so: CRUNCHMAKE += -o../Parser.o
+testParser.so: CRUNCHMAKE += -o../Stream.o
 %.so: %.cpp
 	$(call run-cmd,crunchMake,$(O_FILE),$<)
 
