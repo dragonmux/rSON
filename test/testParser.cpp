@@ -21,8 +21,11 @@
 
 void testParserViability()
 {
-	JSONParser *parser = new JSONParser("");
-	delete parser;
+	const char *const json = "[]";
+	memoryStream_t stream(const_cast<char *const>(json), length(json));
+	JSONParser parser(stream);
+	assertTrue(parser.currentChar() == '[');
+	assertFalse(stream.atEOF());
 }
 
 void testPower10()
