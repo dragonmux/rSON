@@ -70,75 +70,50 @@ void testLiteral()
 	catch (const JSONParserError &err) { }
 }
 
-#undef TRY
-#define TRY(tests) \
-try \
-{ \
-	atom = number(parser); \
-	assertNotNull(atom); \
-	tests; \
-	delete atom; \
-} \
-catch (JSONParserError &err) \
-{ \
-	delete parser; \
-	fail(err.error()); \
-} \
-catch (JSONTypeError &err) \
-{ \
-	delete atom; \
-	delete parser; \
-	fail(err.error()); \
+void tryNumberOk(const char *const json, void tests(const JSONAtom &))
+{
+	try
+	{
+		memoryStream_t stream(const_cast<char *const>(json), length(json));
+		JSONParser parser(stream);
+		std::unique_ptr<JSONAtom> atom(number(parser));
+		assertNotNull(atom.get());
+		tests(*atom);
+	}
+	catch (const JSONParserError &err)
+		{ fail(err.error()); }
+	catch (const JSONTypeError &err)
+		{ fail(err.error()); }
+	catch (const std::bad_alloc &err)
+		{ fail(err.what()); }
 }
 
-#define TRY_SHOULD_FAIL() \
-try \
-{ \
-	atom = number(parser); \
-	delete atom; \
-	delete parser; \
-	fail("The parser failed to throw an exception on invalid number"); \
-} \
-catch (JSONParserError &err) \
-{ \
+void tryNumberFail(const char *const json)
+{
+	try
+	{
+		memoryStream_t stream(const_cast<char *const>(json), length(json));
+		JSONParser parser(stream);
+		std::unique_ptr<JSONAtom> atom(number(parser));
+		fail("The parser failed to throw an exception on invalid number");
+	}
+	catch (const JSONParserError &err)
+		{ fail(err.error()); }
+	catch (const std::bad_alloc &err)
+		{ fail(err.what()); }
 }
 
 void testIntNumber()
 {
-	JSONParser *parser;
-	JSONAtom *atom;
+	tryNumberOk("0 ", [](const JSONAtom &atom) { assertIntEqual(atom.asInt(), 0); });
+	tryNumberOk("190 ", [](const JSONAtom &atom) { assertIntEqual(atom.asInt(), 190); });
+	tryNumberOk("-190 ", [](const JSONAtom &atom) { assertIntEqual(atom.asInt(), -190); });
+	tryNumberOk("-0 ", [](const JSONAtom &atom) { assertIntEqual(atom.asInt(), -0); });
+	tryNumberOk("19e1 ", [](const JSONAtom &atom) { assertIntEqual(atom.asInt(), 190); });
+	tryNumberOk("190e-1 ", [](const JSONAtom &atom) { assertIntEqual(atom.asInt(), 19); });
 
-	parser = new JSONParser("0 ");
-	TRY(assertIntEqual(atom->asInt(), 0));
-	delete parser;
-
-	parser = new JSONParser("190 ");
-	TRY(assertIntEqual(atom->asInt(), 190));
-	delete parser;
-
-	parser = new JSONParser("-190 ");
-	TRY(assertIntEqual(atom->asInt(), -190));
-	delete parser;
-
-	parser = new JSONParser("-0 ");
-	TRY(assertIntEqual(atom->asInt(), -0));
-	delete parser;
-
-	parser = new JSONParser("19e1 ");
-	TRY(assertIntEqual(atom->asInt(), 190));
-	delete parser;
-
-	parser = new JSONParser("190e-1 ");
-	TRY(assertIntEqual(atom->asInt(), 19));
-	delete parser;
-
-	parser = new JSONParser("00 ");
-	TRY_SHOULD_FAIL();
-	delete parser;
-
-	parser = new JSONParser("0e00 ");
-	TRY_SHOULD_FAIL();
-	delete parser;
+	tryNumberFail("00 ");
+	tryNumberFail("0e00 ");
 }
 
 void testFloatNumber()

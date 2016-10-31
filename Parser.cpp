@@ -379,40 +379,40 @@ size_t power10(size_t power)
 }
 
 // Parses a JSON number, using the positive natural parser.
-JSONAtom *number(JSONParser *parser)
+JSONAtom *number(JSONParser &parser)
 {
 	bool sign = false, mulSign = false;
 	int integer = 0;
 	size_t decimal = 0, decDigits = 0, multiplier = 0;
 	bool decimalValid = false;
 
-	if (parser->currentChar() == '-')
+	if (parser.currentChar() == '-')
 	{
-		parser->match('-', false);
+		parser.match('-', false);
 		sign = true;
 	}
-	integer = parser->number(true);
-	if (parser->currentChar() == '.')
+	integer = parser.number(true);
+	if (parser.currentChar() == '.')
 	{
-		parser->match('.', false);
-		decimal = parser->number(false, &decDigits);
+		parser.match('.', false);
+		decimal = parser.number(false, &decDigits);
 		decimalValid = true;
 	}
-	if (isExponent(parser->currentChar()))
+	if (isExponent(parser.currentChar()))
 	{
-		parser->nextChar();
-		if (parser->currentChar() == '-')
+		parser.nextChar();
+		if (parser.currentChar() == '-')
 		{
-			parser->match('-', false);
+			parser.match('-', false);
 			mulSign = true;
 		}
-		else if (parser->currentChar() == '+')
-			parser->match('+', false);
-		multiplier = parser->number(true);
+		else if (parser.currentChar() == '+')
+			parser.match('+', false);
+		multiplier = parser.number(true);
 	}
-	parser->skipWhite();
+	parser.skipWhite();
 
-	if (decimalValid == false)
+	if (!decimalValid)
 	{
 		int mul = power10(multiplier);
 		if (mulSign)
@@ -471,7 +471,7 @@ JSONAtom *expression(JSONParser *parser, bool matchComma)
 	if (atom == NULL)
 	{
 		if (isNumber(parser->currentChar()))
-			atom = number(parser);
+			atom = number(*parser);
 		else
 			atom = literal(*parser);
 	}
