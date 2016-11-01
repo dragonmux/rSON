@@ -294,15 +294,14 @@ char *JSONParser::string()
 // Parses a positive natural number
 size_t JSONParser::number(const bool zeroSpecial, size_t *const decDigits)
 {
-	size_t num = 0;
-	auto nextDigit = [=]()
+	const auto nextDigit = [=]()
 	{
-		nextChar();
 		if (decDigits)
 			++(*decDigits);
+		nextChar();
 	};
 
-	if (isNumber(currentChar()) == false)
+	if (!isNumber(currentChar()))
 		throw JSONParserError(JSON_PARSER_BAD_JSON);
 
 	if (zeroSpecial && currentChar() == '0')
@@ -313,6 +312,7 @@ size_t JSONParser::number(const bool zeroSpecial, size_t *const decDigits)
 		return 0;
 	}
 
+	size_t num = 0;
 	while (isNumber(currentChar()))
 	{
 		num *= 10;
