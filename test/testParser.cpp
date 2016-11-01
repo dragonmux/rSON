@@ -97,8 +97,7 @@ void tryNumberFail(const char *const json)
 		std::unique_ptr<JSONAtom> atom(number(parser));
 		fail("The parser failed to throw an exception on invalid number");
 	}
-	catch (const JSONParserError &err)
-		{ fail(err.error()); }
+	catch (const JSONParserError &err) { }
 	catch (const std::bad_alloc &err)
 		{ fail(err.what()); }
 }
@@ -160,8 +159,7 @@ void tryStringFail(const char *const json)
 		std::unique_ptr<char []> atom(parser.string());
 		fail("The parser failed to throw an exception on invalid string");
 	}
-	catch (const JSONParserError &err)
-		{ fail(err.error()); }
+	catch (const JSONParserError &err) { }
 	catch (const std::bad_alloc &err)
 		{ fail(err.what()); }
 }
@@ -208,8 +206,7 @@ void tryObjectFail(const char *const json)
 		std::unique_ptr<JSONAtom> atom(object(parser));
 		fail("The parser failed to throw an exception on invalid object");
 	}
-	catch (const JSONParserError &err)
-		{ fail(err.error()); }
+	catch (const JSONParserError &err) { }
 	catch (const std::bad_alloc &err)
 		{ fail(err.what()); }
 }
@@ -275,8 +272,7 @@ void tryArrayFail(const char *const json)
 		std::unique_ptr<JSONAtom> atom(array(parser));
 		fail("The parser failed to throw an exception on invalid array");
 	}
-	catch (const JSONParserError &err)
-		{ fail(err.error()); }
+	catch (const JSONParserError &err) { }
 	catch (const std::bad_alloc &err)
 		{ fail(err.what()); }
 }
