@@ -38,6 +38,7 @@
 
 #include <memory>
 #include <queue>
+#include <system_error>
 
 typedef struct JSONParser
 {
@@ -491,8 +492,9 @@ JSONAtom *rSON::parseJSON(const char *json)
 // This is the file-wide alternative for the above entry point.
 // This automates the process of reading a file and parsing it to produce the JSONAtom *
 // so that application code only has to call this rather than writing it's own file IO routines
-JSONAtom *rSON::parseJSONFile(const char *file)
+JSONAtom *rSON::parseJSONFile(const char *file) try
 {
 	fileStream_t stream(file, O_RDONLY | O_EXCL | O_NOCTTY);
 	return rSON::parseJSON(stream);
 }
+catch (const std::system_error &) { throw JSONParserError(JSON_PARSER_BAD_FILE); }
