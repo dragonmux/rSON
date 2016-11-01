@@ -55,10 +55,10 @@ namespace rSON
 	{
 	public:
 		stream_t() = default;
-		stream_t(const stream_t &) = default;
+		stream_t(const stream_t &) = delete;
 		stream_t(stream_t &&) = default;
 		virtual ~stream_t() = default;
-		stream_t &operator =(const stream_t &) = default;
+		stream_t &operator =(const stream_t &) = delete;
 		stream_t &operator =(stream_t &&) = default;
 
 		template<typename T> bool read(T &value)
