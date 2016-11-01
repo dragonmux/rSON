@@ -493,33 +493,6 @@ JSONAtom *rSON::parseJSON(const char *json)
 // so that application code only has to call this rather than writing it's own file IO routines
 JSONAtom *rSON::parseJSONFile(const char *file)
 {
-	struct stat fileStat;
-	JSONAtom *ret;
-	int jsonFD;
-	char *json = NULL;
-
-	jsonFD = open(file, O_RDONLY | O_EXCL | O_NOCTTY);
-	if (jsonFD == -1)
-		throw JSONParserError(JSON_PARSER_BAD_FILE);
-
-	fstat(jsonFD, &fileStat);
-	json = new char[fileStat.st_size]();
-	if ((read(jsonFD, json, fileStat.st_size) | close(jsonFD)) == -1)
-	{
-		delete [] json;
-		throw JSONParserError(JSON_PARSER_BAD_FILE);
-	}
-
-	try
-	{
-		ret = rSON::parseJSON(json);
-	}
-	catch (...)
-	{
-		delete [] json;
-		throw;
-	}
-
-	delete [] json;
-	return ret;
+	fileStream_t stream(file, O_RDONLY | O_EXCL | O_NOCTTY);
+	return rSON::parseJSON(stream);
 }
