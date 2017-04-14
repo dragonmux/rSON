@@ -222,6 +222,9 @@ namespace rSON
 		constexpr JSONAtom(const JSONAtomType atomType) noexcept : type(atomType) { }
 
 	public:
+		// TODO: Implement full move semantics, which solves the issue of having pointers not references for all JSONAtom's.. well, maybe.
+		// Move semantics would be good anyway as it makes handling a JSONAtom tree cheaper and easier.
+		// We already have a virtual distructor so can safely delete.. perhaps virtual assignment operators will work.. have to figure out how to make move construction work with this (or copy construction).
 		virtual ~JSONAtom() { }
 		JSONAtomType getType() const noexcept { return type; }
 		virtual void store(char *str) = 0;
