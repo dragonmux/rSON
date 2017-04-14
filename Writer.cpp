@@ -26,7 +26,12 @@
 #define snprintf _snprintf
 #endif
 
+// Temporary terminal of stream store to make the compiler happy
+void JSONAtom::store(stream_t &) const { }
+
 size_t JSONNull::length() const { return 4; }
+void JSONNull::store(stream_t &stream) const
+	{ stream.write("null", 4); }
 
 void JSONNull::store(char *str)
 	{ memcpy(str, "null", 4); }
@@ -49,8 +54,13 @@ void JSONFloat::store(char *str)
 }
 
 size_t JSONString::length() const
+	{ return strlen(value) + 2; }
+
+void JSONString::store(stream_t &stream) const
 {
-	return strlen(value) + 2;
+	stream.write('"');
+	stream.write(value, strlen(value));
+	stream.write('"');
 }
 
 void JSONString::store(char *str)

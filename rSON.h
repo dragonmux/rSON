@@ -236,6 +236,7 @@ namespace rSON
 		virtual ~JSONAtom() { }
 		JSONAtomType getType() const noexcept { return type; }
 		virtual void store(char *str) = 0;
+		virtual void store(stream_t &stream) const;
 		virtual size_t length() const = 0;
 
 		void *asNull() const;
@@ -275,6 +276,7 @@ namespace rSON
 		~JSONNull();
 		size_t length() const rSON_VFINAL;
 		void store(char *str);
+		void store(stream_t &stream) const rSON_VFINAL;
 	};
 
 	class rSON_CLS_API JSONFloat : public JSONAtom
@@ -315,6 +317,7 @@ namespace rSON
 		void set(char *strValue);
 		size_t length() const;
 		void store(char *str);
+		void store(stream_t &stream) const rSON_VFINAL;
 	};
 
 	class rSON_CLS_API JSONBool : public JSONAtom
