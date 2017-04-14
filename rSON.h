@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __rSON_H__
-#define __rSON_H__
+#ifndef rSON__H
+#define rSON__H
 
 #include <stdint.h>
 #include <map>
@@ -381,4 +381,4 @@ namespace rSON
 	template<JSONAtomType type> bool typeIsOrNull(const JSONAtom &atom) noexcept { return atom.typeIsOrNull(type); }
 }
 
-#endif /*__rSON_H__*/
+#endif /*rSON__H*/
