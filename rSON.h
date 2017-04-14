@@ -46,6 +46,14 @@
 #define DEPRECATE(reason)
 #endif
 
+#if __cplusplus >= 201103L
+#define rSON_FINAL final
+#define rSON_VFINAL final override
+#else
+#define rSON_FINAL
+#define rSON_VFINAL
+#endif
+
 namespace rSON
 {
 	struct rSON_CLS_API notImplemented_t : public std::exception { };
@@ -84,7 +92,7 @@ namespace rSON
 		virtual bool atEOF() const { throw notImplemented_t(); }
 	};
 
-	struct rSON_CLS_API fileStream_t final : public stream_t
+	struct rSON_CLS_API fileStream_t rSON_FINAL : public stream_t
 	{
 	private:
 		int fd;
@@ -105,7 +113,7 @@ namespace rSON
 		bool atEOF() const noexcept final override { return eof; }
 	};
 
-	struct rSON_CLS_API memoryStream_t final : public stream_t
+	struct rSON_CLS_API memoryStream_t rSON_FINAL : public stream_t
 	{
 	private:
 		char *const memory;
@@ -228,7 +236,7 @@ namespace rSON
 		virtual ~JSONAtom() { }
 		JSONAtomType getType() const noexcept { return type; }
 		virtual void store(char *str) = 0;
-		virtual size_t length() = 0;
+		virtual size_t length() const = 0;
 
 		void *asNull() const;
 		bool asBool() const { return *this; }
@@ -260,12 +268,12 @@ namespace rSON
 		bool typeIsOrNull(const JSONAtomType atomType) const noexcept { return type == atomType || type == JSON_TYPE_NULL; }
 	};
 
-	class rSON_CLS_API JSONNull : public JSONAtom
+	class rSON_CLS_API JSONNull rSON_FINAL : public JSONAtom
 	{
 	public:
 		JSONNull();
 		~JSONNull();
-		size_t length();
+		size_t length() const rSON_VFINAL;
 		void store(char *str);
 	};
 
@@ -277,7 +285,7 @@ namespace rSON
 		JSONFloat(double floatValue);
 		~JSONFloat();
 		operator double() const;
-		size_t length();
+		size_t length() const;
 		void store(char *str);
 	};
 
@@ -291,7 +299,7 @@ namespace rSON
 		~JSONInt();
 		operator int() const;
 		void set(int intValue);
-		size_t length();
+		size_t length() const;
 		void store(char *str);
 	};
 
@@ -305,7 +313,7 @@ namespace rSON
 		~JSONString();
 		operator const char *() const;
 		void set(char *strValue);
-		size_t length();
+		size_t length() const;
 		void store(char *str);
 	};
 
@@ -319,7 +327,7 @@ namespace rSON
 		~JSONBool();
 		operator bool() const;
 		void set(bool boolValue);
-		size_t length();
+		size_t length() const;
 		void store(char *str);
 	};
 
@@ -344,7 +352,7 @@ namespace rSON
 		const std::vector<const char *> &keys() const;
 		bool exists(const char *key) const;
 		size_t size() const;
-		size_t length();
+		size_t length() const;
 		void store(char *str);
 	};
 
@@ -368,7 +376,7 @@ namespace rSON
 		size_t size() const;
 		iterator begin() const;
 		iterator end() const;
-		size_t length();
+		size_t length() const;
 		void store(char *str);
 	};
 
@@ -376,8 +384,9 @@ namespace rSON
 	rSON_API JSONAtom *parseJSON(const char *json);
 	rSON_API DEPRECATE("parseJSON(stream_t &) fully replaces this call") JSONAtom *parseJSONFile(const char *file);
 
-	rSON_API char *writeJSON(JSONAtom *atom);
-	rSON_API void freeString(char **str);
+	rSON_API void writeJSON(const JSONAtom *const atom, stream_t &stream);
+	rSON_API DEPRECATE("writeJSON(const JSONAtom *const, stream_t &) fully replaces this call") char *writeJSON(JSONAtom *atom);
+	rSON_API DEPRECATE("If not using deprecated form of writeJSON(), this must not be called") void freeString(char **str);
 
 	// Utility templates to help with type checking (validation)
 	template<JSONAtomType type> bool typeIs(const JSONAtom &atom) noexcept { return atom.typeIs(type); }

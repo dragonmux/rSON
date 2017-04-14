@@ -26,27 +26,19 @@
 #define snprintf _snprintf
 #endif
 
-size_t JSONNull::length()
-{
-	return 4;
-}
+size_t JSONNull::length() const { return 4; }
 
 void JSONNull::store(char *str)
-{
-	memcpy(str, "null", 4);
-}
+	{ memcpy(str, "null", 4); }
 
-size_t JSONInt::length()
-{
-	return formatLen("%d", value);
-}
+size_t JSONInt::length() const { return formatLen("%d", value); }
 
 void JSONInt::store(char *str)
 {
 	snprintf(str, length() + 1, "%d", value);
 }
 
-size_t JSONFloat::length()
+size_t JSONFloat::length() const
 {
 	return formatLen("%f", value);
 }
@@ -56,7 +48,7 @@ void JSONFloat::store(char *str)
 	snprintf(str, length() + 1, "%f", value);
 }
 
-size_t JSONString::length()
+size_t JSONString::length() const
 {
 	return strlen(value) + 2;
 }
@@ -70,7 +62,7 @@ void JSONString::store(char *str)
 	str[len + 1] = '"';
 }
 
-size_t JSONBool::length()
+size_t JSONBool::length() const
 {
 	return value ? 4 : 5;
 }
@@ -83,14 +75,13 @@ void JSONBool::store(char *str)
 		memcpy(str, "false", 5);
 }
 
-size_t JSONObject::length()
+size_t JSONObject::length() const
 {
-	atomMapIter child;
 	size_t nChildren, len = 2;
-	for (child = children.begin(); child != children.end(); child++)
+	for (const auto &child : children)
 	{
-		len += strlen(child->first) + 2;
-		len += child->second->length() + 2;
+		len += strlen(child.first) + 2;
+		len += child.second->length() + 2;
 	}
 	nChildren = size();
 	if (nChildren > 0)
@@ -100,20 +91,19 @@ size_t JSONObject::length()
 
 void JSONObject::store(char *str)
 {
-	atomMapIter child;
 	size_t i = 0, j = 0, nodes = size();
 
 	str[i++] = '{';
-	for (child = children.begin(); child != children.end(); child++)
+	for (const auto &child : children)
 	{
 		str[i++] = '"';
-		memcpy(str + i, child->first, strlen(child->first));
-		i += strlen(child->first);
+		memcpy(str + i, child.first, strlen(child.first));
+		i += strlen(child.first);
 		str[i++] = '"';
 		memcpy(str + i, ": ", 2);
 		i += 2;
-		child->second->store(str + i);
-		i += child->second->length();
+		child.second->store(str + i);
+		i += child.second->length();
 		j++;
 		if (j < nodes)
 		{
@@ -124,7 +114,7 @@ void JSONObject::store(char *str)
 	str[i] = '}';
 }
 
-size_t JSONArray::length()
+size_t JSONArray::length() const
 {
 	size_t i, len = 2;
 	for (i = 0; i < size(); i++)
