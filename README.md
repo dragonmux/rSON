@@ -5,7 +5,14 @@ The project was conceived after surveying the C/C++ based JSON implementations f
 ## The Idea
 
 rSON implements a configuration-less JSON complient parser which does literally all the donkey work. an example call works like:
-	JSONAtom *rootNode = rSON::parseJSON("[\"My test array\", \"With multiple elements\", True]");
+```C++
+JSONAtom *rootNode = rSON::parseJSON("[\"My test array\", \"With multiple elements\", True]");
+```
+or to parse from a file:
+```C++
+rSON::fileStream_t file("file.json", O_RDONLY);
+JSONAtom *rootNode = rSON::parseJSON(file);
+```
 
 It also implements a set of classes that form the following tree structure to build trees out of the results of parsing:
 
@@ -37,12 +44,12 @@ JSONAtom implements the following conversion functions:
  *	`JSONString &asStringRef()`
  *	`JSONArray *asArray()` and `JSONArray &asArrayRef()`
  *	`JSONObject *asObject()` and `JSONObject &asObjectRef()`
- 
-The last three sets of functions are the odd ones out in that they convert between rSON types rather than directly to C++ types for use directly in your programs.
-This is done to allow rSON to provide a nicer interface as JSONArray and JSONObject implement various operator overrides to allow transparent lookup of JSONAtom's held by each via either numerical index (JSONArray) or associative style string index (JSONObject)
-This is also done to allow direct access to a JSONString object for std::string-like use
 
-The JSONAtom also fully supports indexing if the real type it represents would also - so for JSONArray and JSONObject nodes, no manual conversion is required for indexing into complex trees (as of 0.1.0)
+The last three sets of functions are the odd ones out in that they convert between rSON types rather than directly to C++ types for use directly in your programs.
+This is done to allow rSON to provide a nicer interface as JSONArray and JSONObject implement various operator overrides to allow transparent lookup of JSONAtom's held by each via either numerical index (JSONArray) or associative style string index (JSONObject).
+This is also done to allow direct access to a JSONString object for std::string-like use.
+
+The JSONAtom also fully supports indexing if the real type it represents would also - so for JSONArray and JSONObject nodes, no manual conversion is required for indexing into complex trees (as of 0.1.0).
 This further allows elegant code through rSON in user programs.
 
 rSON attempts (and I hope succeeds) to provide a fully Associative Array style interface to JSONObject. I have to implement `->get()` methods though for when this is too bulky or doesn't fit nicely when using rSON.
@@ -56,7 +63,7 @@ These exceptions are:
 They both provide an error() function for displaying a message of what was wrong, and JSONParserError provides way to get the raw error constants if you wish to write your own messages.
 The other exceptions, although possible, are not disuessed here as they are involved in the lookup systems for JSONArray and JSONObject and should only arrise from the JSON not being what was expected during data extraction.
 
-stream_t (new in 0.2.0) provides a simple but strong interface to any byte-based stream interfaces, be it a file, memory, some kind of socket (JSON-RPC), or anything else for which you can dream up an interface conforming to stream_t.
+stream\_t (new in 0.2.0) provides a simple but strong interface to any byte-based stream interfaces, be it a file, memory, some kind of socket (JSON-RPC), or anything else for which you can dream up an interface conforming to stream_t.
 As of 0.2.0, rSON::parseJSONFile() is deprecated in favour of using a stream object and passing that into rSON::parseJSON() to get a node tree.
 This change is designed to greatly simplify more complex use-cases so the user program doesn't have to worry about how to construct a buffer that the parser can deal with, which also helps speed the entire process up.
 
