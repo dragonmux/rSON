@@ -88,7 +88,7 @@ namespace rSON
 		}
 
 		virtual bool read(void *const, const size_t, size_t &) { throw notImplemented_t(); }
-		virtual bool write(const void *const, size_t) { throw notImplemented_t(); }
+		virtual bool write(const void *const, const size_t) { throw notImplemented_t(); }
 		virtual bool atEOF() const { throw notImplemented_t(); }
 	};
 
@@ -124,6 +124,7 @@ namespace rSON
 		memoryStream_t(void *const stream, const size_t streamLength) noexcept;
 
 		bool read(void *const value, const size_t valueLen, size_t &actualLen) noexcept final override;
+		bool write(const void *const value, const size_t valueLen) noexcept final override;
 		bool atEOF() const noexcept final override { return pos == length; }
 	};
 
@@ -332,6 +333,7 @@ namespace rSON
 		void set(bool boolValue);
 		size_t length() const;
 		void store(char *str);
+		void store(stream_t &stream) const rSON_VFINAL;
 	};
 
 	class rSON_CLS_API JSONObject : public JSONAtom

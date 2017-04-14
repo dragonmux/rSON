@@ -65,10 +65,25 @@ memoryStream_t::memoryStream_t(void *const stream, const size_t streamLength) no
 
 bool memoryStream_t::read(void *const value, const size_t valueLen, size_t &actualLen) noexcept
 {
+	// If at "end of file", or the requested read would cause position wrap around, return false.
 	if (atEOF() || (pos + valueLen) < pos)
 		return false;
+	// Calculate how much we can really read vs requested.
 	actualLen = (pos + valueLen) > length ? length - pos : valueLen;
 	memcpy(value, memory + pos, actualLen);
 	pos += actualLen;
 	return true;
+}
+
+bool memoryStream_t::write(const void *const value, const size_t valueLen) noexcept
+{
+	// If at "end of file", or the requested write would cause position wrap-around, return false.
+	if (atEOF() || (pos + valueLen) < pos)
+		return false;
+	// Calculate how much we can really write vs requested.
+	const size_t actualLen = (pos + valueLen) > length ? length - pos : valueLen;
+	memcpy(memory + pos, value, actualLen);
+	pos += actualLen;
+	// If we did not acomplish a complete write, we consider that a failure.
+	return valueLen == actualLen;
 }
