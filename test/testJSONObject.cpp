@@ -24,6 +24,13 @@ static const char *name = #name
 KEY(testKey1);
 KEY(testKey2);
 
+void insert(const char *const keyValue, JSONAtom *value)
+{
+	char *key = new char[strlen(keyValue) + 1];
+	strcpy(key, keyValue);
+	testObject->add(key, value);
+}
+
 void testConstruct()
 {
 	try
@@ -60,19 +67,14 @@ void testSize()
 void testAdd()
 {
 	JSONAtom *child;
-	char *key;
 
 	assertNotNull(testObject);
 	assertIntEqual(testObject->size(), 0);
 
-	key = new char[strlen(testKey1) + 1];
-	strcpy(key, testKey1);
-	testObject->add(key, new JSONInt(1));
+	insert(testKey1, new JSONInt(1));
 	assertIntEqual(testObject->size(), 1);
 
-	key = new char[strlen(testKey2) + 1];
-	strcpy(key, testKey2);
-	testObject->add(key, new JSONInt(2));
+	insert(testKey2, new JSONInt(2));
 	assertIntEqual(testObject->size(), 2);
 
 	child = new JSONInt(3);
@@ -86,6 +88,7 @@ void testKeys()
 {
 	std::vector<const char *> keys = testObject->keys();
 
+	assertIntEqual(keys.size(), 2);
 	assertIntEqual(strcmp(keys[0], testKey1), 0);
 	assertIntEqual(strcmp(keys[1], testKey2), 0);
 }
@@ -108,7 +111,15 @@ void testLookup()
 
 void testDuplicate()
 {
+	KEY(a); KEY(b); KEY(c); KEY(d); KEY(e);
 	assertNotNull(testObject);
+	insert(a, new JSONNull());
+	insert(b, new JSONBool(true));
+	insert(c, new JSONFloat(1.5));
+	insert(d, new JSONArray());
+	insert(e, new JSONObject());
+	assertIntEqual(testObject->size(), 7);
+
 	JSONObject dupObject(*testObject);
 	assertIntNotEqual(dupObject.size(), 0);
 	assertIntEqual(dupObject.size(), testObject->size());
