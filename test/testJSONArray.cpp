@@ -126,13 +126,12 @@ void testDuplicate()
 void testDel()
 {
 	assertNotNull(testArray);
-	testArray->del(5);
-	assertIntEqual(testArray->size(), 6);
-	/*JSONAtom *child = testArray[5];
-	printf("%u\n", child->getType());
-	assertNotNull(child);
-	testArray->del(child);*/
+	assertIntEqual(testArray->size(), 7);
 	testArray->del(size_t(0));
+	assertIntEqual(testArray->size(), 6);
+	JSONAtom *child = (*testArray)[5];
+	assertNotNull(child);
+	testArray->del(child);
 	assertIntEqual(testArray->size(), 5);
 	testArray->del(4);
 	assertIntEqual(testArray->size(), 4);
