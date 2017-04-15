@@ -106,6 +106,14 @@ void testLookup()
 	assertIntEqual(child->asInt(), 1);
 }
 
+void testDuplicate()
+{
+	assertNotNull(testObject);
+	JSONObject dupObject(*testObject);
+	assertIntNotEqual(dupObject.size(), 0);
+	assertIntEqual(dupObject.size(), testObject->size());
+}
+
 void testDistruct()
 {
 	delete testObject;
@@ -124,6 +132,7 @@ BEGIN_REGISTER_TESTS()
 	TEST(testAdd)
 	TEST(testKeys)
 	TEST(testLookup)
+	TEST(testDuplicate)
 	TEST(testDistruct)
 END_REGISTER_TESTS()
 
