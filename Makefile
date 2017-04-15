@@ -19,7 +19,7 @@ include Makefile.inc
 DEFS = $(OPTIM_FLAGS) -pedantic -Wall -Wextra -std=c++11 -D__rSON__
 CFLAGS = -c $(DEFS) -o $@ $<
 DEPFLAGS = -E -MM $(DEFS) -o .dep/$*.d $<
-LFLAGS = -shared $(O) -Wl,-soname,$(SOMAJ) -o $(SO) -lstdc++ -lm -z defs
+LFLAGS = $(OPTIM_FLAGS) -shared $(O) -Wl,-soname,$(SOMAJ) -o $(SO) -lstdc++ -lm -z defs
 
 SED = sed -e 's:@LIBDIR@:$(LIBDIR):g' -e 's:@PREFIX@:$(PREFIX):g'
 
