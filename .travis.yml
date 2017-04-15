@@ -4,7 +4,7 @@ before_install:
   - export GCC="$GCC -m64 -fPIC -DPIC" GXX="$GXX -m64 -fPIC -DPIC"
 install:
   - pushd $HOME/build
-  - https://github.com/DX-MON/crunch.git DX-MON/crunch
+  - git clone https://github.com/DX-MON/crunch.git DX-MON/crunch
   - cd DX-MON/crunch
   - sudo make install
   - popd
