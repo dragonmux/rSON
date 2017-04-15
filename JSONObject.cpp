@@ -88,11 +88,7 @@ void JSONObject::del(const char *key)
 	atomMapIter node = children.find((char *)key);
 	if (node != children.end())
 	{
-		keyTypeIter i;
-		delete [] node->first;
-		delete node->second;
-		children.erase(node);
-		for (i = mapKeys.begin(); i != mapKeys.end(); i++)
+		for (keyTypeIter i = mapKeys.begin(); i != mapKeys.end(); i++)
 		{
 			if (strcmp(key, *i) == 0)
 			{
@@ -100,6 +96,9 @@ void JSONObject::del(const char *key)
 				break;
 			}
 		}
+		delete [] node->first;
+		delete node->second;
+		children.erase(node);
 	}
 }
 
