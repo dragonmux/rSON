@@ -125,6 +125,21 @@ void testDuplicate()
 	assertIntEqual(dupObject.size(), testObject->size());
 }
 
+void testDel()
+{
+	assertNotNull(testObject);
+	assertIntEqual(testObject->size(), 7);
+
+	testObject->del("a");
+	assertIntEqual(testObject->size(), 6);
+
+	testObject->del("notPresent");
+	assertIntEqual(testObject->size(), 6);
+
+	testObject->del(nullptr);
+	assertIntEqual(testObject->size(), 6);
+}
+
 void testDistruct()
 {
 	delete testObject;
@@ -144,6 +159,7 @@ BEGIN_REGISTER_TESTS()
 	TEST(testKeys)
 	TEST(testLookup)
 	TEST(testDuplicate)
+	TEST(testDel)
 	TEST(testDistruct)
 END_REGISTER_TESTS()
 
