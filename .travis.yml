@@ -73,6 +73,5 @@ matrix:
             - g++-6
 
 env:
-  matrix:
-    - COVERAGE=
+  global:
     - COVERAGE=1
