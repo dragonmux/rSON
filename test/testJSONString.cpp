@@ -58,13 +58,16 @@ delete string
 #define TRY_SHOULD_FAIL(seq) \
 try \
 { \
-	string = new JSONString(seq); \
+	str = new char[sizeof(seq)]; \
+	strcpy(str, seq); \
+	string = new JSONString(str); \
 	delete string; \
 	fail("JSONString failed to throw an exception on invalid string"); \
 } \
 catch (JSONParserError &err) \
 { \
-}
+} \
+delete [] str;
 
 void testEscapes()
 {
