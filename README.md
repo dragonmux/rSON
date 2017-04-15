@@ -2,6 +2,8 @@
 
 The project was conceived after surveying the C/C++ based JSON implementations for something that was lightweight and easy to use (and by that, I mean requires no setup code and simply works to produce output that is easy to access the structure of and grab data out from) and comming up very short.
 
+[![Build Status](https://travis-ci.org/DX-MON/rSON.svg?branch=master)](https://travis-ci.org/DX-MON/rSON)
+
 ## The Idea
 
 rSON implements a configuration-less JSON complient parser which does literally all the donkey work.
