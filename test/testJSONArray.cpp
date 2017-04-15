@@ -110,6 +110,20 @@ void testLookup()
 	}
 }
 
+void testDuplicate()
+{
+	assertNotNull(testArray);
+	testArray->add(new JSONNull());
+	testArray->add(new JSONBool(true));
+	testArray->add(new JSONFloat(1.5));
+	testArray->add(new JSONArray());
+	testArray->add(new JSONObject());
+
+	JSONArray dupArray(*testArray);
+	assertIntNotEqual(dupArray.size(), 0);
+	assertIntEqual(dupArray.size(), testArray->size());
+}
+
 void testDistruct()
 {
 	delete testArray;
@@ -127,6 +141,7 @@ BEGIN_REGISTER_TESTS()
 	TEST(testSize)
 	TEST(testAdd)
 	TEST(testLookup)
+	TEST(testDuplicate)
 	TEST(testDistruct)
 END_REGISTER_TESTS()
 
