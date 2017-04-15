@@ -13,6 +13,10 @@ install:
 script:
   - make tests
   - make check
+after_success:
+  - if [ "$COVERAGE" == "1" ]; then
+      bash <(curl -s https://codecov.io/bash);
+    fi
 
 matrix:
   include:
@@ -67,3 +71,7 @@ matrix:
           packages:
             - gcc-6
             - g++-6
+
+env:
+  - COVERAGE=
+  - COVERAGE=1
