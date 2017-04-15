@@ -118,6 +118,7 @@ size_t JSONFloat::length() const
 	return formatLen("%f", value);
 }
 
+// TODO: Fixme! I'm broken and I know it.
 void JSONFloat::store(char *str)
 {
 	snprintf(str, length() + 1, "%f", value);
