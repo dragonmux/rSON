@@ -81,6 +81,14 @@ void testObject()
 	obj->add(key, new JSONArray());
 	doTest(obj, "{\"array\": [], \"test\": null}");
 
+	key = strnew("a");
+	obj->add(key, new JSONInt(55));
+	doTest(obj, "{\"a\": 55, \"array\": [], \"test\": null}");
+
+	key = strnew("b");
+	obj->add(key, new JSONString(strnew("This is only a test")));
+	doTest(obj, "{\"a\": 55, \"b\": \"This is only a test\", \"array\": [], \"test\": null}");
+
 	delete obj;
 }
 
@@ -97,6 +105,9 @@ void testArray()
 	outerArr->add(arr);
 	outerArr->add(new JSONNull());
 	doTest(outerArr, "[[null, true], null]");
+	outerArr->add(new JSONInt(-15));
+	outerArr->add(new JSONString(strnew("This is only a test")));
+	doTest(outerArr, "[[null, true], null, -15, \"This is only a test\"]");
 	delete outerArr;
 }
 
