@@ -304,7 +304,7 @@ namespace rSON
 		void set(int intValue);
 		size_t length() const rSON_VFINAL;
 		void store(char *str);
-//		void store(stream_t &stream) const rSON_VFINAL;
+		void store(stream_t &stream) const rSON_VFINAL;
 	};
 
 	class rSON_CLS_API JSONString : public JSONAtom
