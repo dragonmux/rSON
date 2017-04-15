@@ -87,7 +87,7 @@ void testObject()
 
 	key = strnew("b");
 	obj->add(key, new JSONString(strnew("This is only a test")));
-	doTest(obj, "{\"a\": 55, \"b\": \"This is only a test\", \"array\": [], \"test\": null}");
+	doTest(obj, "{\"a\": 55, \"array\": [], \"b\": \"This is only a test\", \"test\": null}");
 
 	delete obj;
 }
