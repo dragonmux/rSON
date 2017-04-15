@@ -36,35 +36,7 @@
 #define O_NOCTTY O_BINARY
 #endif
 
-#include <memory>
-#include <queue>
-#include <system_error>
-
-typedef struct JSONParser
-{
-private:
-	stream_t &json;
-	char next;
-	const char *jsonEnd;
-	bool lastWasComma;
-
-	void validateUnicodeSequence(std::queue<char> &result);
-
-public:
-	JSONParser(stream_t &toParse);
-	void nextChar();
-	void skipWhite();
-	void match(const char x, const bool skip);
-	bool lastTokenComma() const noexcept;
-	void lastNoComma() noexcept;
-	char currentChar();
-	char *literal();
-	char *string();
-	size_t number(const bool zeroSpecial, size_t *const decDigits = nullptr);
-} JSONParser;
-
-JSONAtom *expression(JSONParser &parser, const bool matchComma = true);
-inline size_t length(const char *const str) noexcept { return strlen(str) + 1; }
+#include "Parser.h"
 
 // Recognise lower-case letters
 inline bool isLowerAlpha(const char x) noexcept
