@@ -83,6 +83,8 @@ void JSONObject::add(char *key, JSONAtom *value)
 
 void JSONObject::del(const char *key)
 {
+	if (!key)
+		return;
 	atomMapIter node = children.find((char *)key);
 	if (node != children.end())
 	{
