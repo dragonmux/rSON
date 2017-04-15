@@ -17,7 +17,7 @@
  */
 
 #include "test.h"
-#include "../Parser.cpp"
+#include "../Parser.h"
 
 void testParserViability()
 {
