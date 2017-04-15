@@ -4,11 +4,13 @@ The project was conceived after surveying the C/C++ based JSON implementations f
 
 ## The Idea
 
-rSON implements a configuration-less JSON complient parser which does literally all the donkey work. an example call works like:
+rSON implements a configuration-less JSON complient parser which does literally all the donkey work.
+
+An example call works like:
 ```C++
 JSONAtom *rootNode = rSON::parseJSON("[\"My test array\", \"With multiple elements\", True]");
 ```
-or to parse from a file:
+Or to parse from a file:
 ```C++
 rSON::fileStream_t file("file.json", O_RDONLY);
 JSONAtom *rootNode = rSON::parseJSON(file);
