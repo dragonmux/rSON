@@ -109,10 +109,9 @@ GXX ?= g++
 ifeq ($(strip $(DEBUG)), 1)
 	OPTIM_FLAGS = -ggdb
 	ifeq ($(strip $(COVERAGE)), 1)
-		GCC_FLAGS = -O0 -g --coverage
-	else
-		GCC_FLAGS =
+		OPTIM_FLAGS += -O0 -g --coverage
 	endif
+	GCC_FLAGS =
 else
 	GCC_VER = $(shell gcc -dumpversion | cut -d . -f 1)
 	ifeq ($(shell if [ $(GCC_VER) -ge 4 ]; then echo 1; else echo 0; fi), 1)
