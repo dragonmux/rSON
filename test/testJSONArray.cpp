@@ -105,9 +105,7 @@ void testLookup()
 		child = (*testArray)[2]; \
 		fail("Array index out of bounds exception not thrown when it should have been!")
 	)
-	catch (JSONArrayError &err)
-	{
-	}
+	catch (JSONArrayError &) { }
 }
 
 void testDuplicate()
@@ -118,10 +116,34 @@ void testDuplicate()
 	testArray->add(new JSONFloat(1.5));
 	testArray->add(new JSONArray());
 	testArray->add(new JSONObject());
+	assertIntEqual(testArray->size(), 7);
 
 	JSONArray dupArray(*testArray);
 	assertIntNotEqual(dupArray.size(), 0);
 	assertIntEqual(dupArray.size(), testArray->size());
+}
+
+void testDel()
+{
+	assertNotNull(testArray);
+	testArray->del(5);
+	assertIntEqual(testArray->size(), 6);
+	/*JSONAtom *child = testArray[5];
+	printf("%u\n", child->getType());
+	assertNotNull(child);
+	testArray->del(child);*/
+	testArray->del(size_t(0));
+	assertIntEqual(testArray->size(), 5);
+	testArray->del(4);
+	assertIntEqual(testArray->size(), 4);
+
+	CATCH_FAIL(testArray->del(nullptr))
+	try
+	{
+		testArray->del(4);
+		fail("Array index out of bounds exception not thrown when it should have been!");
+	}
+	catch (JSONArrayError &) { }
 }
 
 void testDistruct()
@@ -142,6 +164,7 @@ BEGIN_REGISTER_TESTS()
 	TEST(testAdd)
 	TEST(testLookup)
 	TEST(testDuplicate)
+	TEST(testDel)
 	TEST(testDistruct)
 END_REGISTER_TESTS()
 
