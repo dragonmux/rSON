@@ -359,6 +359,7 @@ namespace rSON
 		size_t size() const;
 		size_t length() const;
 		void store(char *str);
+		void store(stream_t &stream) const rSON_VFINAL;
 	};
 
 	class rSON_CLS_API JSONArray : public JSONAtom
@@ -383,6 +384,7 @@ namespace rSON
 		iterator end() const;
 		size_t length() const;
 		void store(char *str);
+		void store(stream_t &stream) const rSON_VFINAL;
 	};
 
 	rSON_API JSONAtom *parseJSON(stream_t &json);

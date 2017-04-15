@@ -73,8 +73,14 @@ void JSONString::store(char *str)
 }
 
 size_t JSONBool::length() const
+	{ return value ? 4 : 5; }
+
+void JSONBool::store(stream_t &stream) const
 {
-	return value ? 4 : 5;
+	if (value)
+		stream.write("true", 4);
+	else
+		stream.write("false", 5);
 }
 
 void JSONBool::store(char *str)
@@ -97,6 +103,24 @@ size_t JSONObject::length() const
 	if (nChildren > 0)
 		len += (size() - 1) * 2;
 	return len;
+}
+
+void JSONObject::store(stream_t &stream) const
+{
+	const size_t nodes = size();
+	size_t j = 0;
+
+	stream.write('{');
+	for (const auto &child : children)
+	{
+		stream.write('"');
+		stream.write(child.first, strlen(child.first));
+		stream.write("\": ", 3);
+		child.second->store(stream);
+		if (++j < nodes)
+			stream.write(", ", 2);
+	}
+	stream.write('}');
 }
 
 void JSONObject::store(char *str)
@@ -132,6 +156,20 @@ size_t JSONArray::length() const
 	if (size() > 0)
 		len += (size() - 1) * 2;
 	return len;
+}
+
+void JSONArray::store(stream_t &stream) const
+{
+	const JSONAtom *const last = children.empty() ? nullptr : children.back();
+
+	stream.write('[');
+	for (const auto &child : children)
+	{
+		child->store(stream);
+		if (child != last)
+			stream.write(", ", 2);
+	}
+	stream.write(']');
 }
 
 void JSONArray::store(char *str)
