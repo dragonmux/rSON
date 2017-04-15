@@ -236,7 +236,7 @@ namespace rSON
 		// We already have a virtual distructor so can safely delete.. perhaps virtual assignment operators will work.. have to figure out how to make move construction work with this (or copy construction).
 		virtual ~JSONAtom() { }
 		JSONAtomType getType() const noexcept { return type; }
-		virtual void store(char *str) = 0;
+		virtual void store(char *str);
 		virtual void store(stream_t &stream) const;
 		virtual size_t length() const = 0;
 
@@ -276,7 +276,6 @@ namespace rSON
 		JSONNull();
 		~JSONNull();
 		size_t length() const rSON_VFINAL;
-		void store(char *str);
 		void store(stream_t &stream) const rSON_VFINAL;
 	};
 
@@ -290,6 +289,7 @@ namespace rSON
 		operator double() const;
 		size_t length() const;
 		void store(char *str);
+//		void store(stream_t &stream) const rSON_VFINAL;
 	};
 
 	class rSON_CLS_API JSONInt : public JSONAtom
@@ -302,8 +302,9 @@ namespace rSON
 		~JSONInt();
 		operator int() const;
 		void set(int intValue);
-		size_t length() const;
+		size_t length() const rSON_VFINAL;
 		void store(char *str);
+//		void store(stream_t &stream) const rSON_VFINAL;
 	};
 
 	class rSON_CLS_API JSONString : public JSONAtom
@@ -316,8 +317,7 @@ namespace rSON
 		~JSONString();
 		operator const char *() const;
 		void set(char *strValue);
-		size_t length() const;
-		void store(char *str);
+		size_t length() const rSON_VFINAL;
 		void store(stream_t &stream) const rSON_VFINAL;
 	};
 
@@ -331,8 +331,7 @@ namespace rSON
 		~JSONBool();
 		operator bool() const;
 		void set(bool boolValue);
-		size_t length() const;
-		void store(char *str);
+		size_t length() const rSON_VFINAL;
 		void store(stream_t &stream) const rSON_VFINAL;
 	};
 
@@ -357,8 +356,7 @@ namespace rSON
 		const std::vector<const char *> &keys() const;
 		bool exists(const char *key) const;
 		size_t size() const;
-		size_t length() const;
-		void store(char *str);
+		size_t length() const rSON_VFINAL;
 		void store(stream_t &stream) const rSON_VFINAL;
 	};
 
@@ -382,8 +380,7 @@ namespace rSON
 		size_t size() const;
 		iterator begin() const;
 		iterator end() const;
-		size_t length() const;
-		void store(char *str);
+		size_t length() const rSON_VFINAL;
 		void store(stream_t &stream) const rSON_VFINAL;
 	};
 

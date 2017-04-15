@@ -28,13 +28,15 @@
 
 // Temporary terminal of stream store to make the compiler happy
 void JSONAtom::store(stream_t &) const { }
+void JSONAtom::store(char *str)
+{
+	memoryStream_t memory(str, length());
+	store(memory);
+}
 
 size_t JSONNull::length() const { return 4; }
 void JSONNull::store(stream_t &stream) const
 	{ stream.write("null", 4); }
-
-void JSONNull::store(char *str)
-	{ memcpy(str, "null", 4); }
 
 size_t JSONInt::length() const { return formatLen("%d", value); }
 
@@ -63,12 +65,6 @@ void JSONString::store(stream_t &stream) const
 	stream.write('"');
 }
 
-void JSONString::store(char *str)
-{
-	memoryStream_t memory(str, length());
-	store(memory);
-}
-
 size_t JSONBool::length() const
 	{ return value ? 4 : 5; }
 
@@ -78,12 +74,6 @@ void JSONBool::store(stream_t &stream) const
 		stream.write("true", 4);
 	else
 		stream.write("false", 5);
-}
-
-void JSONBool::store(char *str)
-{
-	memoryStream_t memory(str, length());
-	store(memory);
 }
 
 size_t JSONObject::length() const
@@ -118,31 +108,6 @@ void JSONObject::store(stream_t &stream) const
 	stream.write('}');
 }
 
-void JSONObject::store(char *str)
-{
-	size_t i = 0, j = 0, nodes = size();
-
-	str[i++] = '{';
-	for (const auto &child : children)
-	{
-		str[i++] = '"';
-		memcpy(str + i, child.first, strlen(child.first));
-		i += strlen(child.first);
-		str[i++] = '"';
-		memcpy(str + i, ": ", 2);
-		i += 2;
-		child.second->store(str + i);
-		i += child.second->length();
-		j++;
-		if (j < nodes)
-		{
-			memcpy(str + i, ", ", 2);
-			i += 2;
-		}
-	}
-	str[i] = '}';
-}
-
 size_t JSONArray::length() const
 {
 	size_t i, len = 2;
@@ -165,24 +130,6 @@ void JSONArray::store(stream_t &stream) const
 			stream.write(", ", 2);
 	}
 	stream.write(']');
-}
-
-void JSONArray::store(char *str)
-{
-	size_t i = 0, j = 0, nodes = size() - 1;
-
-	str[i++] = '[';
-	for (j = 0; j < size(); j++)
-	{
-		children[j]->store(str + i);
-		i += children[j]->length();
-		if (j < nodes)
-		{
-			memcpy(str + i, ", ", 2);
-			i += 2;
-		}
-	}
-	str[i] = ']';
 }
 
 char *rSON::writeJSON(JSONAtom *atom)
