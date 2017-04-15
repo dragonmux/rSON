@@ -44,6 +44,35 @@ void testParserError()
 	catch (std::exception &) { }
 }
 
+void tryTypeErrorOk(const JSONAtomType type)
+{
+	try
+	{
+		const auto err = JSONTypeError(type, type).error();
+		assertNotNull(const_cast<char *const>(err));
+	}
+	catch (std::exception &)
+		{ fail("Caught exception which should not happen"); }
+}
+
+void testTypeError()
+{
+	tryTypeErrorOk(JSON_TYPE_NULL);
+	tryTypeErrorOk(JSON_TYPE_BOOL);
+	tryTypeErrorOk(JSON_TYPE_INT);
+	tryTypeErrorOk(JSON_TYPE_FLOAT);
+	tryTypeErrorOk(JSON_TYPE_STRING);
+	tryTypeErrorOk(JSON_TYPE_OBJECT);
+	tryTypeErrorOk(JSON_TYPE_ARRAY);
+
+	try
+	{
+		const auto err = JSONTypeError((JSONAtomType)-1, (JSONAtomType)-1);
+		fail("The error handling failed to throw an exception on an invalid initialisation");
+	}
+	catch (std::exception &) { }
+}
+
 #ifdef __cplusplus
 extern "C"
 {
@@ -51,6 +80,7 @@ extern "C"
 
 BEGIN_REGISTER_TESTS()
 	TEST(testParserError)
+	TEST(testTypeError)
 END_REGISTER_TESTS()
 
 #ifdef __cplusplus
