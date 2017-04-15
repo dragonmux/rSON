@@ -65,11 +65,8 @@ void JSONString::store(stream_t &stream) const
 
 void JSONString::store(char *str)
 {
-	size_t len = strlen(value);
-
-	str[0] = '"';
-	memcpy(str + 1, value, len);
-	str[len + 1] = '"';
+	memoryStream_t memory(str, length());
+	store(memory);
 }
 
 size_t JSONBool::length() const
@@ -85,10 +82,8 @@ void JSONBool::store(stream_t &stream) const
 
 void JSONBool::store(char *str)
 {
-	if (value)
-		memcpy(str, "true", 4);
-	else
-		memcpy(str, "false", 5);
+	memoryStream_t memory(str, length());
+	store(memory);
 }
 
 size_t JSONObject::length() const
