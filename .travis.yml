@@ -3,10 +3,10 @@ language: cpp
 before_install:
   - export GCC="$GCC -m64 -fPIC -DPIC" GXX="$GXX -m64 -fPIC -DPIC"
 install:
+script:
   - make
-#script:
-#  - make test
-#  - make check
+  - make test
+  - make check
 
 matrix:
   include:
