@@ -71,6 +71,8 @@ matrix:
           packages:
             - gcc-6
             - g++-6
-  env:
+
+env:
+  matrix:
     - COVERAGE=
     - COVERAGE=1
