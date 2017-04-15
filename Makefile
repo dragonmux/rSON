@@ -89,7 +89,7 @@ $(PC): $(IN)
 
 clean: test $(DEPS)
 	@$(MAKE) -C test clean
-	$(call run-cmd,rm,rSON,*.o $(SOMAJ)* $(A) $(PC))
+	$(call run-cmd,rm,rSON,*.o $(SOMAJ)* $(A) $(PC) *.gcda *.gcno)
 	$(call run-cmd,rm,makedep,.dep/*.d)
 
 tests: all test

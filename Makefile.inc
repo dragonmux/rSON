@@ -25,6 +25,9 @@ endif
 ifndef BUILD_VERBOSE
 	BUILD_VERBOSE = 0
 endif
+ifeq ($(strip $(COVERAGE)), 1)
+	DEBUG = 1
+endif
 
 MAKEFLAGS += -w
 
@@ -105,13 +108,17 @@ GCC ?= gcc
 GXX ?= g++
 ifeq ($(strip $(DEBUG)), 1)
 	OPTIM_FLAGS = -ggdb
-	GCC_FLAGS = 
+	ifeq ($(strip $(COVERAGE)), 1)
+		GCC_FLAGS = -O0 -g --coverage
+	else
+		GCC_FLAGS =
+	endif
 else
 	GCC_VER = $(shell gcc -dumpversion | cut -d . -f 1)
 	ifeq ($(shell if [ $(GCC_VER) -ge 4 ]; then echo 1; else echo 0; fi), 1)
 		GCC_FLAGS = -fvisibility=hidden -fvisibility-inlines-hidden
 	else
-		GCC_FLAGS = 
+		GCC_FLAGS =
 	endif
 	OPTIM_FLAGS = -O2
 	DEBUG = 0

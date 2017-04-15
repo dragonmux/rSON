@@ -5,3 +5,5 @@ librSON.a
 rSON.pc
 
 .dep
+*.gcda
+*.gcno

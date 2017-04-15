@@ -20,7 +20,10 @@ CRUNCHMAKE = crunchMake $(shell pkg-config --cflags --libs crunch) -lstdc++ -lm
 ifeq ($(BUILD_VERBOSE), 0)
 	CRUNCHMAKE += -q
 endif
-CRUNCHMAKE += -o../JSONAtom.o -o../JSONErrors.o -o../String.o -o../Memory.o -o../Writer.o
+ifeq ($(strip $(COVERAGE)), 1)
+	CRUNCHMAKE += -lgcov
+endif
+CRUNCHMAKE += -o../JSONAtom.o -o../JSONErrors.o -o../String.o -o../Memory.o -o../Writer.o -o../Stream.o
 CRUNCHMAKE += -o../JSONNull.o -o../JSONBool.o -o../JSONInt.o -o../JSONFloat.o -o../JSONString.o -o../JSONObject.o -o../JSONArray.o
 CRUNCH = crunch
 
@@ -42,7 +45,6 @@ check: all
 clean:
 	$(call run-cmd,rm,tests,$(TESTS))
 
-testParser.so testWriter.so: CRUNCHMAKE += -o../Stream.o
 %.so: %.cpp
 	$(call run-cmd,crunchMake,$(O_FILE),$<)
 
