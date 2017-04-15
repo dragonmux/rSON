@@ -77,6 +77,15 @@ void testConversions()
 	UNWANTED_TYPE(testBool, Array)
 }
 
+void testSet()
+{
+	assertNotNull(testBool);
+	testBool->set(true);
+	assertTrue(*testBool);
+	testBool->set(false);
+	assertFalse(*testBool);
+}
+
 #ifdef __cplusplus
 extern "C"
 {
@@ -89,6 +98,7 @@ BEGIN_REGISTER_TESTS()
 	TEST(testDistruct)
 	TEST(testConstructFalse)
 	TEST(testOperatorBoolFalse)
+	TEST(testSet)
 	TEST(testDistruct)
 END_REGISTER_TESTS()
 
