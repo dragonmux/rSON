@@ -51,6 +51,13 @@ void testConversions()
 	UNWANTED_TYPE(testInt, Array)
 }
 
+void testSet()
+{
+	assertIntEqual(*testInt, 5);
+	testInt->set(16384);
+	assertIntEqual(*testInt, 16384);
+}
+
 void testDistruct()
 {
 	delete testInt;
@@ -66,6 +73,7 @@ BEGIN_REGISTER_TESTS()
 	TEST(testConstruct)
 	TEST(testOperatorInt)
 	TEST(testConversions)
+	TEST(testSet)
 	TEST(testDistruct)
 END_REGISTER_TESTS()
 
