@@ -1,4 +1,6 @@
 language: cpp
+sudo: required
+cache: ccache
 
 before_install:
   - export GCC="$GCC -m64 -fPIC -DPIC" GXX="$GXX -m64 -fPIC -DPIC"
@@ -15,7 +17,7 @@ script:
 
 matrix:
   include:
-    - compiler: clang
+    - compiler: clang-3.8
       env: GCC=clang GXX=clang++
       addons:
         apt:
@@ -26,7 +28,7 @@ matrix:
             - gcc-4.9
             - g++-4.9
             - clang-3.8
-    - compiler: clang
+    - compiler: clang-3.9
       env: GCC=clang GXX=clang++
       addons:
         apt:
