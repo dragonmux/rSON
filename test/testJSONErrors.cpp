@@ -23,7 +23,7 @@ void tryParserErrorOk(const JSONParserErrorType error)
 	try
 	{
 		const auto err = JSONParserError(error).error();
-		assertNotNull(err);
+		assertNotNull(const_cast<char *const>(err));
 	}
 	catch (std::exception &)
 		{ fail("Caught exception which should not happen"); }
@@ -31,14 +31,14 @@ void tryParserErrorOk(const JSONParserErrorType error)
 
 void testParserError()
 {
-	assertEqual(JSONParserError(JSON_PARSER_EOF).errorType(), JSON_PARSER_EOF);
+	assertIntEqual(JSONParserError(JSON_PARSER_EOF).errorType(), JSON_PARSER_EOF);
 	tryParserErrorOk(JSON_PARSER_EOF);
 	tryParserErrorOk(JSON_PARSER_BAD_JSON);
 	tryParserErrorOk(JSON_PARSER_BAD_FILE);
 
 	try
 	{
-		const auto err = JSONParserError(reinterpret_cast<JSONParserErrorType>(-1)).error();
+		const auto err = JSONParserError((JSONParserErrorType)-1).error();
 		fail("The error handling failed to throw an exception on an invalid initialisation");
 	}
 	catch (std::exception &) { }
