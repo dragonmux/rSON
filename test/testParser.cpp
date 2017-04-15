@@ -173,10 +173,14 @@ void testString()
 	tryStringOk("\" \" ", [](const char *const atom) { assertStringEqual(atom, " "); });
 	tryStringOk("\"\\\"\" ", [](const char *const atom) { assertStringEqual(atom, "\\\""); });
 	tryStringOk("\"te\\nst\" ", [](const char *const atom) { assertStringEqual(atom, "te\\nst"); });
+	tryStringOk("\"\\u2200\" ", [](const char *const atom) { assertStringEqual(atom, "\\u2200"); });
+	tryStringOk("\"\\u222B\" ", [](const char *const atom) { assertStringEqual(atom, "\\u222B"); });
 
 	tryStringFail("\" ");
 	tryStringFail("\"\\ \" ");
 	tryStringFail("\"\n\" ");
+	tryStringFail("\"\\u\" ");
+	tryStringFail("\"\\u22g0\" ");
 }
 
 void tryObjectOk(const char *const json, void tests(const JSONObject &))
