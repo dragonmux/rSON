@@ -5,7 +5,7 @@ before_install:
 install:
 script:
   - make
-  - make test
+  - make tests
   - make check
 
 matrix:
