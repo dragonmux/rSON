@@ -81,9 +81,9 @@ void testSet()
 {
 	assertNotNull(testBool);
 	testBool->set(true);
-	assertTrue(*testBool);
+	assertTrue(bool(*testBool));
 	testBool->set(false);
-	assertFalse(*testBool);
+	assertFalse(bool(*testBool));
 }
 
 #ifdef __cplusplus
