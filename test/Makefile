@@ -57,7 +57,7 @@ testHeader.so: CRUNCHMAKE += -orSON.o
 	$(call run-cmd,crunchMake,$(O_FILE),$<)
 
 rSON.o: $(DEPS) rSON.cpp
-	$(MAKE) -C .. test/rSON.o
+	$(Q)$(MAKE) -C .. test/rSON.o
 
 .PHONY: default all check clean
 .SUFFIXES: .cpp .so

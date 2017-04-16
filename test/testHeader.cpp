@@ -47,7 +47,11 @@ void testStreamType()
 	tryStreamFail(stream, [](streamTest_t &stream) { stream.atEOF(); });
 }
 
-void testReadStream() { readStream(); }
+void testReadStream()
+{
+	readStream();
+	badReadStream();
+}
 
 #ifdef __cplusplus
 extern "C"

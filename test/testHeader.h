@@ -16,5 +16,6 @@ public:
 
 void throwNotImplemented();
 void readStream();
+void badReadStream();
 
 #endif /*TEST_HEADER__H*/

@@ -47,5 +47,17 @@ void readStream()
 	assertTrue(stream.atEOF());
 	assertIntEqual(dest[0], testData[0]);
 	assertFalse(stream.read(dest));
+}
+
+void badReadStream()
+{
+	std::array<char, 2> dest;
+	const char *const testData = "abc";
+	memoryStream_t srcStream(const_cast<char *const>(testData), strlen(testData));
+	stream_t &stream = srcStream;
+
+	assertFalse(stream.atEOF());
+	assertTrue(stream.read(dest));
+	assertFalse(stream.atEOF());
 	assertFalse(stream.read(nullptr, -1));
 }
