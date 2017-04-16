@@ -29,6 +29,7 @@ CRUNCH = crunch
 
 READER_TESTS = testJSONNull.so testJSONBool.so testJSONInt.so testJSONFloat.so testJSONString.so testJSONObject.so testJSONArray.so testParser.so
 TESTS = testJSONErrors.so $(READER_TESTS) testWriter.so
+DEPS = ../.dep/test
 
 quiet_cmd_crunchMake = -n
 cmd_crunchMake = $(CRUNCHMAKE) -o$(2) $(3)
@@ -39,15 +40,22 @@ default: all
 
 all: $(TESTS)
 
+$(DEPS):
+	$(call run-cmd,install_dir,$@)
+
 check: all
 	$(call run-cmd,crunch,$(subst .so,,$(TESTS)))
 
 clean:
 	$(call run-cmd,rm,tests,$(TESTS))
+	$(call run-cmd,rm,makedep,../.dep/test/*.d)
 
 testParser.so testWriter.so: CRUNCHMAKE += -o../Parser.o
 %.so: %.cpp
 	$(call run-cmd,crunchMake,$(O_FILE),$<)
+
+rSON.o: $(DEPS) rSON.cpp
+	$(MAKE) -C .. test/rSON.o
 
 .PHONY: default all check clean
 .SUFFIXES: .cpp .so
