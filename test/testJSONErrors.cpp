@@ -91,6 +91,24 @@ void testObjectError()
 	catch (std::exception &) { }
 }
 
+void testArrayError()
+{
+	try
+	{
+		const auto err = JSONArrayError(JSON_ARRAY_OOB).error();
+		assertNotNull(const_cast<char *const>(err));
+	}
+	catch (std::exception &)
+		{ fail("Caught exception which should not happen"); }
+
+	try
+	{
+		const auto err = JSONArrayError((JSONArrayErrorType)-1).error();
+		fail("The error handling failed to throw an exception on an invalid initialisation");
+	}
+	catch (std::exception &) { }
+}
+
 #ifdef __cplusplus
 extern "C"
 {
@@ -100,6 +118,7 @@ BEGIN_REGISTER_TESTS()
 	TEST(testParserError)
 	TEST(testTypeError)
 	TEST(testObjectError)
+	TEST(testArrayError)
 END_REGISTER_TESTS()
 
 #ifdef __cplusplus
