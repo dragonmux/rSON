@@ -41,14 +41,6 @@ template<typename A> using isUnsigned = std::is_unsigned<A>;
 template<typename A> using isSigned = std::is_signed<A>;
 template<typename A> using makeUnsigned = typename std::make_unsigned<A>::type;
 
-// Temporary terminal of stream store to make the compiler happy
-void JSONAtom::store(stream_t &) const { }
-void JSONAtom::store(char *str)
-{
-	memoryStream_t memory(str, length());
-	store(memory);
-}
-
 size_t JSONNull::length() const { return 4; }
 void JSONNull::store(stream_t &stream) const
 	{ stream.write("null", 4); }
@@ -213,7 +205,8 @@ char *rSON::writeJSON(JSONAtom *atom)
 
 	strLength = atom->length();
 	str = new char[strLength + 1]();
-	atom->store(str);
+	memoryStream_t stream(str, strLength);
+	atom->store(stream);
 	str[strLength] = 0;
 
 	return str;

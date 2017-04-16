@@ -236,8 +236,7 @@ namespace rSON
 		// We already have a virtual distructor so can safely delete.. perhaps virtual assignment operators will work.. have to figure out how to make move construction work with this (or copy construction).
 		virtual ~JSONAtom() { }
 		JSONAtomType getType() const noexcept { return type; }
-		virtual void store(char *str);
-		virtual void store(stream_t &stream) const;
+		virtual void store(stream_t &stream) const = 0;
 		virtual size_t length() const = 0;
 
 		void *asNull() const;
