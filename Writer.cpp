@@ -195,6 +195,13 @@ void JSONArray::store(stream_t &stream) const
 	stream.write(']');
 }
 
+void rSON::writeJSON(const JSONAtom *const atom, stream_t &stream)
+{
+	if (atom == nullptr)
+		return;
+	atom->store(stream);
+}
+
 char *rSON::writeJSON(JSONAtom *atom)
 {
 	size_t strLength;
