@@ -138,7 +138,7 @@ void JSONParser::nextChar()
 // parser from exiting via exception when it sees the final } or ]
 void JSONParser::skipWhite() try
 {
-	while (isWhiteSpace(currentChar()))
+	while (!json.atEOF() && isWhiteSpace(currentChar()))
 		nextChar();
 }
 catch (const JSONParserError &) { }
