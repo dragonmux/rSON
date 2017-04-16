@@ -28,7 +28,7 @@ CRUNCHMAKE += -o../JSONNull.o -o../JSONBool.o -o../JSONInt.o -o../JSONFloat.o -o
 CRUNCH = crunch
 
 READER_TESTS = testJSONNull.so testJSONBool.so testJSONInt.so testJSONFloat.so testJSONString.so testJSONObject.so testJSONArray.so testParser.so
-TESTS = testJSONErrors.so $(READER_TESTS) testWriter.so
+TESTS = testJSONErrors.so $(READER_TESTS) testWriter.so testHeader.so
 DEPS = ../.dep/test
 
 quiet_cmd_crunchMake = -n
