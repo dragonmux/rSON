@@ -111,6 +111,7 @@ namespace rSON
 		bool read(void *const value, const size_t valueLen, size_t &actualLen) final override;
 		bool write(const void *const value, const size_t valueLen) final override;
 		bool atEOF() const noexcept final override { return eof; }
+		off_t seek(const off_t offset, const int whence) noexcept;
 	};
 
 	struct rSON_CLS_API memoryStream_t rSON_FINAL : public stream_t

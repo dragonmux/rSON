@@ -43,7 +43,8 @@ bool fileStream_t::read(void *const value, const size_t valueLen, size_t &actual
 	ssize_t ret = ::read(fd, value, valueLen);
 	if (ret < 0)
 		throw std::system_error(errno, std::system_category());
-	eof = length == size_t(lseek(fd, 0, SEEK_CUR));
+	// This call sets EOF for us.
+	seek(0, SEEK_CUR);
 	actualLen = size_t(ret);
 	return true;
 }
@@ -58,6 +59,13 @@ bool fileStream_t::write(const void *const value, const size_t valueLen)
 		throw std::system_error(errno, std::system_category());
 	eof = ret == 0;
 	return !eof;
+}
+
+off_t fileStream_t::seek(const off_t offset, const int whence) noexcept
+{
+	off_t result = lseek(fd, offset, whence);
+	eof = length == size_t(result);
+	return result;
 }
 
 memoryStream_t::memoryStream_t(void *const stream, const size_t streamLength) noexcept :
