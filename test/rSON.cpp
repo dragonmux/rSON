@@ -47,4 +47,5 @@ void readStream()
 	assertTrue(stream.atEOF());
 	assertIntEqual(dest[0], testData[0]);
 	assertFalse(stream.read(dest));
+	assertFalse(stream.read(nullptr, -1));
 }
