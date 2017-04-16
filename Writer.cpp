@@ -108,20 +108,22 @@ size_t JSONInt::length() const { return fromInt_t<int32_t, int32_t>(value).lengt
 void JSONInt::store(stream_t &stream) const
 	{ fromInt_t<int32_t, int32_t>(value).convert(stream); }
 
-void JSONInt::store(char *str)
-{
-	snprintf(str, length() + 1, "%d", value);
-}
+size_t JSONFloat::length() const { return formatLen("%f", value); }
 
-size_t JSONFloat::length() const
+// This is better.. but %f is wrong and produces very much the wrong result.
+void JSONFloat::store(stream_t &stream) const
 {
-	return formatLen("%f", value);
-}
-
-// TODO: Fixme! I'm broken and I know it.
-void JSONFloat::store(char *str)
-{
-	snprintf(str, length() + 1, "%f", value);
+	char *const string = formatString("%f", value);
+	try
+	{
+		stream.write(string, strlen(string));
+	}
+	catch (...)
+	{
+		free(string);
+		throw;
+	}
+	free(string);
 }
 
 size_t JSONString::length() const

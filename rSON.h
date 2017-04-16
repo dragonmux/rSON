@@ -287,9 +287,8 @@ namespace rSON
 		JSONFloat(double floatValue);
 		~JSONFloat();
 		operator double() const;
-		size_t length() const;
-		void store(char *str);
-//		void store(stream_t &stream) const rSON_VFINAL;
+		size_t length() const rSON_VFINAL;
+		void store(stream_t &stream) const rSON_VFINAL;
 	};
 
 	class rSON_CLS_API JSONInt : public JSONAtom
@@ -303,7 +302,6 @@ namespace rSON
 		operator int() const;
 		void set(int intValue);
 		size_t length() const rSON_VFINAL;
-		void store(char *str);
 		void store(stream_t &stream) const rSON_VFINAL;
 	};
 
