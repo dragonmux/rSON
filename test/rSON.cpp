@@ -61,3 +61,16 @@ void badReadStream()
 	assertFalse(stream.atEOF());
 	assertFalse(stream.read(nullptr, -1));
 }
+
+void writeArray()
+{
+	std::array<char, 1> dest, testData = {'a'};
+	memoryStream_t srcStream(dest.data(), dest.size());
+	stream_t &stream = srcStream;
+
+	assertFalse(stream.atEOF());
+	assertTrue(stream.write(testData));
+	assertTrue(stream.atEOF());
+	assertTrue(dest == testData);
+	assertFalse(stream.write(testData));
+}

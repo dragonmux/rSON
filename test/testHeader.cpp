@@ -66,6 +66,8 @@ void testReadStream()
 	badReadStream();
 }
 
+void testWriteArray() { writeArray(); }
+
 #ifdef __cplusplus
 extern "C"
 {
@@ -76,6 +78,7 @@ BEGIN_REGISTER_TESTS()
 	TEST(testNotImplemented)
 	TEST(testStreamType)
 	TEST(testReadStream)
+	TEST(testWriteArray)
 END_REGISTER_TESTS()
 
 #ifdef __cplusplus
