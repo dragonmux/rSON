@@ -150,7 +150,7 @@ void testFileWrite()
 	// Write it using the stream writer engine, and using writeJSON for code coverage
 	fileStream_t destStream("test.json", O_RDWR | O_CREAT | O_TRUNC | O_NOCTTY, S_IRUSR | S_IWUSR);
 	stream_t &readStream = destStream;
-	writeJSON(json, destStream);
+	writeJSON(json, destStream); // could just as well be json->store(destStream)..
 
 	// Go back to the start of our test file and allocate memory to read it
 	destStream.seek(0, SEEK_SET);

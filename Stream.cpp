@@ -24,7 +24,7 @@
 
 #include "internal.h"
 
-fileStream_t::fileStream_t(const char *const fileName, const int32_t mode, const int32_t perms) : fd(-1), eof(false)
+fileStream_t::fileStream_t(const char *const fileName, const int32_t _mode, const int32_t perms) : fd(-1), eof(false), mode(_mode)
 {
 	struct stat fileStat;
 	fd = open(fileName, mode, perms);
