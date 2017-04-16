@@ -19,7 +19,15 @@
 #include "test.h"
 #include "testHeader.h"
 
-
+void testNotImplemented()
+{
+	try
+	{
+		throwNotImplemented();
+		fail("notImplemented_t exception not thrown");
+	}
+	catch (notImplemented_t &) { }
+}
 
 #ifdef __cplusplus
 extern "C"
@@ -27,7 +35,7 @@ extern "C"
 #endif
 
 BEGIN_REGISTER_TESTS()
-	//TEST(testNull)
+	TEST(testNotImplemented)
 END_REGISTER_TESTS()
 
 #ifdef __cplusplus

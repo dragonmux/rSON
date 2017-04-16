@@ -51,6 +51,8 @@ clean:
 	$(call run-cmd,rm,makedep,../.dep/test/*.d)
 
 testParser.so testWriter.so: CRUNCHMAKE += -o../Parser.o
+testHeader.so: rSON.o
+testHeader.so: CRUNCHMAKE += -orSON.o
 %.so: %.cpp
 	$(call run-cmd,crunchMake,$(O_FILE),$<)
 
