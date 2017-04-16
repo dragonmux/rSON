@@ -24,10 +24,10 @@
 
 #include "internal.h"
 
-fileStream_t::fileStream_t(const char *const fileName, const int32_t mode) : fd(-1), eof(false)
+fileStream_t::fileStream_t(const char *const fileName, const int32_t mode, const int32_t perms) : fd(-1), eof(false)
 {
 	struct stat fileStat;
-	fd = open(fileName, mode);
+	fd = open(fileName, mode, perms);
 	if (fd == -1 || fstat(fd, &fileStat) != 0)
 		throw std::system_error(errno, std::system_category());
 	length = fileStat.st_size;

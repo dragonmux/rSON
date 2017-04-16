@@ -101,7 +101,7 @@ namespace rSON
 		int32_t mode;
 
 	public:
-		fileStream_t(const char *const fileName, const int32_t mode);
+		fileStream_t(const char *const fileName, const int32_t mode, const int32_t perms = 0);
 		fileStream_t(const fileStream_t &) = delete;
 		fileStream_t(fileStream_t &&) = default;
 		~fileStream_t() noexcept final override;
