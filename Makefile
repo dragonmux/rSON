@@ -1,5 +1,5 @@
 # This file is part of rSON
-# Copyright © 2012-2016 Rachel Mant (dx-mon@users.sourceforge.net)
+# Copyright © 2012-2017 Rachel Mant (dx-mon@users.sourceforge.net)
 #
 # rSON is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -36,7 +36,7 @@ H = rSON.h
 O = JSONErrors.o JSONAtom.o JSONNull.o JSONBool.o JSONInt.o JSONFloat.o JSONString.o JSONObject.o JSONArray.o Memory.o String.o Stream.o Parser.o Writer.o $(O_RPC)
 VERMAJ = .0
 VERMIN = .2
-VERREV = .0
+VERREV = .1
 VER = $(VERMAJ)$(VERMIN)$(VERREV)
 SOMAJ = librSON.so
 SOMIN = $(SOMAJ)$(VERMAJ)
