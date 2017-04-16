@@ -106,8 +106,9 @@ void testArray()
 	outerArr->add(new JSONNull());
 	doTest(outerArr, "[[null, true], null]");
 	outerArr->add(new JSONInt(-15));
+	outerArr->add(new JSONFloat(0.75));
 	outerArr->add(new JSONString(strnew("This is only a test")));
-	doTest(outerArr, "[[null, true], null, -15, \"This is only a test\"]");
+	doTest(outerArr, "[[null, true], null, -15, 0.750000, \"This is only a test\"]");
 	delete outerArr;
 }
 
