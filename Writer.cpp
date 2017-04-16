@@ -200,8 +200,8 @@ char *rSON::writeJSON(JSONAtom *atom)
 	size_t strLength;
 	char *str;
 
-	if (atom == NULL)
-		return NULL;
+	if (atom == nullptr)
+		return nullptr;
 
 	strLength = atom->length();
 	str = new char[strLength + 1]();
@@ -214,8 +214,8 @@ char *rSON::writeJSON(JSONAtom *atom)
 
 void rSON::freeString(char **str)
 {
-	if (str == NULL)
+	if (str == nullptr)
 		return;
 	delete [] *str;
-	*str = NULL;
+	*str = nullptr;
 }
