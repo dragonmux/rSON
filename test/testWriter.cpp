@@ -63,6 +63,14 @@ void testFloat()
 	JSONFloat *num = new JSONFloat(8192.016384);
 	doTest(num, "8192.016384");
 	delete num;
+
+	try
+	{
+		stream_t stream;
+		JSONFloat(0).store(stream);
+		fail("Store did not encounter an exception as it is supposed to");
+	}
+	catch (notImplemented_t &) { }
 }
 
 void testObject()
