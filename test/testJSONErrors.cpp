@@ -73,6 +73,24 @@ void testTypeError()
 	catch (std::exception &) { }
 }
 
+void testObjectError()
+{
+	try
+	{
+		const auto err = JSONObjectError(JSON_OBJECT_BAD_KEY).error();
+		assertNotNull(const_cast<char *const>(err));
+	}
+	catch (std::exception &)
+		{ fail("Caught exception which should not happen"); }
+
+	try
+	{
+		const auto err = JSONObjectError((JSONObjectErrorType)-1).error();
+		fail("The error handling failed to throw an exception on an invalid initialisation");
+	}
+	catch (std::exception &) { }
+}
+
 #ifdef __cplusplus
 extern "C"
 {
@@ -81,6 +99,7 @@ extern "C"
 BEGIN_REGISTER_TESTS()
 	TEST(testParserError)
 	TEST(testTypeError)
+	TEST(testObjectError)
 END_REGISTER_TESTS()
 
 #ifdef __cplusplus
