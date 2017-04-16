@@ -120,6 +120,11 @@ void testArray()
 	delete outerArr;
 }
 
+void testBadWrite()
+{
+	assertNull(writeJSON(nullptr));
+}
+
 #ifdef __cplusplus
 extern "C"
 {
@@ -132,6 +137,7 @@ BEGIN_REGISTER_TESTS()
 	TEST(testFloat)
 	TEST(testObject)
 	TEST(testArray)
+	TEST(testBadWrite)
 END_REGISTER_TESTS()
 
 #ifdef __cplusplus
