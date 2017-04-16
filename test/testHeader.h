@@ -15,5 +15,6 @@ public:
 };
 
 void throwNotImplemented();
+void readStream();
 
 #endif /*TEST_HEADER__H*/

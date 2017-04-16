@@ -34,3 +34,17 @@ bool streamTest_t::read()
 
 bool streamTest_t::write() { return stream.write(nullptr, 0); }
 bool streamTest_t::atEOF() const { return stream.atEOF(); }
+
+void readStream()
+{
+	std::array<char, 1> dest;
+	const char *const testData = "a";
+	memoryStream_t srcStream(const_cast<char *const>(testData), strlen(testData));
+	stream_t &stream = srcStream;
+
+	assertFalse(stream.atEOF());
+	assertTrue(stream.read(dest));
+	assertTrue(stream.atEOF());
+	assertIntEqual(dest[0], testData[0]);
+	assertFalse(stream.read(dest));
+}
