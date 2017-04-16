@@ -1,6 +1,6 @@
 /*
  * This file is part of rSON
- * Copyright © 2012-2013 Rachel Mant (dx-mon@users.sourceforge.net)
+ * Copyright © 2012-2017 Rachel Mant (dx-mon@users.sourceforge.net)
  *
  * rSON is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -16,7 +16,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <fcntl.h>
 #include "test.h"
+
+#ifdef _MSVC
+#define O_NOCTTY O_BINARY
+#endif
 
 char *strnew(const char *str)
 {
@@ -125,6 +130,42 @@ void testBadWrite()
 	assertNull(writeJSON(nullptr));
 }
 
+void testFileWrite()
+{
+	//TODO: Figure out what the hell to use as test reference data.
+	const char *const refData = "{\"widget\": {\"debug\": \"on\", "
+		"\"window\": {\"title\": \"Sample Konfabulator Widget\", "
+		"\"name\": \"main_window\", \"width\": 500, \"height\": 500}, "
+		"\"image\": {\"src\": \"Images/Sun.png\", \"name\": \"sun1\", "
+		"\"hOffset\": 250, \"vOffset\": 250, \"alignment\": \"center\"}, "
+		"\"text\": {\"data\": \"Click Here\", \"size\": 36, \"style\": \"bold\", "
+		"\"name\": \"text1\", \"hOffset\": 250, \"vOffset\": 100, "
+		"\"alignment\": \"center\", \"onMouseUp\": \"sun1.opacity = "
+		"(sun1.opacity / 100) * 90;\"}}}";
+	// Create the tree to write from the above blob
+	memoryStream_t sourceStream(const_cast<char *const>(refData), strlen(refData) + 1);
+	JSONAtom *json = parseJSON(sourceStream);
+	assertNotNull(json);
+
+	// Write it using the stream writer engine, and using writeJSON for code coverage
+	fileStream_t destStream("test.json", O_RDWR | O_CREAT | O_TRUNC | O_NOCTTY, S_IRUSR | S_IWUSR);
+	stream_t &readStream = destStream;
+	writeJSON(json, destStream);
+
+	// Go back to the start of our test file and allocate memory to read it
+	destStream.seek(0, SEEK_SET);
+	char *const resultData = new (std::nothrow) char[destStream.size() + 1];
+	assertNotNull(resultData);
+	// Read it
+	const bool result = readStream.read(resultData, destStream.size());
+	// Cleanup
+	unlink("test.json");
+	// Continue testing (verify results)
+	assertTrue(result);
+	resultData[destStream.size()] = 0;
+	assertStringEqual(resultData, refData);
+}
+
 #ifdef __cplusplus
 extern "C"
 {
@@ -138,6 +179,7 @@ BEGIN_REGISTER_TESTS()
 	TEST(testObject)
 	TEST(testArray)
 	TEST(testBadWrite)
+	TEST(testFileWrite)
 END_REGISTER_TESTS()
 
 #ifdef __cplusplus
