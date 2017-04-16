@@ -29,6 +29,24 @@ void testNotImplemented()
 	catch (notImplemented_t &) { }
 }
 
+void tryStreamFail(streamTest_t &stream, void operation(streamTest_t &))
+{
+	try
+	{
+		operation(stream);
+		fail("Should have thrown notImplemented_t exception");
+	}
+	catch (notImplemented_t &) { }
+}
+
+void testStreamType()
+{
+	streamTest_t stream;
+	tryStreamFail(stream, [](streamTest_t &stream) { stream.read(); });
+	tryStreamFail(stream, [](streamTest_t &stream) { stream.write(); });
+	tryStreamFail(stream, [](streamTest_t &stream) { stream.atEOF(); });
+}
+
 #ifdef __cplusplus
 extern "C"
 {
@@ -36,6 +54,7 @@ extern "C"
 
 BEGIN_REGISTER_TESTS()
 	TEST(testNotImplemented)
+	TEST(testStreamType)
 END_REGISTER_TESTS()
 
 #ifdef __cplusplus

@@ -25,3 +25,12 @@
 #include "testHeader.h"
 
 void throwNotImplemented() { throw notImplemented_t(); }
+
+bool streamTest_t::read()
+{
+	size_t actualLen = 0;
+	return stream.read(nullptr, 0, actualLen);
+}
+
+bool streamTest_t::write() { return stream.write(nullptr, 0); }
+bool streamTest_t::atEOF() const { return stream.atEOF(); }
