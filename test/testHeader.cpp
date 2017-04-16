@@ -47,6 +47,20 @@ void testStreamType()
 	tryStreamFail(stream, [](streamTest_t &stream) { stream.atEOF(); });
 }
 
+void testReadStream()
+{
+	std::array<char, 1> dest;
+	const char *const testData = "a";
+	memoryStream_t srcStream(const_cast<char *const>(testData), strlen(testData));
+	stream_t &stream = srcStream;
+
+	assertFalse(stream.atEOF());
+	assertTrue(stream.read(dest));
+	assertTrue(stream.atEOF());
+	assertIntEqual(dest[0], testData[0]);
+	assertFalse(stream.read(dest));
+}
+
 #ifdef __cplusplus
 extern "C"
 {
@@ -55,6 +69,7 @@ extern "C"
 BEGIN_REGISTER_TESTS()
 	TEST(testNotImplemented)
 	TEST(testStreamType)
+	TEST(testReadStream)
 END_REGISTER_TESTS()
 
 #ifdef __cplusplus
