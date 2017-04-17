@@ -23,33 +23,33 @@ JSONArray::JSONArray() : JSONAtom(JSON_TYPE_ARRAY)
 {
 }
 
-JSONArray::JSONArray(JSONArray &object) : JSONAtom(JSON_TYPE_ARRAY)
+JSONArray::JSONArray(JSONArray &array) : JSONAtom(JSON_TYPE_ARRAY)
 {
-	for (size_t i = 0; i < object.children.size(); i++)
+	for (const JSONAtom *const child : array)
 	{
-		JSONAtom *value, *child = object.children[i];
+		JSONAtom *value;
 		switch (child->getType())
 		{
 			case JSON_TYPE_NULL:
 				value = new JSONNull();
 				break;
 			case JSON_TYPE_BOOL:
-				value = new JSONBool(*((JSONBool *)child));
+				value = new JSONBool(*child);
 				break;
 			case JSON_TYPE_INT:
-				value = new JSONInt(*((JSONInt *)child));
+				value = new JSONInt(*child);
 				break;
 			case JSON_TYPE_FLOAT:
-				value = new JSONFloat(*((JSONFloat *)child));
+				value = new JSONFloat(*child);
 				break;
 			case JSON_TYPE_STRING:
-				value = new JSONString(strNewDup(*((JSONString *)child)));
+				value = new JSONString(strNewDup(*child));
 				break;
 			case JSON_TYPE_OBJECT:
-				value = new JSONObject(*((JSONObject *)child));
+				value = new JSONObject(*child);
 				break;
 			case JSON_TYPE_ARRAY:
-				value = new JSONArray(*((JSONArray *)child));
+				value = new JSONArray(*child);
 				break;
 			default:
 				throw JSONObjectError(JSON_OBJECT_BAD_KEY);
