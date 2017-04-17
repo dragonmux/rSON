@@ -47,7 +47,7 @@ check: all
 	$(call run-cmd,crunch,$(subst .so,,$(TESTS)))
 
 clean:
-	$(call run-cmd,rm,tests,$(TESTS))
+	$(call run-cmd,rm,tests,$(TESTS) rSON.o)
 	$(call run-cmd,rm,makedep,../.dep/test/*.d)
 
 testParser.so testWriter.so: CRUNCHMAKE += -o../Parser.o
