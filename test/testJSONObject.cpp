@@ -17,6 +17,7 @@
  */
 
 #include "test.h"
+#include "../String.h"
 
 JSONObject *testObject = NULL;
 #define KEY(name) \
@@ -122,14 +123,15 @@ void testLookup()
 
 void testDuplicate()
 {
-	KEY(a); KEY(b); KEY(c); KEY(d); KEY(e);
+	KEY(a); KEY(b); KEY(c); KEY(d); KEY(e); KEY(f);
 	assertNotNull(testObject);
 	insert(a, new JSONNull());
 	insert(b, new JSONBool(true));
 	insert(c, new JSONFloat(1.5));
-	insert(d, new JSONArray());
-	insert(e, new JSONObject());
-	assertIntEqual(testObject->size(), 7);
+	insert(d, new JSONString(strNewDup("This is only a test")));
+	insert(e, new JSONArray());
+	insert(f, new JSONObject());
+	assertIntEqual(testObject->size(), 8);
 
 	JSONObject dupObject(*testObject);
 	assertIntNotEqual(dupObject.size(), 0);
@@ -139,16 +141,16 @@ void testDuplicate()
 void testDel()
 {
 	assertNotNull(testObject);
-	assertIntEqual(testObject->size(), 7);
+	assertIntEqual(testObject->size(), 8);
 
 	testObject->del("a");
-	assertIntEqual(testObject->size(), 6);
+	assertIntEqual(testObject->size(), 7);
 
 	testObject->del("notPresent");
-	assertIntEqual(testObject->size(), 6);
+	assertIntEqual(testObject->size(), 7);
 
 	testObject->del(nullptr);
-	assertIntEqual(testObject->size(), 6);
+	assertIntEqual(testObject->size(), 7);
 }
 
 void testDistruct()
