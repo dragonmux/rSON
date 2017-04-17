@@ -99,14 +99,18 @@ void testLookup()
 	assertNotNull(testObject);
 	assertIntEqual(testObject->size(), 2);
 	try
-	{
-		child = (*testObject)[testKey1];
-	}
+		{ child = (*testObject)[testKey1]; }
 	catch (JSONTypeError &err)
-	{
-		fail(err.error());
-	}
+		{ fail(err.error()); }
 	assertIntEqual(child->asInt(), 1);
+
+	child = testObject;
+	try
+		{ assertPtrEqual((*child)[testKey1], (*testObject)[testKey1]); }
+	catch (JSONTypeError &err)
+		{ fail(err.error()); }
+	catch (JSONObjectError &err)
+		{ fail(err.error()); }
 }
 
 void testDuplicate()

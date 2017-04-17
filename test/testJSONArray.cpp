@@ -71,16 +71,12 @@ try \
 	tryStuff; \
 } \
 catch (JSONTypeError &err) \
-{ \
-	fail(err.error()); \
-}
+	{ fail(err.error()); }
 
 #define CATCH_FAIL(tryStuff) \
 COMMON_CATCH(tryStuff) \
 catch (JSONArrayError &err) \
-{ \
-	fail(err.error()); \
-}
+	{ fail(err.error()); }
 
 void testLookup()
 {
@@ -106,6 +102,9 @@ void testLookup()
 		fail("Array index out of bounds exception not thrown when it should have been!")
 	)
 	catch (JSONArrayError &) { }
+
+	child = testArray;
+	CATCH_FAIL(assertPtrEqual((*child)[size_t(0)], (*testArray)[0]))
 }
 
 void testDuplicate()
