@@ -106,7 +106,10 @@ void testConversions()
 	UNWANTED_TYPE(testString, Float)
 	WANTED_TYPE( \
 		assertConstNotNull(testString->asString()); \
-		assertStringEqual(testString->asString(), "testValue")
+		assertStringEqual(testString->asString(), "testValue");
+		JSONAtom &atom = *testString;
+		JSONString &str = atom;
+		assertPtrEqual(str, testString)
 	)
 	UNWANTED_TYPE(testString, Object)
 	UNWANTED_TYPE(testString, Array)
