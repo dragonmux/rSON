@@ -77,4 +77,5 @@ void writeArray()
 	assertFalse(stream.atEOF());
 	assertFalse(stream.write(testData));
 	assertTrue(stream.atEOF());
+	assertFalse(stream.write(testData));
 }
