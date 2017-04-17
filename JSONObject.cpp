@@ -63,10 +63,10 @@ JSONObject::~JSONObject()
 {
 	if (this == NULL)
 		return;
-	for (atomMapIter i = children.begin(); i != children.end(); i++)
+	for (auto &child : children)
 	{
-		delete [] i->first;
-		delete i->second;
+		delete [] child.first;
+		delete child.second;
 	}
 	mapKeys.clear();
 	children.clear();
