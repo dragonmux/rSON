@@ -17,6 +17,7 @@
  */
 
 #include "test.h"
+#include "../String.h"
 
 JSONArray *testArray = NULL;
 
@@ -113,9 +114,10 @@ void testDuplicate()
 	testArray->add(new JSONNull());
 	testArray->add(new JSONBool(true));
 	testArray->add(new JSONFloat(1.5));
+	testArray->add(new JSONString(strNewDup("This is only a test")));
 	testArray->add(new JSONArray());
 	testArray->add(new JSONObject());
-	assertIntEqual(testArray->size(), 7);
+	assertIntEqual(testArray->size(), 8);
 
 	JSONArray dupArray(*testArray);
 	assertIntNotEqual(dupArray.size(), 0);
@@ -125,20 +127,20 @@ void testDuplicate()
 void testDel()
 {
 	assertNotNull(testArray);
-	assertIntEqual(testArray->size(), 7);
+	assertIntEqual(testArray->size(), 8);
 	testArray->del(size_t(0));
-	assertIntEqual(testArray->size(), 6);
-	JSONAtom *child = (*testArray)[5];
+	assertIntEqual(testArray->size(), 7);
+	JSONAtom *child = (*testArray)[6];
 	assertNotNull(child);
 	testArray->del(child);
-	assertIntEqual(testArray->size(), 5);
+	assertIntEqual(testArray->size(), 6);
 	testArray->del(4);
-	assertIntEqual(testArray->size(), 4);
+	assertIntEqual(testArray->size(), 5);
 
 	CATCH_FAIL(testArray->del(nullptr))
 	try
 	{
-		testArray->del(4);
+		testArray->del(5);
 		fail("Array index out of bounds exception not thrown when it should have been!");
 	}
 	catch (JSONArrayError &) { }
