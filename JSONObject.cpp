@@ -61,8 +61,6 @@ JSONObject::JSONObject(JSONObject &object) : JSONAtom(JSON_TYPE_OBJECT)
 
 JSONObject::~JSONObject()
 {
-	if (this == NULL)
-		return;
 	for (auto &child : children)
 	{
 		delete [] child.first;
