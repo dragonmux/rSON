@@ -64,13 +64,17 @@ void badReadStream()
 
 void writeArray()
 {
-	std::array<char, 1> dest, testData = {'a'};
+	std::array<char, 3> dest;
+	std::array<char, 2> testData = {'a', 'b'};
 	memoryStream_t srcStream(dest.data(), dest.size());
 	stream_t &stream = srcStream;
 
 	assertFalse(stream.atEOF());
 	assertTrue(stream.write(testData));
-	assertTrue(stream.atEOF());
-	assertTrue(dest == testData);
+	assertFalse(stream.atEOF());
+	assertMemEqual(dest.data(), testData.data(), testData.size());
+	assertFalse(stream.write(nullptr, -1));
+	assertFalse(stream.atEOF());
 	assertFalse(stream.write(testData));
+	assertTrue(stream.atEOF());
 }
