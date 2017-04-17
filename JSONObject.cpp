@@ -25,32 +25,32 @@ JSONObject::JSONObject() : JSONAtom(JSON_TYPE_OBJECT)
 
 JSONObject::JSONObject(JSONObject &object) : JSONAtom(JSON_TYPE_OBJECT)
 {
-	for (atomMapIter i = object.children.begin(); i != object.children.end(); i++)
+	for (const auto &child : object.children)
 	{
-		char *key = strNewDup(i->first);
+		char *key = strNewDup(child.first);
 		JSONAtom *value;
-		switch (i->second->getType())
+		switch (child.second->getType())
 		{
 			case JSON_TYPE_NULL:
 				value = new JSONNull();
 				break;
 			case JSON_TYPE_BOOL:
-				value = new JSONBool(*((JSONBool *)i->second));
+				value = new JSONBool(*child.second);
 				break;
 			case JSON_TYPE_INT:
-				value = new JSONInt(*((JSONInt *)i->second));
+				value = new JSONInt(*child.second);
 				break;
 			case JSON_TYPE_FLOAT:
-				value = new JSONFloat(*((JSONFloat *)i->second));
+				value = new JSONFloat(*child.second);
 				break;
 			case JSON_TYPE_STRING:
-				value = new JSONString(strNewDup(*((JSONString *)i->second)));
+				value = new JSONString(strNewDup(*child.second));
 				break;
 			case JSON_TYPE_OBJECT:
-				value = new JSONObject(*((JSONObject *)i->second));
+				value = new JSONObject(*child.second);
 				break;
 			case JSON_TYPE_ARRAY:
-				value = new JSONArray(*((JSONArray *)i->second));
+				value = new JSONArray(*child.second);
 				break;
 			default:
 				throw JSONObjectError(JSON_OBJECT_BAD_KEY);
