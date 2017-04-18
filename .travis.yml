@@ -21,7 +21,7 @@ after_success:
 matrix:
   include:
     - compiler: clang-3.8
-      env: GCC=clang-3.8 GXX=clang++-3.8 COVERAGE=
+      env: GCC=clang-3.8 GXX=clang++-3.8 GCOV=gcov-4.9
       addons:
         apt:
           sources:
@@ -33,7 +33,7 @@ matrix:
             - g++-4.9
             - clang-3.8
     - compiler: clang-3.9
-      env: GCC=clang-3.9 GXX=clang++-3.9 COVERAGE=
+      env: GCC=clang-3.9 GXX=clang++-3.9 GCOV=gcov-4.9
       addons:
         apt:
           sources:
@@ -46,6 +46,15 @@ matrix:
             - clang-3.9
     - compiler: gcc-4.9
       env: GCC=gcc-4.9 GXX=g++-4.9 GCOV=gcov-4.9
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - gcc-4.9
+            - g++-4.9
+    - compiler: gcc-4.9
+      env: GCC=gcc-4.9 GXX=g++-4.9 COVERAGE=
       addons:
         apt:
           sources:
