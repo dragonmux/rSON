@@ -87,6 +87,9 @@ void testEscapes()
 	TRY("\\u5555", assertStringEqual(str, "\xE5\x95\x95"));
 	TRY("\\u5A5A", assertStringEqual(str, "\xE5\xA9\x9A"));
 	TRY_SHOULD_FAIL("\\u5A5Q");
+	TRY_SHOULD_FAIL("\\u%A5A");
+	TRY_SHOULD_FAIL("\\u5=5A");
+	TRY_SHOULD_FAIL("\\u5A^A");
 }
 
 #undef TRY_SHOULD_FAIL
