@@ -17,6 +17,7 @@
  */
 
 #include "test.h"
+#include "../String.h"
 #include <string.h>
 
 JSONString *testString = NULL;
@@ -86,6 +87,9 @@ void testEscapes()
 	TRY("\\u5555", assertStringEqual(str, "\xE5\x95\x95"));
 	TRY("\\u5A5A", assertStringEqual(str, "\xE5\xA9\x9A"));
 	TRY_SHOULD_FAIL("\\u5A5Q");
+	TRY_SHOULD_FAIL("\\u%A5A");
+	TRY_SHOULD_FAIL("\\u5=5A");
+	TRY_SHOULD_FAIL("\\u5A^A");
 }
 
 #undef TRY_SHOULD_FAIL
@@ -100,6 +104,7 @@ void testOperatorString()
 
 void testConversions()
 {
+	assertNotNull(testString);
 	UNWANTED_TYPE(testString, Null)
 	UNWANTED_TYPE(testString, Bool)
 	UNWANTED_TYPE(testString, Int)
@@ -113,6 +118,13 @@ void testConversions()
 	)
 	UNWANTED_TYPE(testString, Object)
 	UNWANTED_TYPE(testString, Array)
+}
+
+void testSet()
+{
+	assertNotNull(testString);
+	testString->set(strNewDup("This is only a test"));
+	assertStringEqual(*testString, "This is only a test");
 }
 
 void testDistruct()
@@ -131,6 +143,7 @@ BEGIN_REGISTER_TESTS()
 	TEST(testEscapes)
 	TEST(testOperatorString)
 	TEST(testConversions)
+	TEST(testSet)
 	TEST(testDistruct)
 END_REGISTER_TESTS()
 
