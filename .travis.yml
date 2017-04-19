@@ -54,7 +54,7 @@ matrix:
             - gcc-4.9
             - g++-4.9
     - compiler: gcc-4.9
-      env: GCC=gcc-4.9 GXX=g++-4.9 COVERAGE=
+      env: GCC=gcc-4.9 GXX=g++-4.9 COVERAGE=0
       addons:
         apt:
           sources:
