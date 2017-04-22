@@ -39,13 +39,21 @@ namespace rSON
 		void reset(int32_t s = -1) noexcept
 		{
 			if (socket != -1)
+#ifndef _MSC_VER
 				close(socket);
+#else
+				closesocket(socket);
+#endif
 			socket = s;
 		}
 
+		bool bind(const void *const addr, const size_t len) const noexcept;
+		bool connect(const void *const addr, const size_t len) const noexcept;
+
 	public:
 		constexpr socket_t() noexcept : socket(-1) { }
-		socket_t(int32_t s) : socket(s) { }
+		constexpr socket_t(const int32_t s) noexcept : socket(s) { }
+		socket_t(const int family, const int type, const int protocol = 0) noexcept;
 		socket_t(const socket_t &) = delete;
 		socket_t(socket_t &&s) noexcept : socket(s.release()) { }
 		~socket_t() noexcept { reset(); }
@@ -55,15 +63,19 @@ namespace rSON
 		operator int32_t() const noexcept { return socket; }
 		bool operator ==(const int32_t s) const noexcept { return socket == s; }
 		void swap(socket_t &s) noexcept { std::swap(socket, s.socket); }
+
+		template<typename T> bool bind(const T &addr) const noexcept { return bind(static_cast<const void *>(&addr), sizeof(T)); }
+		template<typename T> bool connect(const T &addr) const noexcept { return connect(static_cast<const void *>(&addr), sizeof(T)); }
+		bool listen(const int32_t queueLength) const noexcept;
+		socket_t accept(sockaddr *peerAddr = nullptr, socklen_t *peerAddrLen = nullptr) const noexcept;
+		ssize_t write(const void *const bufferPtr, const size_t len) const noexcept;
+		ssize_t read(void *const bufferPtr, const size_t len) const noexcept;
 	};
 
 	struct rSON_CLS_API rpcStream_t final : public stream_t
 	{
 	private:
-		int fd;
-		size_t length;
-		bool eof;
-		int32_t mode;
+		socket_t sock;
 
 	public:
 		rpcStream_t(const char *const fileName, const int32_t mode);
@@ -75,7 +87,7 @@ namespace rSON
 
 		bool read(void *const value, const size_t valueLen, size_t &actualLen) final override;
 		bool write(const void *const value, const size_t valueLen) final override;
-		bool atEOF() const noexcept final override { return eof; }
+		bool atEOF() const noexcept final override { return false; }
 	};
 }
 

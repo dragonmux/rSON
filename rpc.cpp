@@ -24,4 +24,31 @@
 #include "internal.h"
 #include "rpc.h"
 
+socket_t::socket_t(const int family, const int type, const int protocol) noexcept :
+	socket(::socket(family, type, protocol)) { }
 
+bool socket_t::bind(const void *const addr, const size_t len) const noexcept
+	{ return ::bind(socket, reinterpret_cast<const sockaddr *>(addr), len) == 0; }
+bool socket_t::connect(const void *const addr, const size_t len) const noexcept
+	{ return ::connect(socket, reinterpret_cast<const sockaddr *>(addr), len) == 0; }
+
+bool socket_t::listen(const int32_t queueLength) const noexcept
+	{ return ::listen(socket, queueLength) == 0; }
+socket_t socket_t::accept(sockaddr *peerAddr, socklen_t *peerAddrLen) const noexcept
+	{ return ::accept(socket, peerAddr, peerAddrLen); }
+ssize_t socket_t::write(const void *const bufferPtr, const size_t len) const noexcept
+	{ return ::write(socket, bufferPtr, len); }
+ssize_t socket_t::read(void *const bufferPtr, const size_t len) const noexcept
+{
+	size_t num = 0;
+	char *const buffer = static_cast<char *const>(bufferPtr);
+	do
+	{
+		ssize_t res = ::read(socket, buffer + num, len - num);
+		if (res <= 0)
+			return -1;
+		num += res;
+	}
+	while (num < len);
+	return num;
+}
