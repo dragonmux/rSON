@@ -26,12 +26,10 @@
 
 socket_t::socket_t(const int family, const int type, const int protocol) noexcept :
 	socket(::socket(family, type, protocol)) { }
-
 bool socket_t::bind(const void *const addr, const size_t len) const noexcept
 	{ return ::bind(socket, reinterpret_cast<const sockaddr *>(addr), len) == 0; }
 bool socket_t::connect(const void *const addr, const size_t len) const noexcept
 	{ return ::connect(socket, reinterpret_cast<const sockaddr *>(addr), len) == 0; }
-
 bool socket_t::listen(const int32_t queueLength) const noexcept
 	{ return ::listen(socket, queueLength) == 0; }
 socket_t socket_t::accept(sockaddr *peerAddr, socklen_t *peerAddrLen) const noexcept
@@ -51,4 +49,14 @@ ssize_t socket_t::read(void *const bufferPtr, const size_t len) const noexcept
 	}
 	while (num < len);
 	return num;
+}
+
+rpcStream_t::rpcStream_t() : sock(AF_INET, SOCK_STREAM) { }
+bool rpcStream_t::write(const void *const value, const size_t valueLen)
+	{ return sock.write(value, valueLen) == valueLen; }
+
+bool rpcStream_t::read(void *const value, const size_t valueLen, size_t &actualLen)
+{
+	actualLen = sock.read(value, valueLen);
+	return actualLen == valueLen;
 }

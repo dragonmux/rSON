@@ -78,10 +78,10 @@ namespace rSON
 		socket_t sock;
 
 	public:
-		rpcStream_t(const char *const fileName, const int32_t mode);
+		rpcStream_t(/* TODO: Implement a transport dispatch */);
 		rpcStream_t(const rpcStream_t &) = delete;
 		rpcStream_t(rpcStream_t &&) = default;
-		~rpcStream_t() noexcept final override;
+		~rpcStream_t() noexcept final override = default;
 		rpcStream_t &operator =(const rpcStream_t &) = delete;
 		rpcStream_t &operator =(rpcStream_t &&) = default;
 
