@@ -153,3 +153,11 @@ void JSONString::set(char *strValue)
 	delete [] value;
 	value = strValue;
 }
+
+size_t JSONString::len() const
+{
+	// Note, this works specifically because we surrogate pair encode the NULL byte in the decoder.
+	// If the caller needs their string surrogate decoded, they should ask for the string raw value,
+	// this, and in a seperate buffer, decode the string fully.
+	return strlen(value);
+}

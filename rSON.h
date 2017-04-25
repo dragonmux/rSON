@@ -317,8 +317,18 @@ namespace rSON
 		~JSONString();
 		operator const char *() const;
 		void set(char *strValue);
+		const char *get() const noexcept { return value; }
+		size_t len() const;
 		size_t length() const rSON_VFINAL;
 		void store(stream_t &stream) const rSON_VFINAL;
+
+		bool isIn(const char *const _value) const noexcept { return strcmp(value, _value) == 0; }
+		template<typename... Values> bool isIn(const char *const _value, Values ...values) const noexcept
+		{
+			if (isIn(_value))
+				return true;
+			return isIn(values...);
+		}
 	};
 
 	class rSON_CLS_API JSONBool : public JSONAtom
