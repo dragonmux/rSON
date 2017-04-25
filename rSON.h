@@ -241,6 +241,7 @@ namespace rSON
 		virtual void store(stream_t &stream) const = 0;
 		virtual size_t length() const = 0;
 
+		bool isNull() const noexcept { return typeIs(JSON_TYPE_NULL); }
 		void *asNull() const;
 		bool asBool() const { return *this; }
 		int asInt() const { return *this; }
