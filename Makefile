@@ -20,6 +20,9 @@ DEFS = $(OPTIM_FLAGS) -pedantic -Wall -Wextra -std=c++11 -D__rSON__
 CFLAGS = -c $(DEFS) -o $@ $<
 DEPFLAGS = -E -MM $(DEFS) -o .dep/$*.d $<
 LFLAGS = $(OPTIM_FLAGS) -shared $(O) -Wl,-soname,$(SOMAJ) -o $(SO) -lstdc++ -lm -z defs
+ifeq ($(strip $(FOR_TESTS)), 1)
+	CFLAGS += $(shell pkg-config --cflags crunch)
+endif
 
 SED = sed -e 's:@LIBDIR@:$(LIBDIR):g' -e 's:@PREFIX@:$(PREFIX):g'
 
