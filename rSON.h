@@ -257,6 +257,7 @@ namespace rSON
 		operator bool() const;
 		operator int() const;
 		operator double() const;
+		operator float() const { return double(*this); }
 		operator const char *() const;
 		operator JSONString &() const;
 		operator JSONObject &() const;
@@ -366,6 +367,7 @@ namespace rSON
 		const std::vector<const char *> &keys() const;
 		bool exists(const char *key) const;
 		size_t size() const;
+		size_t count() const { return size(); }
 		size_t length() const rSON_VFINAL;
 		void store(stream_t &stream) const rSON_VFINAL;
 	};
@@ -388,6 +390,7 @@ namespace rSON
 		void del(JSONAtom *value);
 		JSONAtom &operator [](const size_t key) const;
 		size_t size() const;
+		size_t count() const { return size(); }
 		iterator begin() const;
 		iterator end() const;
 		size_t length() const rSON_VFINAL;
