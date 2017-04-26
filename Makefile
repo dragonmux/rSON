@@ -36,7 +36,7 @@ else
 	O_RPC =
 endif
 H = rSON.h
-O = JSONErrors.o JSONAtom.o JSONNull.o JSONBool.o JSONInt.o JSONFloat.o JSONString.o JSONObject.o JSONArray.o Memory.o String.o Stream.o Parser.o Writer.o $(O_RPC)
+O = JSONErrors.o JSONAtom.o JSONNull.o JSONBool.o JSONInt.o JSONFloat.o JSONString.o JSONObject.o JSONArray.o String.o Stream.o Parser.o Writer.o $(O_RPC)
 VERMAJ = .0
 VERMIN = .2
 VERREV = .1

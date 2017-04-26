@@ -17,20 +17,7 @@
  */
 
 #include "test.h"
-#include "../Memory.h"
 #include "testHeader.h"
-
-void testAlloc()
-{
-	void *alloc = malloc(1);
-	assertNotNull(alloc);
-	assertIntEqual(reinterpret_cast<char *>(alloc)[0], 0);
-	void *reAlloc = memRealloc(alloc, 2);
-	if (!reAlloc)
-		free(alloc);
-	assertNotNull(reAlloc);
-	free(reAlloc);
-}
 
 void testNotImplemented()
 {
@@ -74,7 +61,6 @@ extern "C"
 #endif
 
 BEGIN_REGISTER_TESTS()
-	TEST(testAlloc)
 	TEST(testNotImplemented)
 	TEST(testStreamType)
 	TEST(testReadStream)

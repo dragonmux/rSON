@@ -107,14 +107,12 @@
     <ClCompile Include="..\JSONNull.cpp" />
     <ClCompile Include="..\JSONObject.cpp" />
     <ClCompile Include="..\JSONString.cpp" />
-    <ClCompile Include="..\Memory.cpp" />
     <ClCompile Include="..\Parser.cpp" />
     <ClCompile Include="..\String.cpp" />
     <ClCompile Include="..\Writer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\internal.h" />
-    <ClInclude Include="..\Memory.h" />
     <ClInclude Include="..\rSON.h" />
     <ClInclude Include="..\String.h" />
   </ItemGroup>

@@ -41,9 +41,6 @@
     <ClCompile Include="..\JSONString.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\Memory.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\Parser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -53,9 +50,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\internal.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Memory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\rSON.h">
