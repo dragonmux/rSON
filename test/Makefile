@@ -23,7 +23,7 @@ endif
 ifeq ($(strip $(COVERAGE)), 1)
 	CRUNCHMAKE += -lgcov
 endif
-CRUNCHMAKE += -o../JSONAtom.o -o../JSONErrors.o -o../String.o -o../Memory.o -o../Writer.o -o../Stream.o
+CRUNCHMAKE += -o../JSONAtom.o -o../JSONErrors.o -o../String.o -o../Writer.o -o../Stream.o
 CRUNCHMAKE += -o../JSONNull.o -o../JSONBool.o -o../JSONInt.o -o../JSONFloat.o -o../JSONString.o -o../JSONObject.o -o../JSONArray.o
 CRUNCH = crunch
 
