@@ -27,15 +27,6 @@
 	exit(1); \
 }
 
-void *memMalloc(size_t size)
-{
-	void *ret = malloc(size);
-	if (ret == NULL)
-		die("**** rSON Fatal ****\nCould not allocate enough memory!\n**** rSON Fatal ****");
-	memset(ret, 0, size);
-	return ret;
-}
-
 void *memRealloc(void *ptr, size_t size)
 {
 	void *ret = realloc(ptr, size);

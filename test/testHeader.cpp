@@ -22,7 +22,7 @@
 
 void testAlloc()
 {
-	void *alloc = memMalloc(1);
+	void *alloc = malloc(1);
 	assertNotNull(alloc);
 	assertIntEqual(reinterpret_cast<char *>(alloc)[0], 0);
 	void *reAlloc = memRealloc(alloc, 2);
