@@ -23,6 +23,7 @@
 #include <map>
 #include <vector>
 #include <string.h>
+#include <memory>
 
 #ifdef _WINDOWS
 	#ifdef __rSON__
@@ -177,11 +178,12 @@ namespace rSON
 	class rSON_CLS_API JSONTypeError
 	{
 	private:
-		char *errorStr;
+		std::unique_ptr<const char []> errorStr;
 		const char *typeToString(JSONAtomType type) const;
 
 	public:
 		JSONTypeError(JSONAtomType actual, JSONAtomType expected);
+		JSONTypeError(JSONTypeError &&error) noexcept : errorStr(std::move(error.errorStr)) { }
 		~JSONTypeError();
 		const char *error() const;
 	};

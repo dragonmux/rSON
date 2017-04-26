@@ -55,10 +55,7 @@ JSONTypeError::JSONTypeError(JSONAtomType actual, JSONAtomType expected)
 	errorStr = formatString("Expecting %s, found %s", typeToString(expected), typeToString(actual));
 }
 
-JSONTypeError::~JSONTypeError()
-{
-	free(errorStr);
-}
+JSONTypeError::~JSONTypeError() { }
 
 const char *JSONTypeError::typeToString(JSONAtomType type) const
 {
@@ -84,7 +81,7 @@ const char *JSONTypeError::typeToString(JSONAtomType type) const
 
 const char *JSONTypeError::error() const
 {
-	return errorStr;
+	return errorStr.get();
 }
 
 JSONObjectError::JSONObjectError(JSONObjectErrorType errorType) : objectError(errorType)

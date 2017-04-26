@@ -105,17 +105,8 @@ size_t JSONFloat::length() const { return formatLen("%f", value); }
 // This is better.. but %f is wrong and produces very much the wrong result.
 void JSONFloat::store(stream_t &stream) const
 {
-	char *const string = formatString("%f", value);
-	try
-	{
-		stream.write(string, strlen(string));
-	}
-	catch (...)
-	{
-		free(string);
-		throw;
-	}
-	free(string);
+	const auto string = formatString("%f", value);
+	stream.write(string.get(), strlen(string.get()));
 }
 
 size_t JSONString::length() const
