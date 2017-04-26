@@ -36,15 +36,15 @@ void testConstruct()
 void testOperatorInt()
 {
 	assertNotNull(testInt);
-	assertIntEqual(*testInt, 5);
-	assertIntNotEqual(*testInt, 0);
+	assertInt64Equal(*testInt, 5);
+	assertInt64NotEqual(*testInt, 0);
 }
 
 void testConversions()
 {
 	UNWANTED_TYPE(testInt, Null)
 	UNWANTED_TYPE(testInt, Bool)
-	WANTED_TYPE(assertIntEqual(testInt->asInt(), 5))
+	WANTED_TYPE(assertInt64Equal(testInt->asInt(), 5))
 	UNWANTED_TYPE(testInt, Float)
 	UNWANTED_TYPE(testInt, String)
 	UNWANTED_TYPE(testInt, Object)
@@ -53,9 +53,9 @@ void testConversions()
 
 void testSet()
 {
-	assertIntEqual(*testInt, 5);
+	assertInt64Equal(*testInt, 5);
 	testInt->set(16384);
-	assertIntEqual(*testInt, 16384);
+	assertInt64Equal(*testInt, 16384);
 }
 
 void testDistruct()

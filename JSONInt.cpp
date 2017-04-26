@@ -18,7 +18,7 @@
 
 #include "internal.h"
 
-JSONInt::JSONInt(int intValue) : JSONAtom(JSON_TYPE_INT), value(intValue)
+JSONInt::JSONInt(int64_t intValue) : JSONAtom(JSON_TYPE_INT), value(intValue)
 {
 }
 
@@ -26,12 +26,12 @@ JSONInt::~JSONInt()
 {
 }
 
-JSONInt::operator int() const
+JSONInt::operator int64_t() const
 {
 	return value;
 }
 
-void JSONInt::set(int intValue)
+void JSONInt::set(int64_t intValue)
 {
 	value = intValue;
 }

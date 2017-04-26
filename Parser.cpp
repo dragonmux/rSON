@@ -339,7 +339,7 @@ size_t power10(size_t power)
 JSONAtom *number(JSONParser &parser)
 {
 	bool sign = false, mulSign = false;
-	int integer = 0;
+	int64_t integer = 0;
 	size_t decimal = 0, decDigits = 0, multiplier = 0;
 	bool decimalValid = false;
 
@@ -371,7 +371,7 @@ JSONAtom *number(JSONParser &parser)
 
 	if (!decimalValid)
 	{
-		int mul = power10(multiplier);
+		const int64_t mul = power10(multiplier);
 		if (mulSign)
 			integer /= mul;
 		else
@@ -382,7 +382,7 @@ JSONAtom *number(JSONParser &parser)
 	}
 	else
 	{
-		size_t mul = pow10(multiplier);
+		const int64_t mul = pow10(multiplier);
 		double num = decimal / pow10(decDigits);
 		num += integer;
 		if (mulSign)

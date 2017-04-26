@@ -244,7 +244,7 @@ namespace rSON
 		bool isNull() const noexcept { return typeIs(JSON_TYPE_NULL); }
 		void *asNull() const;
 		bool asBool() const { return *this; }
-		int asInt() const { return *this; }
+		int64_t asInt() const { return *this; }
 		double asFloat() const { return *this; }
 		const char *asString() const { return *this; }
 		JSONString &asStringRef() const;
@@ -255,7 +255,8 @@ namespace rSON
 
 		operator JSONAtom *() const;
 		operator bool() const;
-		operator int() const;
+		//operator int32_t() const;
+		operator int64_t() const;
 		operator double() const;
 		operator float() const { return double(*this); }
 		operator const char *() const;
@@ -297,13 +298,13 @@ namespace rSON
 	class rSON_CLS_API JSONInt : public JSONAtom
 	{
 	private:
-		int value;
+		int64_t value;
 
 	public:
-		JSONInt(int intValue);
+		JSONInt(int64_t intValue);
 		~JSONInt();
-		operator int() const;
-		void set(int intValue);
+		operator int64_t() const;
+		void set(int64_t intValue);
 		size_t length() const rSON_VFINAL;
 		void store(stream_t &stream) const rSON_VFINAL;
 	};

@@ -37,7 +37,7 @@ JSONAtom::operator bool() const
 	return *((JSONBool *)this);
 }
 
-JSONAtom::operator int() const
+JSONAtom::operator int64_t() const
 {
 	if (!typeIs(JSON_TYPE_INT))
 		throw JSONTypeError(type, JSON_TYPE_INT);
