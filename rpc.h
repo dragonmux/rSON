@@ -20,6 +20,7 @@
 #define rSON_RPC__HXX
 
 #include <unistd.h>
+#include <thread>
 #include "rSON.h"
 
 namespace rSON
@@ -75,15 +76,21 @@ namespace rSON
 	struct rSON_CLS_API rpcStream_t final : public stream_t
 	{
 	private:
+		const int family;
 		socket_t sock;
+		std::thread threadAccept;
 
 	public:
-		rpcStream_t(/* TODO: Implement a transport dispatch */);
+		rpcStream_t(const bool ipv6/* TODO: Implement a transport dispatch */);
 		rpcStream_t(const rpcStream_t &) = delete;
 		rpcStream_t(rpcStream_t &&) = default;
 		~rpcStream_t() noexcept final override = default;
 		rpcStream_t &operator =(const rpcStream_t &) = delete;
 		rpcStream_t &operator =(rpcStream_t &&) = default;
+
+		// Either call the listen() API OR the connect() - NEVER both for a rpcStream_t instance.
+		bool connect(const char *const where, uint16_t port);
+		bool listen(const char *const where, uint16_t port);
 
 		bool read(void *const value, const size_t valueLen, size_t &actualLen) final override;
 		bool write(const void *const value, const size_t valueLen) final override;

@@ -24,6 +24,8 @@
 #include "internal.h"
 #include "rpc.h"
 
+void acceptThread();
+
 socket_t::socket_t(const int family, const int type, const int protocol) noexcept :
 	socket(::socket(family, type, protocol)) { }
 bool socket_t::bind(const void *const addr, const size_t len) const noexcept
@@ -51,7 +53,31 @@ ssize_t socket_t::read(void *const bufferPtr, const size_t len) const noexcept
 	return num;
 }
 
-rpcStream_t::rpcStream_t() : sock(AF_INET, SOCK_STREAM) { }
+rpcStream_t::rpcStream_t(const bool ipv6) : family(ipv6 ? AF_INET6 : AF_INET),
+	sock(family, SOCK_STREAM, IPPROTO_TCP), threadAccept() { }
+
+sockaddr_in prepare(const int family, const char *const where, const uint16_t port) noexcept
+{
+	sockaddr_in config;
+	config.sin_family = family;
+	//config.sin_addr.s_addr =
+	config.sin_port = htons(port);
+	return config;
+}
+
+bool rpcStream_t::connect(const char *const where, const uint16_t port)
+{
+	const auto service = prepare(family, where, port);
+	return sock.connect(service);
+}
+
+bool rpcStream_t::listen(const char *const where, const uint16_t port)
+{
+	const auto service = prepare(family, where, port);
+	const bool ok = sock.bind(service) && sock.listen(1);
+	threadAccept = std::thread(acceptThread);
+	return ok;
+}
 
 bool rpcStream_t::read(void *const value, const size_t valueLen, size_t &actualLen)
 {
@@ -68,4 +94,8 @@ bool rpcStream_t::write(const void *const value, const size_t valueLen)
 	if (result < 0)
 		return false;
 	return size_t(result) == valueLen;
+}
+
+void acceptThread()
+{
 }
