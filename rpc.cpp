@@ -52,11 +52,20 @@ ssize_t socket_t::read(void *const bufferPtr, const size_t len) const noexcept
 }
 
 rpcStream_t::rpcStream_t() : sock(AF_INET, SOCK_STREAM) { }
-bool rpcStream_t::write(const void *const value, const size_t valueLen)
-	{ return sock.write(value, valueLen) == valueLen; }
 
 bool rpcStream_t::read(void *const value, const size_t valueLen, size_t &actualLen)
 {
-	actualLen = sock.read(value, valueLen);
+	actualLen = 0;
+	const ssize_t result = sock.read(value, valueLen);
+	if (result > 0)
+		actualLen = size_t(result);
 	return actualLen == valueLen;
+}
+
+bool rpcStream_t::write(const void *const value, const size_t valueLen)
+{
+	const ssize_t result = sock.write(value, valueLen);
+	if (result < 0)
+		return false;
+	return size_t(result) == valueLen;
 }
