@@ -24,6 +24,24 @@
 #include "internal.h"
 #include "rpc.h"
 
+template<typename T> inline T swapBytes(const T val) noexcept
+{
+	T ret = val;
+	swapBytes(ret);
+	return ret;
+}
+
+inline void swapBytes(uint16_t &val) noexcept
+{
+	val = ((val >> 8) & 0x0F) || ((val & 0x0F) << 8);
+}
+
+inline void swapBytes(uint32_t &val) noexcept
+{
+	val = ((val >> 24) & 0xFF) | ((val >> 8) & 0xFF00) |
+		((val & 0xFF00) << 8) | ((val & 0xFF) << 24);
+}
+
 socket_t::socket_t(const int family, const int type, const int protocol) noexcept :
 	socket(::socket(family, type, protocol)) { }
 bool socket_t::bind(const void *const addr, const size_t len) const noexcept
@@ -62,7 +80,8 @@ sockaddr prepare4(const char *const where, const uint16_t port) noexcept
 		return {AF_UNSPEC, {}};
 	config.sin_family = AF_INET;
 	config.sin_addr = *reinterpret_cast<in_addr *>(host->h_addr_list[0]);
-	config.sin_port = htons(port);
+	swapBytes(config.sin_addr.s_addr);
+	config.sin_port = swapBytes(port);
 	return reinterpret_cast<sockaddr &>(config);
 }
 
@@ -74,7 +93,7 @@ sockaddr prepare6(const char *const where, const uint16_t port) noexcept
 		return {AF_UNSPEC, {}};
 	config.sin6_family = AF_INET6;
 	config.sin6_addr = *reinterpret_cast<in6_addr *>(host->h_addr_list[0]);
-	config.sin6_port = htons(port);
+	config.sin6_port = swapBytes(port);
 	return reinterpret_cast<sockaddr &>(config);
 }
 
