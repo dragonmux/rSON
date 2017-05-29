@@ -54,25 +54,43 @@ ssize_t socket_t::read(void *const bufferPtr, const size_t len) const noexcept
 rpcStream_t::rpcStream_t(const bool ipv6) : family(ipv6 ? AF_INET6 : AF_INET),
 	sock(family, SOCK_STREAM, IPPROTO_TCP), threadAccept() { }
 
-sockaddr_in prepare(const int family, const char *const where, const uint16_t port) noexcept
+sockaddr prepare4(const char *const where, const uint16_t port) noexcept
 {
 	sockaddr_in config;
 	const hostent *const host = gethostbyname(where);
-	if (!host || !host->h_addr_list[0])
-	{
-		config.sin_family = AF_UNSPEC;
-		return config;
-	}
-	config.sin_family = family;
-	//config.sin_addr.s_addr = ;
+	if (!host || !host->h_addr_list[0] || host->h_addrtype != AF_INET)
+		return {AF_UNSPEC, {}};
+	config.sin_family = AF_INET;
+	config.sin_addr = *reinterpret_cast<in_addr *>(host->h_addr_list[0]);
 	config.sin_port = htons(port);
-	return config;
+	return reinterpret_cast<sockaddr &>(config);
+}
+
+sockaddr prepare6(const char *const where, const uint16_t port) noexcept
+{
+	sockaddr_in6 config;
+	const hostent *const host = gethostbyname(where);
+	if (!host || !host->h_addr_list[0] || host->h_addrtype != AF_INET6)
+		return {AF_UNSPEC, {}};
+	config.sin6_family = AF_INET6;
+	config.sin6_addr = *reinterpret_cast<in6_addr *>(host->h_addr_list[0]);
+	config.sin6_port = htons(port);
+	return reinterpret_cast<sockaddr &>(config);
+}
+
+sockaddr prepare(const int family, const char *const where, const uint16_t port) noexcept
+{
+	if (family == AF_INET)
+		return prepare4(where, port);
+	else if (family == AF_INET6)
+		return prepare6(where, port);
+	return {AF_UNSPEC, {}};
 }
 
 bool rpcStream_t::connect(const char *const where, const uint16_t port)
 {
 	const auto service = prepare(family, where, port);
-	if (service.sin_family == AF_UNSPEC)
+	if (service.sa_family == AF_UNSPEC)
 		return false;
 	return sock.connect(service);
 }
@@ -102,7 +120,7 @@ void acceptThread()
 bool rpcStream_t::listen(const char *const where, const uint16_t port)
 {
 	const auto service = prepare(family, where, port);
-	if (service.sin_family == AF_UNSPEC)
+	if (service.sa_family == AF_UNSPEC)
 		return false;
 	const bool ok = sock.bind(service) && sock.listen(1);
 	threadAccept = std::thread(acceptThread);
