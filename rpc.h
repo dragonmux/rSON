@@ -23,6 +23,8 @@
 #include <thread>
 #include "rSON.h"
 
+struct sockaddr;
+
 namespace rSON
 {
 	struct socket_t final
@@ -82,7 +84,7 @@ namespace rSON
 
 	protected:
 		rpcStream_t(const int _family, const int32_t _sock) noexcept :
-			family(_family), sock(_sock), threadAccept()
+			family(_family), sock(_sock), threadAccept() { }
 
 	public:
 		rpcStream_t(const bool ipv6/* TODO: Implement a transport dispatch */);
