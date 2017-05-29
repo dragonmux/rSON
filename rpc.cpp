@@ -98,4 +98,22 @@ bool rpcStream_t::write(const void *const value, const size_t valueLen)
 
 void acceptThread()
 {
+	/*fd_set selectSet;
+	logmsg("Listener thread running\n");
+	while (true)
+	{
+		std::thread handlerThread;
+		FD_ZERO(&selectSet);
+		FD_SET(initSocket, &selectSet);
+		FD_SET(readQuitPipe, &selectSet);
+		if (select(FD_SETSIZE, &selectSet, NULL, NULL, NULL) < 1)
+			continue;
+		if (FD_ISSET(readQuitPipe, &selectSet))
+			break;
+		socket_t requestSocket = accept(initSocket, NULL, NULL);
+		handlerThread = std::thread(handleRequest, std::move(requestSocket));
+		handlerThread.detach();
+	}
+	logmsg("Listener thread shutting down\n");
+	close(readQuitPipe);*/
 }
