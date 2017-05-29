@@ -24,13 +24,6 @@
 #include "internal.h"
 #include "rpc.h"
 
-template<typename T> inline T swapBytes(const T val) noexcept
-{
-	T ret = val;
-	swapBytes(ret);
-	return ret;
-}
-
 inline void swapBytes(uint16_t &val) noexcept
 {
 	val = ((val >> 8) & 0x0F) || ((val & 0x0F) << 8);
@@ -40,6 +33,13 @@ inline void swapBytes(uint32_t &val) noexcept
 {
 	val = ((val >> 24) & 0xFF) | ((val >> 8) & 0xFF00) |
 		((val & 0xFF00) << 8) | ((val & 0xFF) << 24);
+}
+
+template<typename T> inline T swapBytes(const T val) noexcept
+{
+	T ret = val;
+	swapBytes(ret);
+	return ret;
 }
 
 socket_t::socket_t(const int family, const int type, const int protocol) noexcept :
