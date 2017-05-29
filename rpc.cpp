@@ -56,12 +56,15 @@ rpcStream_t::rpcStream_t(const bool ipv6) : family(ipv6 ? AF_INET6 : AF_INET),
 
 sockaddr_in prepare(const int family, const char *const where, const uint16_t port) noexcept
 {
-	const hostent *const host = gethostbyname(where);
-	if (!host)
-		return {};
 	sockaddr_in config;
+	const hostent *const host = gethostbyname(where);
+	if (!host || !host->h_addr_list[0])
+	{
+		config.sin_family = AF_UNSPEC;
+		return config;
+	}
 	config.sin_family = family;
-	//config.sin_addr.s_addr =
+	//config.sin_addr.s_addr = ;
 	config.sin_port = htons(port);
 	return config;
 }
@@ -69,7 +72,7 @@ sockaddr_in prepare(const int family, const char *const where, const uint16_t po
 bool rpcStream_t::connect(const char *const where, const uint16_t port)
 {
 	const auto service = prepare(family, where, port);
-	if (service == {})
+	if (service.sin_family == AF_UNSPEC)
 		return false;
 	return sock.connect(service);
 }
@@ -99,7 +102,7 @@ void acceptThread()
 bool rpcStream_t::listen(const char *const where, const uint16_t port)
 {
 	const auto service = prepare(family, where, port);
-	if (service == {})
+	if (service.sin_family == AF_UNSPEC)
 		return false;
 	const bool ok = sock.bind(service) && sock.listen(1);
 	threadAccept = std::thread(acceptThread);
