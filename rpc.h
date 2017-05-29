@@ -73,18 +73,22 @@ namespace rSON
 		ssize_t read(void *const bufferPtr, const size_t len) const noexcept;
 	};
 
-	struct rSON_CLS_API rpcStream_t final : public stream_t
+	struct rSON_CLS_API rpcStream_t : public stream_t
 	{
 	private:
 		const int family;
 		socket_t sock;
 		std::thread threadAccept;
 
+	protected:
+		rpcStream_t(const int _family, const int32_t _sock) noexcept :
+			family(_family), sock(_sock), threadAccept()
+
 	public:
 		rpcStream_t(const bool ipv6/* TODO: Implement a transport dispatch */);
 		rpcStream_t(const rpcStream_t &) = delete;
 		rpcStream_t(rpcStream_t &&) = default;
-		~rpcStream_t() noexcept final override = default;
+		~rpcStream_t() noexcept override = default;
 		rpcStream_t &operator =(const rpcStream_t &) = delete;
 		rpcStream_t &operator =(rpcStream_t &&) = default;
 
