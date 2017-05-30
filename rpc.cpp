@@ -84,8 +84,10 @@ ssize_t socket_t::read(void *const bufferPtr, const size_t len) const noexcept
 	return num;
 }
 
+rpcStream_t::rpcStream_t() noexcept : family(AF_UNSPEC), sock() { }
 rpcStream_t::rpcStream_t(const bool ipv6) : family(ipv6 ? AF_INET6 : AF_INET),
-	sock(family, SOCK_STREAM, IPPROTO_TCP), threadAccept() { }
+	sock(family, SOCK_STREAM, IPPROTO_TCP) { }
+bool rpcStream_t::valid() const noexcept { return family != AF_UNSPEC && sock != -1; }
 
 sockaddr prepare4(const char *const where, const uint16_t port) noexcept
 {
@@ -121,7 +123,7 @@ sockaddr prepare(const int family, const char *const where, const uint16_t port)
 	return {AF_UNSPEC, {}};
 }
 
-bool rpcStream_t::connect(const char *const where, const uint16_t port)
+bool rpcStream_t::connect(const char *const where, const uint16_t port) const noexcept
 {
 	const auto service = prepare(family, where, port);
 	if (service.sa_family == AF_UNSPEC)
@@ -129,36 +131,12 @@ bool rpcStream_t::connect(const char *const where, const uint16_t port)
 	return sock.connect(service);
 }
 
-void acceptThread()
-{
-	/*fd_set selectSet;
-	logmsg("Listener thread running\n");
-	while (true)
-	{
-		std::thread handlerThread;
-		FD_ZERO(&selectSet);
-		FD_SET(initSocket, &selectSet);
-		FD_SET(readQuitPipe, &selectSet);
-		if (select(FD_SETSIZE, &selectSet, NULL, NULL, NULL) < 1)
-			continue;
-		if (FD_ISSET(readQuitPipe, &selectSet))
-			break;
-		socket_t requestSocket = accept(initSocket, NULL, NULL);
-		handlerThread = std::thread(handleRequest, std::move(requestSocket));
-		handlerThread.detach();
-	}
-	logmsg("Listener thread shutting down\n");
-	close(readQuitPipe);*/
-}
-
-bool rpcStream_t::listen(const char *const where, const uint16_t port)
+bool rpcStream_t::listen(const char *const where, const uint16_t port) const noexcept
 {
 	const auto service = prepare(family, where, port);
 	if (service.sa_family == AF_UNSPEC)
 		return false;
-	const bool ok = sock.bind(service) && sock.listen(1);
-	threadAccept = std::thread(acceptThread);
-	return ok;
+	return sock.bind(service) && sock.listen(1);
 }
 
 bool rpcStream_t::read(void *const value, const size_t valueLen, size_t &actualLen)

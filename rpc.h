@@ -65,6 +65,7 @@ namespace rSON
 		void operator =(socket_t &&s) noexcept { reset(s.release()); }
 		operator int32_t() const noexcept { return socket; }
 		bool operator ==(const int32_t s) const noexcept { return socket == s; }
+		bool operator !=(const int32_t s) const noexcept { return socket != s; }
 		void swap(socket_t &s) noexcept { std::swap(socket, s.socket); }
 
 		template<typename T> bool bind(const T &addr) const noexcept { return bind(static_cast<const void *>(&addr), sizeof(T)); }
@@ -80,11 +81,11 @@ namespace rSON
 	private:
 		const int family;
 		socket_t sock;
-		std::thread threadAccept;
 
 	protected:
 		rpcStream_t(const int _family, const int32_t _sock) noexcept :
-			family(_family), sock(_sock), threadAccept() { }
+			family(_family), sock(_sock) { }
+		rpcStream_t() noexcept;
 
 	public:
 		rpcStream_t(const bool ipv6/* TODO: Implement a transport dispatch */);
@@ -94,9 +95,10 @@ namespace rSON
 		rpcStream_t &operator =(const rpcStream_t &) = delete;
 		rpcStream_t &operator =(rpcStream_t &&) = default;
 
+		bool valid() const noexcept;
 		// Either call the listen() API OR the connect() - NEVER both for a rpcStream_t instance.
-		bool connect(const char *const where, uint16_t port);
-		bool listen(const char *const where, uint16_t port);
+		bool connect(const char *const where, uint16_t port) const noexcept;
+		bool listen(const char *const where, uint16_t port) const noexcept;
 
 		bool read(void *const value, const size_t valueLen, size_t &actualLen) final override;
 		bool write(const void *const value, const size_t valueLen) final override;
