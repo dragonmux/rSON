@@ -24,15 +24,30 @@
 #include "internal.h"
 #include "rpc.h"
 
+#ifdef __GNUC__
+#if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
+#define SWAP 1
+#else
+#define SWAP 0
+#endif
+#elif defined(_MSC_VER)
+// This is wrong.. but it's better than nothing for MSVC.
+#define SWAP 1
+#endif
+
 inline void swapBytes(uint16_t &val) noexcept
 {
+#ifdef SWAP
 	val = ((val >> 8) & 0x0F) || ((val & 0x0F) << 8);
+#endif
 }
 
 inline void swapBytes(uint32_t &val) noexcept
 {
+#ifdef SWAP
 	val = ((val >> 24) & 0xFF) | ((val >> 8) & 0xFF00) |
 		((val & 0xFF00) << 8) | ((val & 0xFF) << 24);
+#endif
 }
 
 template<typename T> inline T swapBytes(const T val) noexcept
