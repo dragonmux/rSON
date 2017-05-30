@@ -139,6 +139,16 @@ bool rpcStream_t::listen(const char *const where, const uint16_t port) const noe
 	return sock.bind(service) && sock.listen(1);
 }
 
+rpcStream_t rpcStream_t::accept() const noexcept
+{
+	fd_set selectSet;
+	FD_ZERO(&selectSet);
+	FD_SET(sock, &selectSet);
+	if (select(FD_SETSIZE, &selectSet, nullptr, nullptr, nullptr) < 1)
+		return {};
+	return {family, sock.accept(nullptr, nullptr)};
+}
+
 bool rpcStream_t::read(void *const value, const size_t valueLen, size_t &actualLen)
 {
 	actualLen = 0;

@@ -99,6 +99,7 @@ namespace rSON
 		// Either call the listen() API OR the connect() - NEVER both for a rpcStream_t instance.
 		bool connect(const char *const where, uint16_t port) const noexcept;
 		bool listen(const char *const where, uint16_t port) const noexcept;
+		rpcStream_t accept() const noexcept;
 
 		bool read(void *const value, const size_t valueLen, size_t &actualLen) final override;
 		bool write(const void *const value, const size_t valueLen) final override;
