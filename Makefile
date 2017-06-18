@@ -32,20 +32,14 @@ INCDIR = $(PREFIX)/include/
 
 H = rSON.h
 O = JSONErrors.o JSONAtom.o JSONNull.o JSONBool.o JSONInt.o JSONFloat.o JSONString.o JSONObject.o JSONArray.o String.o Stream.o Parser.o Writer.o
+O_RPC = rpc.o
 VERMAJ = .0
 VERMIN = .2
 VERREV = .1
 VER = $(VERMAJ)$(VERMIN)$(VERREV)
-SO = librSON.so
+SO = librSON.so librSON.rpc.so
 PC = rSON.pc
 IN = rSON.pc.in
-
-ifeq ($(strip $(SOCKET)), 1)
-	O_RPC = rpc.o
-	SO += librSON.rpc.so
-else
-	O_RPC =
-endif
 
 DEPS = .dep
 
