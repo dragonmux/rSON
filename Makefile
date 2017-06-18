@@ -19,7 +19,7 @@ include Makefile.inc
 DEFS = $(OPTIM_FLAGS) -pedantic -Wall -Wextra -std=c++11 -D__rSON__
 CFLAGS = -c $(DEFS) -o $@ $<
 DEPFLAGS = -E -MM $(DEFS) -o .dep/$*.d $<
-LFLAGS = $(OPTIM_FLAGS) -shared $(O) -Wl,-soname,$(SOMAJ) -o $(SO) -lstdc++ -lm -z defs
+LFLAGS = $(OPTIM_FLAGS) -shared $^ -Wl,-soname,$@ -o $@ -lstdc++ -lm -z defs
 ifeq ($(strip $(FOR_TESTS)), 1)
 	CFLAGS += $(shell pkg-config --cflags crunch)
 endif
@@ -30,24 +30,22 @@ LIBDIR ?= $(PREFIX)/lib
 PKGDIR = $(LIBDIR)/pkgconfig/
 INCDIR = $(PREFIX)/include/
 
-ifeq ($(strip $(SOCKET)), 1)
-	O_RPC = rpc.o
-else
-	O_RPC =
-endif
 H = rSON.h
-O = JSONErrors.o JSONAtom.o JSONNull.o JSONBool.o JSONInt.o JSONFloat.o JSONString.o JSONObject.o JSONArray.o String.o Stream.o Parser.o Writer.o $(O_RPC)
+O = JSONErrors.o JSONAtom.o JSONNull.o JSONBool.o JSONInt.o JSONFloat.o JSONString.o JSONObject.o JSONArray.o String.o Stream.o Parser.o Writer.o
 VERMAJ = .0
 VERMIN = .2
 VERREV = .1
 VER = $(VERMAJ)$(VERMIN)$(VERREV)
-SOMAJ = librSON.so
-SOMIN = $(SOMAJ)$(VERMAJ)
-SOREV = $(SOMIN)$(VERMIN)
-SO = $(SOREV)$(VERREV)
-A = librSON.a
+SO = librSON.so
 PC = rSON.pc
 IN = rSON.pc.in
+
+ifeq ($(strip $(SOCKET)), 1)
+	O_RPC = rpc.o
+	SO += librSON.rpc.so
+else
+	O_RPC =
+endif
 
 DEPS = .dep
 
@@ -77,22 +75,25 @@ install: all $(LIBDIR) $(PKGDIR) $(INCDIR)
 	$(call ldconfig)
 
 uninstall:
-	rm $(LIBDIR)/$(SOMAJ)*
+	rm $(addprefix $(LIBDIR)/,$(addsuffix *,$(SOMAJ)))
 	rm $(LIBDIR)/$(A)
 	rm $(PKGDIR)/$(PC)
 
-$(SO): $(O)
-	$(call run-cmd,ar,$(A),$(O))
+librSON.so: $(O)
+librSON.rpc.so: $(O_RPC)
+$(SO): A = $(patsubst %.so,%.a,$@)
+$(SO):
+	$(call run-cmd,ar,$(A),$^)
 	$(call run-cmd,ranlib,$(A))
 	$(call run-cmd,ccld,$(LFLAGS))
-	$(call debug-strip,$(SO))
+	$(call debug-strip,$(@))
 
 $(PC): $(IN)
 	$(call run-cmd,sed,$(IN),$(PC))
 
 clean: test $(DEPS)
 	@$(MAKE) -C test clean
-	$(call run-cmd,rm,rSON,*.o $(SOMAJ)* $(A) $(PC) *.gcda *.gcno)
+	$(call run-cmd,rm,rSON,*.o $(addsuffix *,$(SO)) $(patsubst %.so,%.a,$(SO)) $(PC) *.gcda *.gcno)
 	$(call run-cmd,rm,makedep,.dep/*.d)
 
 tests: all test
