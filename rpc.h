@@ -32,24 +32,8 @@ namespace rSON
 	private:
 		int32_t socket;
 
-		int32_t release() noexcept
-		{
-			const int32_t s = socket;
-			socket = -1;
-			return s;
-		}
-
-		void reset(int32_t s = -1) noexcept
-		{
-			if (socket != -1)
-#ifndef _MSC_VER
-				close(socket);
-#else
-				closesocket(socket);
-#endif
-			socket = s;
-		}
-
+		int32_t release() noexcept;
+		void reset(int32_t s = -1) noexcept;
 		bool bind(const void *const addr, const size_t len) const noexcept;
 		bool connect(const void *const addr, const size_t len) const noexcept;
 

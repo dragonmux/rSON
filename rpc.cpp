@@ -57,6 +57,24 @@ template<typename T> inline T swapBytes(const T val) noexcept
 	return ret;
 }
 
+int32_t socket_t::release() noexcept
+{
+	const int32_t s = socket;
+	socket = -1;
+	return s;
+}
+
+void socket_t::reset(int32_t s) noexcept
+{
+	if (socket != -1)
+#ifndef _MSC_VER
+		close(socket);
+#else
+		closesocket(socket);
+#endif
+	socket = s;
+}
+
 socket_t::socket_t(const int family, const int type, const int protocol) noexcept :
 	socket(::socket(family, type, protocol)) { }
 bool socket_t::bind(const void *const addr, const size_t len) const noexcept
