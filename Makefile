@@ -80,7 +80,8 @@ $(SO):
 	$(call run-cmd,ar,$(A),$^)
 	$(call run-cmd,ranlib,$(A))
 	$(call run-cmd,ccld,$(LFLAGS))
-	$(call debug-strip,$(@))
+	$(call debug-strip,$@)
+	$(call run-cmd,ln,$@,$@$(VER))
 
 $(PC): $(IN)
 	$(call run-cmd,sed,$(IN),$(PC))
