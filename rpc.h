@@ -38,7 +38,7 @@ namespace rSON
 		constexpr socket_t(const int32_t s) noexcept : socket(s) { }
 		socket_t(const int family, const int type, const int protocol = 0) noexcept;
 		socket_t(const socket_t &) = delete;
-		socket_t(socket_t &&s) noexcept : socket(-1) { swap(s); }
+		socket_t(socket_t &&s) noexcept : socket_t() { swap(s); }
 		~socket_t() noexcept;
 
 		socket_t &operator =(const socket_t &) = delete;
@@ -63,8 +63,8 @@ namespace rSON
 		socket_t sock;
 
 	protected:
-		rpcStream_t(const int _family, const int32_t _sock) noexcept :
-			family(_family), sock(_sock) { }
+		rpcStream_t(const int _family, socket_t _sock) noexcept :
+			family(_family), sock(std::move(_sock)) { }
 		rpcStream_t() noexcept;
 
 	public:
