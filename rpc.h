@@ -19,8 +19,6 @@
 #ifndef rSON_RPC__HXX
 #define rSON_RPC__HXX
 
-#include <unistd.h>
-#include <thread>
 #include "rSON.h"
 
 struct sockaddr;
@@ -32,8 +30,6 @@ namespace rSON
 	private:
 		int32_t socket;
 
-		int32_t release() noexcept;
-		void reset(int32_t s = -1) noexcept;
 		bool bind(const void *const addr, const size_t len) const noexcept;
 		bool connect(const void *const addr, const size_t len) const noexcept;
 
@@ -42,11 +38,11 @@ namespace rSON
 		constexpr socket_t(const int32_t s) noexcept : socket(s) { }
 		socket_t(const int family, const int type, const int protocol = 0) noexcept;
 		socket_t(const socket_t &) = delete;
-		socket_t(socket_t &&s) noexcept : socket(s.release()) { }
-		~socket_t() noexcept { reset(); }
+		socket_t(socket_t &&s) noexcept : socket(-1) { swap(s); }
+		~socket_t() noexcept;
 
 		socket_t &operator =(const socket_t &) = delete;
-		void operator =(socket_t &&s) noexcept { reset(s.release()); }
+		void operator =(socket_t &&s) noexcept { swap(s); }
 		operator int32_t() const noexcept { return socket; }
 		bool operator ==(const int32_t s) const noexcept { return socket == s; }
 		bool operator !=(const int32_t s) const noexcept { return socket != s; }
