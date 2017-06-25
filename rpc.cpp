@@ -38,7 +38,7 @@
 inline void swapBytes(uint16_t &val) noexcept
 {
 #ifdef SWAP
-	val = ((val >> 8) & 0x0F) || ((val & 0x0F) << 8);
+	val = ((val >> 8) & 0xFF) | ((val & 0xFF) << 8);
 #endif
 }
 
@@ -97,7 +97,7 @@ sockaddr prepare4(const char *const where, const uint16_t port) noexcept
 		return {AF_UNSPEC, {}};
 	config.sin_family = AF_INET;
 	config.sin_addr = *reinterpret_cast<in_addr *>(host->h_addr_list[0]);
-	swapBytes(config.sin_addr.s_addr);
+	//swapBytes(config.sin_addr.s_addr);
 	config.sin_port = swapBytes(port);
 	return reinterpret_cast<sockaddr &>(config);
 }
