@@ -23,6 +23,7 @@
 
 #include "internal.h"
 #include "rpc.h"
+#include "String.h"
 
 #ifdef __GNUC__
 #if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
@@ -94,10 +95,19 @@ ssize_t socket_t::read(void *const bufferPtr, const size_t len) const noexcept
 	return num;
 }
 
-rpcStream_t::rpcStream_t() noexcept : family(AF_UNSPEC), sock() { }
+char socket_t::peek() const noexcept
+{
+	char buffer;
+	if (::recv(socket, &buffer, 1, MSG_PEEK) != 1)
+		return '\n';
+	return buffer;
+}
+
+rpcStream_t::rpcStream_t() noexcept : family(AF_UNSPEC), sock(), buffer(), pos(0) { }
 rpcStream_t::rpcStream_t(const bool ipv6) : family(ipv6 ? AF_INET6 : AF_INET),
-	sock(family, SOCK_STREAM, IPPROTO_TCP) { }
+	sock(family, SOCK_STREAM, IPPROTO_TCP), buffer(), pos(0) { }
 bool rpcStream_t::valid() const noexcept { return family != AF_UNSPEC && sock != -1; }
+void rpcStream_t::makeBuffer() noexcept { buffer = makeUnique<char []>(bufferLen); }
 
 sockaddr prepare4(const char *const where, const uint16_t port) noexcept
 {
@@ -138,6 +148,7 @@ bool rpcStream_t::connect(const char *const where, const uint16_t port) const no
 	const auto service = prepare(family, where, port);
 	if (service.sa_family == AF_UNSPEC)
 		return false;
+	const_cast<rpcStream_t &>(*this).makeBuffer();
 	return sock.connect(service);
 }
 
@@ -156,7 +167,7 @@ rpcStream_t rpcStream_t::accept() const noexcept
 	FD_SET(sock, &selectSet);
 	if (select(FD_SETSIZE, &selectSet, nullptr, nullptr, nullptr) < 1)
 		return {};
-	return {family, sock.accept(nullptr, nullptr)};
+	return {family, sock.accept(nullptr, nullptr), makeUnique<char []>(bufferLen)};
 }
 
 bool rpcStream_t::read(void *const value, const size_t valueLen, size_t &actualLen)
@@ -168,10 +179,47 @@ bool rpcStream_t::read(void *const value, const size_t valueLen, size_t &actualL
 	return actualLen == valueLen;
 }
 
-bool rpcStream_t::write(const void *const value, const size_t valueLen)
+bool rpcStream_t::write(const void *const valuePtr, const size_t valueLen)
 {
-	const ssize_t result = sock.write(value, valueLen);
-	if (result < 0)
+	if (!buffer)
 		return false;
-	return size_t(result) == valueLen;
+	auto value = static_cast<const char *const>(valuePtr);
+	size_t offs = 0, toWrite = valueLen, written = 0;
+	printf("Writing buffer %p (%u) at %u\n", value, valueLen, pos);
+	while (toWrite > 0)
+	{
+		const uint32_t length = (bufferLen - pos) < toWrite ? bufferLen - pos : toWrite;
+		memcpy(buffer.get() + pos, value + offs, length);
+		offs += length;
+		pos += length;
+		toWrite -= length;
+		if (pos == bufferLen)
+		{
+			const ssize_t result = sock.write(buffer.get(), bufferLen);
+			if (result < 0)
+				return false;
+			pos = 0;
+			written += size_t(result);
+		}
+		else
+			written += length;
+	}
+	return written == valueLen;
+}
+
+void rpcStream_t::sync() noexcept
+{
+	write("\n", 1);
+	printf("Buffer flush state: %p (%u)\n", buffer.get(), pos);
+	if (pos > 0)
+	{
+		sock.write(buffer.get(), pos);
+		pos = 0;
+		printf("Flushed\n");
+	}
+}
+
+bool rpcStream_t::atEOF() const noexcept
+{
+	return false;//sock.peek() == '\n';
 }

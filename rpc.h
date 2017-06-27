@@ -54,17 +54,23 @@ namespace rSON
 		socket_t accept(sockaddr *peerAddr = nullptr, socklen_t *peerAddrLen = nullptr) const noexcept;
 		ssize_t write(const void *const bufferPtr, const size_t len) const noexcept;
 		ssize_t read(void *const bufferPtr, const size_t len) const noexcept;
+		char peek() const noexcept;
 	};
 
 	struct rSON_CLS_API rpcStream_t : public stream_t
 	{
 	private:
+		constexpr static const uint32_t bufferLen = 1024;
 		const int family;
 		socket_t sock;
+		std::unique_ptr<char []> buffer;
+		uint32_t pos;
+
+		void makeBuffer() noexcept;
 
 	protected:
-		rpcStream_t(const int _family, socket_t _sock) noexcept :
-			family(_family), sock(std::move(_sock)) { }
+		rpcStream_t(const int _family, socket_t _sock, std::unique_ptr<char []> _buffer) noexcept :
+			family(_family), sock(std::move(_sock)), buffer(std::move(_buffer)), pos(0) { }
 		rpcStream_t() noexcept;
 
 	public:
@@ -83,7 +89,8 @@ namespace rSON
 
 		bool read(void *const value, const size_t valueLen, size_t &actualLen) final override;
 		bool write(const void *const value, const size_t valueLen) final override;
-		bool atEOF() const noexcept final override { return false; }
+		bool atEOF() const noexcept final override;
+		void sync() noexcept final override;
 	};
 }
 
