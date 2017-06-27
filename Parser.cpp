@@ -448,7 +448,11 @@ JSONAtom *rSON::parseJSON(stream_t &json) try
 {
 	JSONParser parser(json);
 	if (isObjectBegin(parser.currentChar()) || isArrayBegin(parser.currentChar()))
-		return expression(parser, false);
+	{
+		auto expr = expression(parser, false);
+		json.readSync();
+		return expr;
+	}
 	else
 		throw JSONParserError(JSON_PARSER_BAD_JSON);
 }
