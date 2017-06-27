@@ -49,6 +49,7 @@ template<typename int_t, typename valueType_t> struct fromInt_t
 private:
 	using uint_t = makeUnsigned<int_t>;
 	const valueType_t &_value;
+	mutable bool success;
 
 	uint8_t calcDigits(const uint_t number) const noexcept
 	{
@@ -67,7 +68,7 @@ private:
 	[[gnu::noinline]] uint_t process(const uint_t number, stream_t &stream, const uint8_t digits, const size_t index) const noexcept
 	{
 		const uint_t num = number < 10 ? 0 : process(number / 10, stream, digits, index + 1) * 10;
-		stream.write(char(number - num + '0'));
+		success &= stream.write(char(number - num + '0'));
 		return number;
 	}
 
@@ -81,7 +82,7 @@ private:
 		int_t number = _value;
 		if (number < 0)
 		{
-			stream.write('-');
+			success = stream.write('-');
 			process(uint_t(-number), stream, 1);
 		}
 		else
@@ -91,7 +92,7 @@ private:
 public:
 	constexpr fromInt_t(const valueType_t &value) noexcept : _value(value) { }
 	uint8_t length() const noexcept { return digits(_value); }
-	bool convert(stream_t &stream) const noexcept { format(stream); return stream.atEOF(); }
+	bool convert(stream_t &stream) const noexcept { success = true; format(stream); return success; }
 };
 
 size_t JSONInt::length() const { return fromInt_t<int32_t, int32_t>(value).length(); }
