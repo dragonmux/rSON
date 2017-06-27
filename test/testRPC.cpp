@@ -59,9 +59,18 @@ bool rxThread()
 			return false;
 	}
 	printf("Trying to recieve\n");
-	JSONAtom *tree = parseJSON(stream);
-	printStream_t outStream;
-	writeJSON(tree, outStream);
+	try
+	{
+		JSONAtom *tree = parseJSON(stream);
+		printStream_t outStream;
+		writeJSON(tree, outStream);
+	}
+	catch (JSONParserError &e)
+	{
+		printf("Failure: %s\n", e.error());
+		readyCond.notify_all();
+		return false;
+	}
 	readyCond.notify_all();
 	return true;
 }
