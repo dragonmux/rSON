@@ -444,7 +444,7 @@ JSONAtom *expression(JSONParser &parser, const bool matchComma)
 // It then performs a try-catch in which expression() is invoked. if an exception is thrown or needs to be thrown,
 // the parser object this temporarily creates is cleaned up before the exception is (re)thrown.
 // If everything went OK, this then cleans up the parser object and returns the resulting JSONAtom tree.
-JSONAtom *rSON::parseJSON(stream_t &json)
+JSONAtom *rSON::parseJSON(stream_t &json) try
 {
 	JSONParser parser(json);
 	if (isObjectBegin(parser.currentChar()) || isArrayBegin(parser.currentChar()))
@@ -452,6 +452,7 @@ JSONAtom *rSON::parseJSON(stream_t &json)
 	else
 		throw JSONParserError(JSON_PARSER_BAD_JSON);
 }
+catch (JSONParserError &) { json.readSync(); throw; }
 
 JSONAtom *rSON::parseJSON(const char *json)
 {

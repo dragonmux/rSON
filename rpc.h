@@ -90,7 +90,8 @@ namespace rSON
 		bool read(void *const value, const size_t valueLen, size_t &actualLen) final override;
 		bool write(const void *const value, const size_t valueLen) final override;
 		bool atEOF() const noexcept final override;
-		void sync() noexcept final override;
+		// void readSync() noexcept final override;
+		void writeSync() noexcept final override;
 	};
 }
 

@@ -206,7 +206,7 @@ bool rpcStream_t::write(const void *const valuePtr, const size_t valueLen)
 	return written == valueLen;
 }
 
-void rpcStream_t::sync() noexcept
+void rpcStream_t::writeSync() noexcept
 {
 	write("\n", 1);
 	if (pos > 0)

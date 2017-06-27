@@ -191,7 +191,7 @@ void rSON::writeJSON(const JSONAtom *const atom, stream_t &stream)
 	if (atom == nullptr)
 		return;
 	atom->store(stream);
-	stream.sync();
+	stream.writeSync();
 }
 
 char *rSON::writeJSON(JSONAtom *atom)

@@ -91,7 +91,8 @@ namespace rSON
 		virtual bool read(void *const, const size_t, size_t &) { throw notImplemented_t(); }
 		virtual bool write(const void *const, const size_t) { throw notImplemented_t(); }
 		virtual bool atEOF() const { throw notImplemented_t(); }
-		virtual void sync() noexcept { }
+		virtual void readSync() noexcept { }
+		virtual void writeSync() noexcept { }
 	};
 
 	struct rSON_CLS_API fileStream_t rSON_FINAL : public stream_t
