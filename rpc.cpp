@@ -185,7 +185,6 @@ bool rpcStream_t::write(const void *const valuePtr, const size_t valueLen)
 		return false;
 	auto value = static_cast<const char *const>(valuePtr);
 	size_t offs = 0, toWrite = valueLen, written = 0;
-	printf("Writing buffer %p (%u) at %u\n", value, valueLen, pos);
 	while (toWrite > 0)
 	{
 		const uint32_t length = (bufferLen - pos) < toWrite ? bufferLen - pos : toWrite;
@@ -210,12 +209,10 @@ bool rpcStream_t::write(const void *const valuePtr, const size_t valueLen)
 void rpcStream_t::sync() noexcept
 {
 	write("\n", 1);
-	printf("Buffer flush state: %p (%u)\n", buffer.get(), pos);
 	if (pos > 0)
 	{
 		sock.write(buffer.get(), pos);
 		pos = 0;
-		printf("Flushed\n");
 	}
 }
 
