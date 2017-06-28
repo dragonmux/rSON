@@ -222,13 +222,9 @@ void rpcStream_t::writeSync() noexcept
 {
 	write("\n", 1);
 	if (pos > 0)
-	{
 		sock.write(buffer.get(), pos);
-		pos = 0;
-	}
+	pos = 0;
 }
 
 bool rpcStream_t::atEOF() const noexcept
-{
-	return lastRead == '\n';
-}
+	{ return lastRead == '\n'; }
