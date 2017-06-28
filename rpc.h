@@ -65,12 +65,13 @@ namespace rSON
 		socket_t sock;
 		std::unique_ptr<char []> buffer;
 		uint32_t pos;
+		char lastRead;
 
 		void makeBuffer() noexcept;
 
 	protected:
 		rpcStream_t(const int _family, socket_t _sock, std::unique_ptr<char []> _buffer) noexcept :
-			family(_family), sock(std::move(_sock)), buffer(std::move(_buffer)), pos(0) { }
+			family(_family), sock(std::move(_sock)), buffer(std::move(_buffer)), pos(0), lastRead(0) { }
 		rpcStream_t() noexcept;
 
 	public:

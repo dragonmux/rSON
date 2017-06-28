@@ -103,9 +103,9 @@ char socket_t::peek() const noexcept
 	return buffer;
 }
 
-rpcStream_t::rpcStream_t() noexcept : family(AF_UNSPEC), sock(), buffer(), pos(0) { }
+rpcStream_t::rpcStream_t() noexcept : family(AF_UNSPEC), sock(), buffer(), pos(0), lastRead(0) { }
 rpcStream_t::rpcStream_t(const bool ipv6) : family(ipv6 ? AF_INET6 : AF_INET),
-	sock(family, SOCK_STREAM, IPPROTO_TCP), buffer(), pos(0) { }
+	sock(family, SOCK_STREAM, IPPROTO_TCP), buffer(), pos(0), lastRead(0) { }
 bool rpcStream_t::valid() const noexcept { return family != AF_UNSPEC && sock != -1; }
 void rpcStream_t::makeBuffer() noexcept { buffer = makeUnique<char []>(bufferLen); }
 
@@ -175,7 +175,10 @@ bool rpcStream_t::read(void *const value, const size_t valueLen, size_t &actualL
 	actualLen = 0;
 	const ssize_t result = sock.read(value, valueLen);
 	if (result > 0)
+	{
 		actualLen = size_t(result);
+		lastRead = static_cast<char *const>(value)[actualLen - 1];
+	}
 	return actualLen == valueLen;
 }
 
@@ -218,5 +221,5 @@ void rpcStream_t::writeSync() noexcept
 
 bool rpcStream_t::atEOF() const noexcept
 {
-	return false;//sock.peek() == '\n';
+	return lastRead == '\n';
 }
