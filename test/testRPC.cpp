@@ -67,7 +67,7 @@ bool rxThread()
 	}
 	catch (JSONParserError &e)
 	{
-		printf("Failure: %s\n", e.error());
+		printf("Read failure: %s\n", e.error());
 		readyCond.notify_all();
 		return false;
 	}
@@ -102,7 +102,7 @@ bool txThread()
 	}
 	catch (JSONParserError &e)
 	{
-		printf("Failure: %s\n", e.error());
+		printf("Write failure: %s\n", e.error());
 		ready = false;
 	}
 	readyCond.notify_all();
