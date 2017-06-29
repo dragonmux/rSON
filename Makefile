@@ -34,14 +34,22 @@ H = rSON.h
 O = JSONErrors.o JSONAtom.o JSONNull.o JSONBool.o JSONInt.o JSONFloat.o JSONString.o JSONObject.o JSONArray.o String.o Stream.o Parser.o Writer.o
 O_RPC = rpc.o
 VERMAJ = .0
-VERMIN = .2
-VERREV = .1
-VER = $(VERMAJ)$(VERMIN)$(VERREV)
+VERMIN = $(VERMAJ).2
+VERREV = $(VERMIN).1
+VER = $(VERREV)
 SO = librSON.so librSON.rpc.so
 PC = rSON.pc
 IN = rSON.pc.in
 
 DEPS = .dep
+
+# The last line of this is a magic new-line that makes the $(foreach) below work.
+define ln-so
+	$(call run-cmd,ln,$(LIBDIR)/$(1)$(VERREV),$(LIBDIR)/$(1)$(VERMIN))
+	$(call run-cmd,ln,$(LIBDIR)/$(1)$(VERMIN),$(LIBDIR)/$(1)$(VERMAJ))
+	$(call run-cmd,ln,$(LIBDIR)/$(1)$(VERMAJ),$(LIBDIR)/$(1))
+
+endef
 
 default: all
 
@@ -60,12 +68,10 @@ $(INCDIR):
 	$(call run-cmd,install_dir,$(INCDIR))
 
 install: all $(LIBDIR) $(PKGDIR) $(INCDIR)
-	$(call run-cmd,install_file,$(SO),$(LIBDIR))
+	$(call run-cmd,install_file,$(addsuffix $(VER),$(SO)),$(LIBDIR))
 	$(call run-cmd,install_file,$(PC),$(PKGDIR))
 	$(call run-cmd,install_file,$(H),$(INCDIR))
-	$(call run-cmd,ln,$(LIBDIR)/$(SO),$(LIBDIR)/$(SOREV))
-	$(call run-cmd,ln,$(LIBDIR)/$(SOREV),$(LIBDIR)/$(SOMIN))
-	$(call run-cmd,ln,$(LIBDIR)/$(SOMIN),$(LIBDIR)/$(SOMAJ))
+	$(foreach lib,$(SO),$(call ln-so,$(lib)))
 	$(call ldconfig)
 
 uninstall:
