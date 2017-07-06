@@ -32,14 +32,13 @@ INCDIR = $(PREFIX)/include/
 
 H = rSON.h
 O = JSONErrors.o JSONAtom.o JSONNull.o JSONBool.o JSONInt.o JSONFloat.o JSONString.o JSONObject.o JSONArray.o String.o Stream.o Parser.o Writer.o
-O_RPC = rpc.o
+O_SOCK = rSON_socket.o
 VERMAJ = .0
 VERMIN = $(VERMAJ).2
 VERREV = $(VERMIN).1
 VER = $(VERREV)
-SO = librSON.so librSON.rpc.so
-PC = rSON.pc
-IN = rSON.pc.in
+SO = librSON.so librSON.socket.so
+PC = rSON.pc rSON_socket.pc
 
 DEPS = .dep
 
@@ -80,7 +79,7 @@ uninstall:
 	rm $(PKGDIR)/$(PC)
 
 librSON.so: $(O)
-librSON.rpc.so: $(O_RPC)
+librSON.socket.so: $(O_SOCK)
 $(SO): A = $(patsubst %.so,%.a,$@)
 $(SO):
 	$(call run-cmd,ar,$(A),$^)

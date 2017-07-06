@@ -22,7 +22,7 @@
 #include <netinet/in.h>
 
 #include "internal.h"
-#include "rpc.h"
+#include "rSON_socket.h"
 #include "String.h"
 
 #ifdef __GNUC__
