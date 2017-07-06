@@ -24,13 +24,13 @@ ifeq ($(strip $(FOR_TESTS)), 1)
 	CFLAGS += $(shell pkg-config --cflags crunch)
 endif
 
-SED = sed -e 's:@LIBDIR@:$(LIBDIR):g' -e 's:@PREFIX@:$(PREFIX):g'
+SED = sed -e 's:@LIBDIR@:$(LIBDIR):g' -e 's:@PREFIX@:$(PREFIX):g' -e 's:@VERSION@:$(VER):g'
 
 LIBDIR ?= $(PREFIX)/lib
 PKGDIR = $(LIBDIR)/pkgconfig/
 INCDIR = $(PREFIX)/include/
 
-H = rSON.h
+H = rSON.h rSON_socket.h
 O = JSONErrors.o JSONAtom.o JSONNull.o JSONBool.o JSONInt.o JSONFloat.o JSONString.o JSONObject.o JSONArray.o String.o Stream.o Parser.o Writer.o
 O_SOCK = rSON_socket.o
 VERMAJ = .0
@@ -52,21 +52,12 @@ endef
 
 default: all
 
-all: $(DEPS) $(SO) $(PC)
+all: $(DEPS) $(SO)
 
-$(DEPS):
+$(DEPS) $(LIBDIR) $(PKGDIR) $(INCDIR):
 	$(call run-cmd,install_dir,$@)
 
-$(LIBDIR):
-	$(call run-cmd,install_dir,$(LIBDIR))
-
-$(PKGDIR):
-	$(call run-cmd,install_dir,$(PKGDIR))
-
-$(INCDIR):
-	$(call run-cmd,install_dir,$(INCDIR))
-
-install: all $(LIBDIR) $(PKGDIR) $(INCDIR)
+install: all $(LIBDIR) $(PKGDIR) $(INCDIR) $(PC)
 	$(call run-cmd,install_file,$(addsuffix $(VER),$(SO)),$(LIBDIR))
 	$(call run-cmd,install_file,$(PC),$(PKGDIR))
 	$(call run-cmd,install_file,$(H),$(INCDIR))
@@ -88,8 +79,12 @@ $(SO):
 	$(call debug-strip,$@)
 	$(call run-cmd,ln,$@,$@$(VER))
 
-$(PC): $(IN)
-	$(call run-cmd,sed,$(IN),$(PC))
+%.pc: %.pc.in
+	$(call run-cmd,sed,$<,$@)
+
+%.o: %.cpp $(DEPS)
+	$(call makedep,$(CXX),$(DEPFLAGS))
+	$(call run-cmd,cxx,$(CFLAGS))
 
 clean: test $(DEPS)
 	@$(MAKE) -C test clean
@@ -102,11 +97,6 @@ tests: all test
 check: all test
 	@$(MAKE) -C test check
 
-.cpp.o: $(DEPS)
-	$(call makedep,$(CXX),$(DEPFLAGS))
-	$(call run-cmd,cxx,$(CFLAGS))
-
 .PHONY: clean librSON.pc install all uninstall default .cpp.o tests check
 .SUFFIXES: .cpp .so .o
-
 -include .dep/*.d
