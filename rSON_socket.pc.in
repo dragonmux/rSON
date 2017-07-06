@@ -1,5 +1,5 @@
 # This file is part of rSON
-# Copyright © 2012-2017 Rachel Mant (dx-mon@users.sourceforge.net)
+# Copyright © 2017 Rachel Mant (dx-mon@users.sourceforge.net)
 #
 # rSON is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -21,10 +21,10 @@ exec_prefix=${prefix}
 libdir=@LIBDIR@
 includedir=${prefix}/include
 
-Name: rSON
-Description: A simple but effective JSON parser for C++
+Name: rSON Socket
+Description: Sockets handling for rSON, a simple but effective JSON parser for C++
 Version: 0.2.1
 Requires:
 Conflicts:
-Libs: -L${libdir} -lrSON
+Libs: -L${libdir} -lrSON -lrSON.socket
 Cflags: -I${includedir}
