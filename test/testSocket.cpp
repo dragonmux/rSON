@@ -1,4 +1,3 @@
-#include <sys/socket.h>
 #include <netdb.h>
 #include <arpa/inet.h>
 #include <netinet/in.h>
@@ -8,7 +7,6 @@
 #include <future>
 #include <mutex>
 #include <condition_variable>
-//#include <atomic>
 
 #include "../rSON.h"
 #include "../rSON_socket.h"
