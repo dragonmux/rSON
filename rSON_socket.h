@@ -25,6 +25,8 @@ struct sockaddr;
 
 namespace rSON
 {
+	using socklen_t = unsigned int;
+
 	struct rSON_CLS_API socket_t final
 	{
 	private:
