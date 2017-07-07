@@ -19,13 +19,13 @@
 #ifndef rSON_RPC__HXX
 #define rSON_RPC__HXX
 
-#include "rSON.h"
+#include <rSON.h>
 
 struct sockaddr;
 
 namespace rSON
 {
-	struct socket_t final
+	struct rSON_CLS_API socket_t final
 	{
 	private:
 		int32_t socket;

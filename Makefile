@@ -71,6 +71,7 @@ uninstall:
 
 librSON.so: $(O)
 librSON.socket.so: $(O_SOCK)
+librSON.socket.so: LFLAGS += ./librSON.so$(VER)
 $(SO): A = $(patsubst %.so,%.a,$@)
 $(SO):
 	$(call run-cmd,ar,$(A),$^)
@@ -82,7 +83,7 @@ $(SO):
 %.pc: %.pc.in
 	$(call run-cmd,sed,$<,$@)
 
-%.o: %.cpp $(DEPS)
+%.o: %.cpp | $(DEPS)
 	$(call makedep,$(CXX),$(DEPFLAGS))
 	$(call run-cmd,cxx,$(CFLAGS))
 

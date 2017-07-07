@@ -26,5 +26,5 @@ Description: Sockets handling for rSON, a simple but effective JSON parser for C
 Version: 0.2.2
 Requires:
 Conflicts:
-Libs: -L${libdir} -lrSON -lrSON.socket
+Libs: -L${libdir} -lrSON.socket -lrSON
 Cflags: -I${includedir}
