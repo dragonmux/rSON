@@ -83,6 +83,7 @@ $(SO):
 %.pc: %.pc.in
 	$(call run-cmd,sed,$<,$@)
 
+$(O_SOCK): DEFS += -I.
 %.o: %.cpp | $(DEPS)
 	$(call makedep,$(CXX),$(DEPFLAGS))
 	$(call run-cmd,cxx,$(CFLAGS))
