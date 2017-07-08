@@ -8,7 +8,7 @@
 #include <mutex>
 #include <condition_variable>
 
-#include "../rSON.h"
+#include "test.h"
 #include "../rSON_socket.h"
 
 extern sockaddr prepare(const int family, const char *const where, const uint16_t port) noexcept;
@@ -35,6 +35,12 @@ struct printStream_t final : public stream_t
 			fputc(string[i], stdout);
 	}
 	bool atEOF() const noexcept final override { return false; }
+};
+
+struct unspecStream_t final : public rpcStream_t
+{
+public:
+	unspecStream_t() : rpcStream_t() { }
 };
 
 bool rxThread()
@@ -142,3 +148,32 @@ int main(int, char **) noexcept
 	return txResult.get() && rxResult.get() ? 0 : 1;
 }
 
+void testPrepare()
+{
+	auto service4 = prepare(AF_INET, "127.0.0.1", 2010);
+	assertIntEqual(service4.sa_family, AF_INET);
+	service4 = prepare(AF_INET, "", 2010);
+	assertIntEqual(service4.sa_family, AF_UNSPEC);
+	service4 = prepare(AF_INET, nullptr, 2010);
+	assertIntEqual(service4.sa_family, AF_UNSPEC);
+
+/*	auto service6 = prepare(AF_INET6, "::1", 2010);
+	assertIntEqual(service6.sa_family, AF_INET6);
+	service6 = prepare(AF_INET6, "", 2010);
+	assertIntEqual(service6.sa_family, AF_INET6);*/
+
+//	assertIntEqual(unspecStream_t().prepare("", 0).sa_family, AF_UNSPEC);
+}
+
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
+BEGIN_REGISTER_TESTS()
+	TEST(testPrepare)
+END_REGISTER_TESTS()
+
+#ifdef __cplusplus
+}
+#endif

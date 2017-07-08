@@ -136,9 +136,9 @@ sockaddr prepare6(const char *const where, const uint16_t port) noexcept
 
 sockaddr prepare(const int family, const char *const where, const uint16_t port) noexcept
 {
-	if (family == AF_INET)
+	if (where && family == AF_INET)
 		return prepare4(where, port);
-	else if (family == AF_INET6)
+	else if (where && family == AF_INET6)
 		return prepare6(where, port);
 	return {AF_UNSPEC, {}};
 }
