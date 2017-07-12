@@ -103,11 +103,25 @@ char socket_t::peek() const noexcept
 	return buffer;
 }
 
-rpcStream_t::rpcStream_t() noexcept : family(AF_UNSPEC), sock(), buffer(), pos(0), lastRead(0) { }
-rpcStream_t::rpcStream_t(const bool ipv6) : family(ipv6 ? AF_INET6 : AF_INET),
-	sock(family, SOCK_STREAM, IPPROTO_TCP), buffer(), pos(0), lastRead(0) { }
-bool rpcStream_t::valid() const noexcept { return family != AF_UNSPEC && sock != -1; }
+int typeToFamily(const socketType_t type) noexcept
+{
+	if (type == socketType_t::ipv4)
+		return AF_INET;
+	else if (type == socketType_t::ipv6)
+		return AF_INET6;
+	return AF_UNSPEC;
+}
+
+rpcStream_t::rpcStream_t() noexcept : family(socketType_t::unknown), sock(), buffer(), pos(0), lastRead(0) { }
+bool rpcStream_t::valid() const noexcept { return family != socketType_t::unknown && sock != -1; }
 void rpcStream_t::makeBuffer() noexcept { buffer = makeUnique<char []>(bufferLen); }
+
+rpcStream_t::rpcStream_t(const socketType_t type) : family(type), sock(), buffer(),
+	pos(0), lastRead(0)
+{
+	if (type != socketType_t::unknown && type != socketType_t::dontCare)
+		sock = std::move(socket_t(typeToFamily(family), SOCK_STREAM, IPPROTO_TCP));
+}
 
 sockaddr prepare4(const char *const where, const uint16_t port) noexcept
 {
@@ -134,29 +148,58 @@ sockaddr prepare6(const char *const where, const uint16_t port) noexcept
 	return reinterpret_cast<sockaddr &>(config);
 }
 
-sockaddr prepare(const int family, const char *const where, const uint16_t port) noexcept
+sockaddr prepare(const socketType_t family, const char *const where, const uint16_t port) noexcept
 {
-	if (where && family == AF_INET)
+	addrinfo *results = nullptr, hints = {};
+	hints.ai_family = typeToFamily(family);
+	hints.ai_socktype = SOCK_STREAM;
+	hints.ai_protocol = IPPROTO_TCP;
+	hints.ai_flags = AI_PASSIVE; // This may not be right/complete..
+
+	if (getaddrinfo(where, nullptr, &hints, &results) || !results)
+		return {AF_UNSPEC, {}};
+
+	sockaddr service = *results->ai_addr;
+	freeaddrinfo(results);
+
+	if (service.sa_family == AF_INET)
+	{
+		auto &addr = reinterpret_cast<sockaddr_in &>(service);
+		addr.sin_port = swapBytes(port);
+	}
+	else if (service.sa_family == AF_INET6)
+	{
+		auto &addr = reinterpret_cast<sockaddr_in6 &>(service);
+		addr.sin6_port = swapBytes(port);
+	}
+	else
+		return {AF_UNSPEC, {}};
+	return service;
+	/*if (where && family == AF_INET)
 		return prepare4(where, port);
 	else if (where && family == AF_INET6)
 		return prepare6(where, port);
-	return {AF_UNSPEC, {}};
+	return {AF_UNSPEC, {}};*/
 }
 
-bool rpcStream_t::connect(const char *const where, const uint16_t port) const noexcept
+bool rpcStream_t::connect(const char *const where, const uint16_t port) noexcept
 {
 	const auto service = prepare(family, where, port);
 	if (service.sa_family == AF_UNSPEC)
 		return false;
+	else if (family == socketType_t::dontCare)
+		sock = std::move(socket_t(service.sa_family, SOCK_STREAM, IPPROTO_TCP));
 	const_cast<rpcStream_t &>(*this).makeBuffer();
 	return sock.connect(service);
 }
 
-bool rpcStream_t::listen(const char *const where, const uint16_t port) const noexcept
+bool rpcStream_t::listen(const char *const where, const uint16_t port) noexcept
 {
 	const auto service = prepare(family, where, port);
 	if (service.sa_family == AF_UNSPEC)
 		return false;
+	else if (family == socketType_t::dontCare)
+		sock = std::move(socket_t(service.sa_family, SOCK_STREAM, IPPROTO_TCP));
 	return sock.bind(service) && sock.listen(1);
 }
 

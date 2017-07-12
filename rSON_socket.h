@@ -59,11 +59,19 @@ namespace rSON
 		char peek() const noexcept;
 	};
 
+	enum class socketType_t : uint8_t
+	{
+		unknown,
+		ipv4,
+		ipv6,
+		dontCare
+	};
+
 	struct rSON_CLS_API rpcStream_t : public stream_t
 	{
 	private:
 		constexpr static const uint32_t bufferLen = 1024;
-		const int family;
+		socketType_t family;
 		socket_t sock;
 		std::unique_ptr<char []> buffer;
 		uint32_t pos;
@@ -72,12 +80,12 @@ namespace rSON
 		void makeBuffer() noexcept;
 
 	protected:
-		rpcStream_t(const int _family, socket_t _sock, std::unique_ptr<char []> _buffer) noexcept :
+		rpcStream_t(const socketType_t _family, socket_t _sock, std::unique_ptr<char []> _buffer) noexcept :
 			family(_family), sock(std::move(_sock)), buffer(std::move(_buffer)), pos(0), lastRead(0) { }
 		rpcStream_t() noexcept;
 
 	public:
-		rpcStream_t(const bool ipv6/* TODO: Implement a transport dispatch */);
+		rpcStream_t(const socketType_t type);
 		rpcStream_t(const rpcStream_t &) = delete;
 		rpcStream_t(rpcStream_t &&) = default;
 		~rpcStream_t() noexcept override = default;
@@ -86,8 +94,8 @@ namespace rSON
 
 		bool valid() const noexcept;
 		// Either call the listen() API OR the connect() - NEVER both for a rpcStream_t instance.
-		bool connect(const char *const where, uint16_t port) const noexcept;
-		bool listen(const char *const where, uint16_t port) const noexcept;
+		bool connect(const char *const where, uint16_t port) noexcept;
+		bool listen(const char *const where, uint16_t port) noexcept;
 		rpcStream_t accept() const noexcept;
 
 		bool read(void *const value, const size_t valueLen, size_t &actualLen) final override;
