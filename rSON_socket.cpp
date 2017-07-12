@@ -123,31 +123,6 @@ rpcStream_t::rpcStream_t(const socketType_t type) : family(type), sock(), buffer
 		sock = std::move(socket_t(typeToFamily(family), SOCK_STREAM, IPPROTO_TCP));
 }
 
-sockaddr prepare4(const char *const where, const uint16_t port) noexcept
-{
-	sockaddr_in config;
-	const hostent *const host = gethostbyname(where);
-	if (!host || !host->h_addr_list[0] || host->h_addrtype != AF_INET)
-		return {AF_UNSPEC, {}};
-	config.sin_family = AF_INET;
-	config.sin_addr = *reinterpret_cast<in_addr *>(host->h_addr_list[0]);
-	//swapBytes(config.sin_addr.s_addr);
-	config.sin_port = swapBytes(port);
-	return reinterpret_cast<sockaddr &>(config);
-}
-
-sockaddr prepare6(const char *const where, const uint16_t port) noexcept
-{
-	sockaddr_in6 config;
-	const hostent *const host = gethostbyname(where);
-	if (!host || !host->h_addr_list[0] || host->h_addrtype != AF_INET6)
-		return {AF_UNSPEC, {}};
-	config.sin6_family = AF_INET6;
-	config.sin6_addr = *reinterpret_cast<in6_addr *>(host->h_addr_list[0]);
-	config.sin6_port = swapBytes(port);
-	return reinterpret_cast<sockaddr &>(config);
-}
-
 sockaddr prepare(const socketType_t family, const char *const where, const uint16_t port) noexcept
 {
 	addrinfo *results = nullptr, hints = {};
@@ -175,11 +150,6 @@ sockaddr prepare(const socketType_t family, const char *const where, const uint1
 	else
 		return {AF_UNSPEC, {}};
 	return service;
-	/*if (where && family == AF_INET)
-		return prepare4(where, port);
-	else if (where && family == AF_INET6)
-		return prepare6(where, port);
-	return {AF_UNSPEC, {}};*/
 }
 
 bool rpcStream_t::connect(const char *const where, const uint16_t port) noexcept
