@@ -116,6 +116,7 @@ namespace rSON
 		bool atEOF() const noexcept final override { return eof; }
 		off_t seek(const off_t offset, const int whence) noexcept;
 		size_t size() const noexcept { return length; }
+		bool valid() const noexcept { return fd != -1; }
 	};
 
 	struct rSON_CLS_API memoryStream_t rSON_FINAL : public stream_t
