@@ -11,7 +11,7 @@
 #include "test.h"
 #include "../rSON_socket.h"
 
-extern sockaddr prepare(const int family, const char *const where, const uint16_t port) noexcept;
+extern sockaddr prepare(const socketType_t family, const char *const where, const uint16_t port) noexcept;
 
 // This is a schema taken from http://json-schema.org/example1.html
 const char *const testJSON = "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"title\":\"Product\",\"description\":\"A product from Acme's catalog\","
@@ -45,7 +45,7 @@ public:
 
 bool rxThread()
 {
-	rpcStream_t listener(false);
+	rpcStream_t listener(socketType_t::dontCare);
 	if (listener.listen("localhost", 2010))
 		ready = true;
 	readyCond.notify_all();
@@ -81,7 +81,7 @@ bool rxThread()
 
 bool txThread()
 {
-	rpcStream_t stream(false);
+	rpcStream_t stream(socketType_t::dontCare);
 	{
 		std::unique_lock<std::mutex> lock(readyMutex);
 		readyCond.wait(lock);
@@ -121,7 +121,7 @@ bool txThread()
 int main(int, char **) noexcept
 {
 	std::unique_lock<std::mutex> lock(exitMutex);
-	const auto service = prepare(AF_INET, "localhost", 2010);
+	const auto service = prepare(socketType_t::ipv4, "localhost", 2010);
 	if (service.sa_family == AF_UNSPEC)
 		return 1;
 	else if (service.sa_family == AF_INET)
@@ -150,17 +150,19 @@ int main(int, char **) noexcept
 
 void testPrepare()
 {
-	auto service4 = prepare(AF_INET, "127.0.0.1", 2010);
+	auto service4 = prepare(socketType_t::ipv4, "127.0.0.1", 2010);
 	assertIntEqual(service4.sa_family, AF_INET);
-	service4 = prepare(AF_INET, "", 2010);
+	service4 = prepare(socketType_t::ipv4, "", 2010);
 	assertIntEqual(service4.sa_family, AF_UNSPEC);
-	service4 = prepare(AF_INET, nullptr, 2010);
+	service4 = prepare(socketType_t::ipv4, nullptr, 2010);
 	assertIntEqual(service4.sa_family, AF_UNSPEC);
 
-/*	auto service6 = prepare(AF_INET6, "::1", 2010);
+	auto service6 = prepare(socketType_t::ipv6, "::1", 2010);
 	assertIntEqual(service6.sa_family, AF_INET6);
-	service6 = prepare(AF_INET6, "", 2010);
-	assertIntEqual(service6.sa_family, AF_INET6);*/
+	service6 = prepare(socketType_t::ipv6, "", 2010);
+	assertIntEqual(service6.sa_family, AF_UNSPEC);
+	service6 = prepare(socketType_t::ipv6, nullptr, 2010);
+	assertIntEqual(service6.sa_family, AF_UNSPEC);
 
 //	assertIntEqual(unspecStream_t().prepare("", 0).sa_family, AF_UNSPEC);
 }
