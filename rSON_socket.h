@@ -59,6 +59,9 @@ namespace rSON
 		char peek() const noexcept;
 	};
 
+	inline void swap(socket_t &a, socket_t &b) noexcept
+		{ return a.swap(b); }
+
 	enum class socketType_t : uint8_t
 	{
 		unknown,
