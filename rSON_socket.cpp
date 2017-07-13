@@ -44,27 +44,23 @@ inline int closesocket(const int s) { return close(s); }
 #include <Winsock2.h>
 #endif
 
-inline void swapBytes(uint16_t &val) noexcept
+inline uint16_t swapBytes(const uint16_t val) noexcept
 {
-#ifdef SWAP
-	val = ((val >> 8) & 0xFF) | ((val & 0xFF) << 8);
+#if SWAP
+	return ((val >> 8) & 0xFF) | ((val & 0xFF) << 8);
 #endif
 }
 
-inline void swapBytes(uint32_t &val) noexcept
+inline uint32_t swapBytes(const uint32_t val) noexcept
 {
-#ifdef SWAP
-	val = ((val >> 24) & 0xFF) | ((val >> 8) & 0xFF00) |
+#if SWAP
+	return ((val >> 24) & 0xFF) | ((val >> 8) & 0xFF00) |
 		((val & 0xFF00) << 8) | ((val & 0xFF) << 24);
 #endif
 }
 
-template<typename T> inline T swapBytes(const T val) noexcept
-{
-	T ret = val;
-	swapBytes(ret);
-	return ret;
-}
+template<typename T> inline void swapBytes(T &val) noexcept
+	{ val = swapBytes(val); }
 
 socket_t::socket_t(const int family, const int type, const int protocol) noexcept :
 	socket(::socket(family, type, protocol)) { }
