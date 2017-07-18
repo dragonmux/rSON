@@ -86,6 +86,7 @@ void testLiteral()
 
 	tryLiteralFail("invalid ");
 	tryLiteralFail("a ");
+	tryLiteralFail("0 ");
 }
 
 void tryNumberOk(const char *const json, void tests(const JSONAtom &))
