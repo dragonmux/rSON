@@ -28,6 +28,19 @@ void testParserViability()
 	assertFalse(stream.atEOF());
 }
 
+void testStreamViability()
+{
+	const char *const json = "[]";
+	memoryStream_t stream(const_cast<char *const>(json), length(json) - 1);
+	JSONParser parser(stream);
+	try
+	{
+		expression(parser, false);
+		fail("Parser failed to throw EOF when it should");
+	}
+	catch (const JSONParserError &err) { }
+}
+
 void testPower10()
 {
 	assertIntEqual(power10(0), 1);
@@ -456,6 +469,7 @@ extern "C"
 
 BEGIN_REGISTER_TESTS()
 	TEST(testParserViability)
+	TEST(testStreamViability)
 	TEST(testPower10)
 	TEST(testLiteral)
 	TEST(testIntNumber)
