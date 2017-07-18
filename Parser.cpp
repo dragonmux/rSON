@@ -61,6 +61,9 @@ inline bool isNumber(const char x) noexcept
 	return x >= '0' && x <= '9';
 }
 
+inline bool isMinus(const char x) noexcept
+	{ return x == '-'; }
+
 // Recognise the beginning of an object
 inline bool isObjectBegin(const char x) noexcept
 {
@@ -426,7 +429,7 @@ JSONAtom *expression(JSONParser &parser, const bool matchComma)
 
 	if (atom == nullptr)
 	{
-		if (isNumber(parser.currentChar()))
+		if (isNumber(parser.currentChar()) || isMinus(parser.currentChar()))
 			atom = number(parser);
 		else
 			atom = literal(parser);
