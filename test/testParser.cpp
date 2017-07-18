@@ -135,6 +135,7 @@ void testFloatNumber()
 
 	tryNumberFail("00.0 ");
 	tryNumberFail("0.0e00 ");
+	tryNumberFail("a ");
 }
 
 void tryStringOk(const char *const json, void tests(const char *const))
