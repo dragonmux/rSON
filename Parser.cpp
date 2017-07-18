@@ -221,7 +221,7 @@ char *JSONParser::string()
 	bool slash = false;
 	std::queue<char> result;
 
-	while (isQuote(currentChar()) == false || slash == true)
+	while (!isQuote(currentChar()) || slash)
 	{
 		if (slash)
 		{
@@ -248,7 +248,7 @@ char *JSONParser::string()
 		else
 		{
 			slash = isSlash(currentChar());
-			if (slash == false && isAllowedAlpha(currentChar()) == false)
+			if (!slash && !isAllowedAlpha(currentChar()))
 				throw JSONParserError(JSON_PARSER_BAD_JSON);
 		}
 		result.push(currentChar());
