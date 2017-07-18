@@ -28,17 +28,25 @@ void testParserViability()
 	assertFalse(stream.atEOF());
 }
 
+void tryViabilityFail(JSONParser &parser, void test(JSONParser &))
+{
+	try
+	{
+		test(parser);
+		fail("Parser failed to throw EOF when it should");
+	}
+	catch (const JSONParserError &err) { }
+}
+
 void testStreamViability()
 {
 	const char *const json = "[]";
 	memoryStream_t stream(const_cast<char *const>(json), length(json) - 1);
 	JSONParser parser(stream);
-	try
-	{
-		expression(parser, false);
-		fail("Parser failed to throw EOF when it should");
-	}
-	catch (const JSONParserError &err) { }
+	assertTrue(parser.currentChar() == '[');
+	parser.nextChar();
+	tryViabilityFail(parser, [](JSONParser &parser) { parser.currentChar(); });
+	tryViabilityFail(parser, [](JSONParser &parser) { parser.nextChar(); });
 }
 
 void testPower10()
