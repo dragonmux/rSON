@@ -319,7 +319,7 @@ JSONAtom *array(JSONParser &parser)
 {
 	std::unique_ptr<JSONArray> array(new JSONArray());
 	parser.match('[', true);
-	while (isArrayEnd(parser.currentChar()) == false)
+	while (!isArrayEnd(parser.currentChar()))
 		array->add(expression(parser));
 	if (parser.lastTokenComma())
 		throw JSONParserError(JSON_PARSER_BAD_JSON);
