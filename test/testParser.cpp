@@ -53,13 +53,8 @@ void tryLiteralOk(const char *const json, void tests(const JSONAtom &))
 		{ fail(err.what()); }
 }
 
-void testLiteral()
+void tryLiteralFail(const char *const json)
 {
-	tryLiteralOk("true ", [](const JSONAtom &atom) { assertTrue(atom.asBool()); });
-	tryLiteralOk("false ", [](const JSONAtom &atom) { assertFalse(atom.asBool()); });
-	tryLiteralOk("null ", [](const JSONAtom &atom) { assertNull(atom.asNull()); });
-
-	const char *const json = "invalid ";
 	memoryStream_t stream(const_cast<char *const>(json), length(json));
 	JSONParser parser(stream);
 	try
@@ -68,6 +63,16 @@ void testLiteral()
 		fail("The parser failed to throw an exception on invalid literal");
 	}
 	catch (const JSONParserError &err) { }
+}
+
+void testLiteral()
+{
+	tryLiteralOk("true ", [](const JSONAtom &atom) { assertTrue(atom.asBool()); });
+	tryLiteralOk("false ", [](const JSONAtom &atom) { assertFalse(atom.asBool()); });
+	tryLiteralOk("null ", [](const JSONAtom &atom) { assertNull(atom.asNull()); });
+
+	tryLiteralFail("invalid ");
+	tryLiteralFail("a ");
 }
 
 void tryNumberOk(const char *const json, void tests(const JSONAtom &))
