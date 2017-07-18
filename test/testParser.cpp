@@ -230,13 +230,15 @@ void testObject()
 		assertIntEqual(objectAtom["testKey"].asInt(), 0);
 	});
 
-	tryObjectOk("{\"testInt\": 0, \"testBool\": true}", [](const JSONObject &objectAtom)
+	tryObjectOk("{\"testInt\": 0, \"testBool\": true, \"testFloat\": -0.4}", [](const JSONObject &objectAtom)
 	{
-		assertIntEqual(objectAtom.size(), 2);
+		assertIntEqual(objectAtom.size(), 3);
 		assertTrue(objectAtom.exists("testInt"));
 		assertIntEqual(objectAtom["testInt"].asInt(), 0);
 		assertTrue(objectAtom.exists("testBool"));
 		assertTrue(objectAtom["testBool"].asBool());
+		assertTrue(objectAtom.exists("testFloat"));
+		assertDoubleEqual(objectAtom["testFloat"].asFloat(), -0.4);
 	});
 
 	tryObjectFail("{true}");
