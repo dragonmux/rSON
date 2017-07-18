@@ -30,7 +30,7 @@ fileStream_t::fileStream_t(const char *const fileName, const int32_t _mode, cons
 	fd = open(fileName, mode, perms);
 	if (fd == -1 || fstat(fd, &fileStat) != 0)
 		throw std::system_error(errno, std::system_category());
-	length = fileStat.st_size;
+	length = fileStat.st_size + 1;
 }
 
 fileStream_t::~fileStream_t() noexcept { close(fd); }
