@@ -50,8 +50,10 @@ namespace rSON
 		bool operator !=(const int32_t s) const noexcept { return socket != s; }
 		void swap(socket_t &s) noexcept { std::swap(socket, s.socket); }
 
-		template<typename T> bool bind(const T &addr) const noexcept { return bind(static_cast<const void *>(&addr), sizeof(T)); }
-		template<typename T> bool connect(const T &addr) const noexcept { return connect(static_cast<const void *>(&addr), sizeof(T)); }
+		template<typename T> bool bind(const T &addr) const noexcept
+			{ return bind(static_cast<const void *>(&addr), sizeof(T)); }
+		template<typename T> bool connect(const T &addr) const noexcept
+			{ return connect(static_cast<const void *>(&addr), sizeof(T)); }
 		bool listen(const int32_t queueLength) const noexcept;
 		socket_t accept(sockaddr *peerAddr = nullptr, socklen_t *peerAddrLen = nullptr) const noexcept;
 		ssize_t write(const void *const bufferPtr, const size_t len) const noexcept;
