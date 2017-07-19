@@ -140,6 +140,7 @@ void testDuplicate()
 	}
 	catch (JSONArrayError &) { }
 	testArray->del(8);
+	assertIntEqual(testArray->size(), 8);
 }
 
 void testDel()

@@ -25,6 +25,14 @@ static const char *name = #name
 KEY(testKey1);
 KEY(testKey2);
 
+class JSONBad final : public JSONAtom
+{
+public:
+	JSONBad() noexcept : JSONAtom(JSONAtomType(-1)) { }
+	void store(stream_t &stream) const final override { }
+	size_t length() const final override { return 0; }
+};
+
 void insert(const char *const keyValue, JSONAtom *value)
 {
 	char *key = new char[strlen(keyValue) + 1];
@@ -123,7 +131,7 @@ void testLookup()
 
 void testDuplicate()
 {
-	KEY(a); KEY(b); KEY(c); KEY(d); KEY(e); KEY(f);
+	KEY(a); KEY(b); KEY(c); KEY(d); KEY(e); KEY(f); KEY(g);
 	assertNotNull(testObject);
 	insert(a, new JSONNull());
 	insert(b, new JSONBool(true));
@@ -136,6 +144,17 @@ void testDuplicate()
 	JSONObject dupObject(*testObject);
 	assertIntNotEqual(dupObject.size(), 0);
 	assertIntEqual(dupObject.size(), testObject->size());
+
+	insert(g, new JSONBad());
+	assertIntEqual(testObject->size(), 9);
+	try
+	{
+		JSONObject redup(*testObject);
+		fail("JSONObject constructor failed to throw JSONObjectError when it should have been!");
+	}
+	catch (JSONObjectError &) { }
+	testObject->del("g");
+	assertIntEqual(testObject->size(), 8);
 }
 
 void testDel()
