@@ -21,6 +21,14 @@
 
 JSONArray *testArray = NULL;
 
+class JSONBad final : public JSONAtom
+{
+public:
+	JSONBad() noexcept : JSONAtom(JSONAtomType(-1)) { }
+	void store(stream_t &stream) const final override { }
+	size_t length() const final override { return 0; }
+};
+
 void testConstruct()
 {
 	try
@@ -122,6 +130,16 @@ void testDuplicate()
 	JSONArray dupArray(*testArray);
 	assertIntNotEqual(dupArray.size(), 0);
 	assertIntEqual(dupArray.size(), testArray->size());
+
+	testArray->add(new JSONBad());
+	assertIntEqual(testArray->size(), 9);
+	try
+	{
+		JSONArray redup(*testArray);
+		fail("JSONArray constructor failed to throw JSONArrayError when it should have been!");
+	}
+	catch (JSONArrayError &) { }
+	testArray->del(8);
 }
 
 void testDel()
