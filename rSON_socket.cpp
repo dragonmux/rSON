@@ -62,6 +62,18 @@ inline uint32_t swapBytes(const uint32_t val) noexcept
 template<typename T> inline void swapBytes(T &val) noexcept
 	{ val = swapBytes(val); }
 
+size_t sockaddrLen(const sockaddr_storage &addr) noexcept
+{
+	switch (addr.ss_family)
+	{
+		case AF_INET:
+			return sizeof(sockaddr_in);
+		case AF_INET6:
+			return sizeof(sockaddr_in6);
+	}
+	return sizeof(sockaddr);
+}
+
 socket_t::socket_t(const int family, const int type, const int protocol) noexcept :
 	socket(::socket(family, type, protocol)) { }
 socket_t::~socket_t() noexcept
