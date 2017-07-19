@@ -161,7 +161,8 @@ namespace rSON
 
 	typedef enum JSONArrayErrorType
 	{
-		JSON_ARRAY_OOB
+		JSON_ARRAY_OOB,
+		JSON_ARRAY_BAD_ATOM
 	} JSONArrayErrorType;
 
 	// Exception classes

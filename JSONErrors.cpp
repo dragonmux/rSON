@@ -117,6 +117,8 @@ const char *JSONArrayError::error() const
 	{
 		case JSON_ARRAY_OOB:
 			return "Array index out of bounds";
+		case JSON_ARRAY_BAD_ATOM:
+			return "Array contains a bad item";
 		default:
 			throw std::exception();
 	}

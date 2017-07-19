@@ -52,7 +52,7 @@ JSONArray::JSONArray(JSONArray &array) : JSONAtom(JSON_TYPE_ARRAY)
 				value = new JSONArray(*child);
 				break;
 			default:
-				throw JSONObjectError(JSON_OBJECT_BAD_KEY);
+				throw JSONArrayError(JSON_ARRAY_BAD_ATOM);
 		}
 		children.push_back(value);
 	}
