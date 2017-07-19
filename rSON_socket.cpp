@@ -135,7 +135,7 @@ rpcStream_t::rpcStream_t(const socketType_t type) : family(type), sock(), buffer
 		sock = std::move(socket_t(typeToFamily(family), SOCK_STREAM, IPPROTO_TCP));
 }
 
-sockaddr prepare(const socketType_t family, const char *const where, const uint16_t port) noexcept
+sockaddr_storage prepare(const socketType_t family, const char *const where, const uint16_t port) noexcept
 {
 	addrinfo *results = nullptr, hints = {};
 	hints.ai_family = typeToFamily(family);
@@ -144,33 +144,33 @@ sockaddr prepare(const socketType_t family, const char *const where, const uint1
 	hints.ai_flags = AI_PASSIVE; // This may not be right/complete..
 
 	if (getaddrinfo(where, nullptr, &hints, &results) || !results)
-		return {AF_UNSPEC, {}};
+		return {AF_UNSPEC};
 
-	sockaddr service = *results->ai_addr;
+	sockaddr_storage service = *reinterpret_cast<sockaddr_storage *>(results->ai_addr);
 	freeaddrinfo(results);
 
-	if (service.sa_family == AF_INET)
+	if (service.ss_family == AF_INET)
 	{
 		auto &addr = reinterpret_cast<sockaddr_in &>(service);
 		addr.sin_port = swapBytes(port);
 	}
-	else if (service.sa_family == AF_INET6)
+	else if (service.ss_family == AF_INET6)
 	{
 		auto &addr = reinterpret_cast<sockaddr_in6 &>(service);
 		addr.sin6_port = swapBytes(port);
 	}
 	else
-		return {AF_UNSPEC, {}};
+		return {AF_UNSPEC};
 	return service;
 }
 
 bool rpcStream_t::connect(const char *const where, const uint16_t port) noexcept
 {
 	const auto service = prepare(family, where, port);
-	if (service.sa_family == AF_UNSPEC)
+	if (service.ss_family == AF_UNSPEC)
 		return false;
 	else if (family == socketType_t::dontCare)
-		sock = std::move(socket_t(service.sa_family, SOCK_STREAM, IPPROTO_TCP));
+		sock = std::move(socket_t(service.ss_family, SOCK_STREAM, IPPROTO_TCP));
 	const_cast<rpcStream_t &>(*this).makeBuffer();
 	return sock.connect(service);
 }
@@ -178,10 +178,10 @@ bool rpcStream_t::connect(const char *const where, const uint16_t port) noexcept
 bool rpcStream_t::listen(const char *const where, const uint16_t port) noexcept
 {
 	const auto service = prepare(family, where, port);
-	if (service.sa_family == AF_UNSPEC)
+	if (service.ss_family == AF_UNSPEC)
 		return false;
 	else if (family == socketType_t::dontCare)
-		sock = std::move(socket_t(service.sa_family, SOCK_STREAM, IPPROTO_TCP));
+		sock = std::move(socket_t(service.ss_family, SOCK_STREAM, IPPROTO_TCP));
 	return sock.bind(service) && sock.listen(1);
 }
 

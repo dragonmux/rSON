@@ -11,7 +11,7 @@
 #include "test.h"
 #include "../rSON_socket.h"
 
-extern sockaddr prepare(const socketType_t family, const char *const where, const uint16_t port) noexcept;
+extern sockaddr_storage prepare(const socketType_t family, const char *const where, const uint16_t port) noexcept;
 
 // This is a schema taken from http://json-schema.org/example1.html
 const char *const testJSON = "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"title\":\"Product\",\"description\":\"A product from Acme's catalog\","
@@ -122,15 +122,15 @@ int main(int, char **) noexcept
 {
 	std::unique_lock<std::mutex> lock(exitMutex);
 	const auto service = prepare(socketType_t::ipv4, "localhost", 2010);
-	if (service.sa_family == AF_UNSPEC)
+	if (service.ss_family == AF_UNSPEC)
 		return 1;
-	else if (service.sa_family == AF_INET)
+	else if (service.ss_family == AF_INET)
 	{
 		const auto &addr = reinterpret_cast<const sockaddr_in &>(service).sin_addr.s_addr;
 		printf("localhost address: %u.%u.%u.%u\n", (addr >> 0) & 0xFF, (addr >> 8) & 0xFF,
 			(addr >> 16) & 0xFF, (addr >> 24) & 0xFF);
 	}
-	else if (service.sa_family == AF_INET6)
+	else if (service.ss_family == AF_INET6)
 	{
 		const auto &addr = reinterpret_cast<const sockaddr_in6 &>(service).sin6_addr.s6_addr;
 		printf("localhost address: ");
@@ -151,20 +151,20 @@ int main(int, char **) noexcept
 void testPrepare()
 {
 	auto service4 = prepare(socketType_t::ipv4, "127.0.0.1", 2010);
-	assertIntEqual(service4.sa_family, AF_INET);
+	assertIntEqual(service4.ss_family, AF_INET);
 	service4 = prepare(socketType_t::ipv4, "", 2010);
-	assertIntEqual(service4.sa_family, AF_UNSPEC);
+	assertIntEqual(service4.ss_family, AF_UNSPEC);
 	service4 = prepare(socketType_t::ipv4, nullptr, 2010);
-	assertIntEqual(service4.sa_family, AF_UNSPEC);
+	assertIntEqual(service4.ss_family, AF_UNSPEC);
 
 	auto service6 = prepare(socketType_t::ipv6, "::1", 2010);
-	assertIntEqual(service6.sa_family, AF_INET6);
+	assertIntEqual(service6.ss_family, AF_INET6);
 	service6 = prepare(socketType_t::ipv6, "", 2010);
-	assertIntEqual(service6.sa_family, AF_UNSPEC);
+	assertIntEqual(service6.ss_family, AF_UNSPEC);
 	service6 = prepare(socketType_t::ipv6, nullptr, 2010);
-	assertIntEqual(service6.sa_family, AF_UNSPEC);
+	assertIntEqual(service6.ss_family, AF_UNSPEC);
 
-//	assertIntEqual(unspecStream_t().prepare("", 0).sa_family, AF_UNSPEC);
+//	assertIntEqual(unspecStream_t().prepare("", 0).ss_family, AF_UNSPEC);
 }
 
 #ifdef __cplusplus
