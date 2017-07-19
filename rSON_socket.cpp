@@ -80,8 +80,12 @@ socket_t::~socket_t() noexcept
 	{ if (socket != -1) closesocket(socket); }
 bool socket_t::bind(const void *const addr, const size_t len) const noexcept
 	{ return ::bind(socket, reinterpret_cast<const sockaddr *>(addr), len) == 0; }
+bool socket_t::bind(const sockaddr_storage &addr) const noexcept
+	{ return bind(static_cast<const void *>(&addr), sockaddrLen(addr)); }
 bool socket_t::connect(const void *const addr, const size_t len) const noexcept
 	{ return ::connect(socket, reinterpret_cast<const sockaddr *>(addr), len) == 0; }
+bool socket_t::connect(const sockaddr_storage &addr) const noexcept
+	{ return connect(static_cast<const void *>(&addr), sockaddrLen(addr)); }
 bool socket_t::listen(const int32_t queueLength) const noexcept
 	{ return ::listen(socket, queueLength) == 0; }
 socket_t socket_t::accept(sockaddr *peerAddr, socklen_t *peerAddrLen) const noexcept

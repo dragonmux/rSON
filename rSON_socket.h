@@ -22,6 +22,7 @@
 #include <rSON.h>
 
 struct sockaddr;
+struct sockaddr_storage;
 
 namespace rSON
 {
@@ -52,8 +53,10 @@ namespace rSON
 
 		template<typename T> bool bind(const T &addr) const noexcept
 			{ return bind(static_cast<const void *>(&addr), sizeof(T)); }
+		bool bind(const sockaddr_storage &addr) const noexcept;
 		template<typename T> bool connect(const T &addr) const noexcept
 			{ return connect(static_cast<const void *>(&addr), sizeof(T)); }
+		bool connect(const sockaddr_storage &addr) const noexcept;
 		bool listen(const int32_t queueLength) const noexcept;
 		socket_t accept(sockaddr *peerAddr = nullptr, socklen_t *peerAddrLen = nullptr) const noexcept;
 		ssize_t write(const void *const bufferPtr, const size_t len) const noexcept;
