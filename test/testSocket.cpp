@@ -11,6 +11,7 @@
 #include "test.h"
 #include "../rSON_socket.h"
 
+extern size_t sockaddrLen(const sockaddr_storage &addr) noexcept;
 extern sockaddr_storage prepare(const socketType_t family, const char *const where, const uint16_t port) noexcept;
 
 // This is a schema taken from http://json-schema.org/example1.html
@@ -152,17 +153,21 @@ void testPrepare()
 {
 	auto service4 = prepare(socketType_t::ipv4, "127.0.0.1", 2010);
 	assertIntEqual(service4.ss_family, AF_INET);
+	assertIntEqual(sockaddrLen(service4), sizeof(sockaddr_in));
 	service4 = prepare(socketType_t::ipv4, "", 2010);
 	assertIntEqual(service4.ss_family, AF_UNSPEC);
 	service4 = prepare(socketType_t::ipv4, nullptr, 2010);
 	assertIntEqual(service4.ss_family, AF_UNSPEC);
+	assertIntEqual(sockaddrLen(service4), sizeof(sockaddr));
 
 	auto service6 = prepare(socketType_t::ipv6, "::1", 2010);
 	assertIntEqual(service6.ss_family, AF_INET6);
+	assertIntEqual(sockaddrLen(service6), sizeof(sockaddr_in6));
 	service6 = prepare(socketType_t::ipv6, "", 2010);
 	assertIntEqual(service6.ss_family, AF_UNSPEC);
 	service6 = prepare(socketType_t::ipv6, nullptr, 2010);
 	assertIntEqual(service6.ss_family, AF_UNSPEC);
+	assertIntEqual(sockaddrLen(service4), sizeof(sockaddr));
 
 //	assertIntEqual(unspecStream_t().prepare("", 0).ss_family, AF_UNSPEC);
 }
