@@ -91,15 +91,21 @@ void testObjectError()
 	catch (std::exception &) { }
 }
 
-void testArrayError()
+void tryArrayErrorOk(const JSONArrayErrorType type)
 {
 	try
 	{
-		const auto err = JSONArrayError(JSON_ARRAY_OOB).error();
+		const auto err = JSONArrayError(type).error();
 		assertNotNull(const_cast<char *const>(err));
 	}
 	catch (std::exception &)
 		{ fail("Caught exception which should not happen"); }
+}
+
+void testArrayError()
+{
+	tryArrayErrorOk(JSON_ARRAY_OOB);
+	tryArrayErrorOk(JSON_ARRAY_BAD_ATOM);
 
 	try
 	{
