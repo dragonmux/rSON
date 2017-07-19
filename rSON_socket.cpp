@@ -132,7 +132,7 @@ rpcStream_t::rpcStream_t(const socketType_t type) : family(type), sock(), buffer
 	pos(0), lastRead(0)
 {
 	if (type != socketType_t::unknown && type != socketType_t::dontCare)
-		sock = std::move(socket_t(typeToFamily(family), SOCK_STREAM, IPPROTO_TCP));
+		sock = socket_t(typeToFamily(family), SOCK_STREAM, IPPROTO_TCP);
 }
 
 sockaddr_storage prepare(const socketType_t family, const char *const where, const uint16_t port) noexcept
@@ -170,7 +170,7 @@ bool rpcStream_t::connect(const char *const where, const uint16_t port) noexcept
 	if (service.ss_family == AF_UNSPEC)
 		return false;
 	else if (family == socketType_t::dontCare)
-		sock = std::move(socket_t(service.ss_family, SOCK_STREAM, IPPROTO_TCP));
+		sock = socket_t(service.ss_family, SOCK_STREAM, IPPROTO_TCP);
 	const_cast<rpcStream_t &>(*this).makeBuffer();
 	return sock.connect(service);
 }
@@ -181,7 +181,7 @@ bool rpcStream_t::listen(const char *const where, const uint16_t port) noexcept
 	if (service.ss_family == AF_UNSPEC)
 		return false;
 	else if (family == socketType_t::dontCare)
-		sock = std::move(socket_t(service.ss_family, SOCK_STREAM, IPPROTO_TCP));
+		sock = socket_t(service.ss_family, SOCK_STREAM, IPPROTO_TCP);
 	return sock.bind(service) && sock.listen(1);
 }
 
