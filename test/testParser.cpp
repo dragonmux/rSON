@@ -141,6 +141,8 @@ void testIntNumber()
 	tryNumberFail("");
 	tryNumberFail("-");
 	tryNumberFail("0");
+	tryNumberFail("00");
+	tryNumberFail("12");
 	tryNumberFail("00 ");
 	tryNumberFail("0e00 ");
 }
