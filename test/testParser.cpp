@@ -144,7 +144,10 @@ void testIntNumber()
 	tryNumberFail("00");
 	tryNumberFail("12");
 	tryNumberFail("00 ");
+	tryNumberFail("0.0");
 	tryNumberFail("0e00 ");
+	tryNumberFail("0.0e");
+	tryNumberFail("0e-");
 }
 
 void testFloatNumber()
