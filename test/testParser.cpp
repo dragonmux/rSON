@@ -138,6 +138,9 @@ void testIntNumber()
 	tryNumberOk("19e1 ", [](const JSONAtom &atom) { assertIntEqual(atom.asInt(), 190); });
 	tryNumberOk("190e-1 ", [](const JSONAtom &atom) { assertIntEqual(atom.asInt(), 19); });
 
+	tryNumberFail("");
+	tryNumberFail("-");
+	tryNumberFail("0");
 	tryNumberFail("00 ");
 	tryNumberFail("0e00 ");
 }
