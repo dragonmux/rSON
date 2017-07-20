@@ -93,19 +93,7 @@ socket_t socket_t::accept(sockaddr *peerAddr, socklen_t *peerAddrLen) const noex
 ssize_t socket_t::write(const void *const bufferPtr, const size_t len) const noexcept
 	{ return ::write(socket, bufferPtr, len); }
 ssize_t socket_t::read(void *const bufferPtr, const size_t len) const noexcept
-{
-	size_t num = 0;
-	char *const buffer = static_cast<char *const>(bufferPtr);
-	do
-	{
-		ssize_t res = ::read(socket, buffer + num, len - num);
-		if (res <= 0)
-			return -1;
-		num += res;
-	}
-	while (num < len);
-	return num;
-}
+	{ return ::read(socket, bufferPtr, len); }
 
 char socket_t::peek() const noexcept
 {

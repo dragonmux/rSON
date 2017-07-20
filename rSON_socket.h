@@ -50,6 +50,7 @@ namespace rSON
 		bool operator ==(const int32_t s) const noexcept { return socket == s; }
 		bool operator !=(const int32_t s) const noexcept { return socket != s; }
 		void swap(socket_t &s) noexcept { std::swap(socket, s.socket); }
+		bool valid() const noexcept { return socket != -1; }
 
 		template<typename T> bool bind(const T &addr) const noexcept
 			{ return bind(static_cast<const void *>(&addr), sizeof(T)); }
