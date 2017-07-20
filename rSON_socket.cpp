@@ -225,9 +225,10 @@ bool rpcStream_t::write(const void *const valuePtr, const size_t valueLen)
 void rpcStream_t::readSync() noexcept
 {
 	char discard;
-	while (sock.peek() != '\n')
+	while (lastRead != '\n' && sock.peek() != '\n')
 		sock.read(&discard, 1);
-	sock.read(&discard, 1);
+	if (lastRead != '\n')
+		sock.read(&discard, 1);
 	lastRead = 0;
 }
 
