@@ -37,6 +37,7 @@ void testConstruct()
 		fail(badAlloc.what());
 	}
 	assertNotNull(testString);
+	assertIntEqual(testString->len(), strlen(constTestValue));
 }
 
 #define TRY(seq, tests) \
