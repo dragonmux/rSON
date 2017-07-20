@@ -100,12 +100,12 @@ size_t JSONInt::length() const { return fromInt_t<int32_t, int32_t>(value).lengt
 void JSONInt::store(stream_t &stream) const
 	{ fromInt_t<int32_t, int32_t>(value).convert(stream); }
 
-size_t JSONFloat::length() const { return formatLen("%f", value); }
+size_t JSONFloat::length() const { return formatLen("%.16f", value); }
 
 // This is better.. but %f is wrong and produces very much the wrong result.
 void JSONFloat::store(stream_t &stream) const
 {
-	const auto string = formatString("%f", value);
+	const auto string = formatString("%.16f", value);
 	stream.write(string.get(), strlen(string.get()));
 }
 
