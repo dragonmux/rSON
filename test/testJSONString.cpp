@@ -21,23 +21,16 @@
 #include <string.h>
 
 JSONString *testString = NULL;
-static const char *constTestValue = "testValue";
+static const char *testValue = "testValue";
 
 void testConstruct()
 {
-	char *testValue = new char[strlen(constTestValue) + 1]();
-	strcpy(testValue, constTestValue);
 	try
-	{
-		testString = new JSONString(testValue);
-	}
+		{ testString = new JSONString(strNewDup(testValue)); }
 	catch (std::bad_alloc &badAlloc)
-	{
-		delete [] testValue;
-		fail(badAlloc.what());
-	}
+		{ fail(badAlloc.what()); }
 	assertNotNull(testString);
-	assertIntEqual(testString->len(), strlen(constTestValue));
+	assertIntEqual(testString->len(), strlen(testValue));
 }
 
 #define TRY(seq, tests) \
@@ -123,9 +116,11 @@ void testConversions()
 
 void testSet()
 {
+	const char *const newStr = "This is only a test";
 	assertNotNull(testString);
-	testString->set(strNewDup("This is only a test"));
-	assertStringEqual(*testString, "This is only a test");
+	testString->set(strNewDup(newStr));
+	assertStringEqual(*testString, newStr);
+	assertIntEqual(testString->len(), strlen(newStr));
 }
 
 void testDistruct()
