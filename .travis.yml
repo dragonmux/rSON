@@ -104,7 +104,7 @@ matrix:
           packages:
             - gcc-6
             - g++-6
-    - compiler: gcc-6
+    - compiler: gcc-7
       env: GCC=gcc-7 GXX=g++-7 GCOV=gcov-7
       addons:
         apt:
