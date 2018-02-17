@@ -41,8 +41,10 @@
 	#define rSON_CLS_API DEFAULT_VISIBILITY
 	#define rSON_API extern rSON_CLS_API
 #endif
-#if __cplusplus > 201103L
+#if __cplusplus >= 201103L && __cplusplus <= 201402L
 #define DEPRECATE(reason) [[deprecated, reason]]
+#elif __cplusplus >= 201402L
+#define DEPRECATE(reason) [[deprecated(reason)]]
 #else
 #define DEPRECATE(reason)
 #endif
