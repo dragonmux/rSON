@@ -41,12 +41,12 @@
 	#define rSON_CLS_API DEFAULT_VISIBILITY
 	#define rSON_API extern rSON_CLS_API
 #endif
-#if __cplusplus >= 201103L && __cplusplus <= 201402L
-#define DEPRECATE(reason) [[deprecated, reason]]
+#if __cplusplus >= 201103L && __cplusplus < 201402L
+#define rSON_DEPRECATE(reason, type) [[gnu::deprecated(reason)]] rSON_API type
 #elif __cplusplus >= 201402L
-#define DEPRECATE(reason) [[deprecated(reason)]]
+#define rSON_DEPRECATE(reason, type) rSON_API [[deprecated(reason)]] type
 #else
-#define DEPRECATE(reason)
+#define rSON_DEPRECATE(reason, type) rSON_API type
 #endif
 
 #if __cplusplus >= 201103L
@@ -408,11 +408,11 @@ namespace rSON
 
 	rSON_API JSONAtom *parseJSON(stream_t &json);
 	rSON_API JSONAtom *parseJSON(const char *json);
-	rSON_API DEPRECATE("parseJSON(stream_t &) fully replaces this call") JSONAtom *parseJSONFile(const char *file);
+	rSON_DEPRECATE("parseJSON(stream_t &) fully replaces this call", JSONAtom *) parseJSONFile(const char *file);
 
 	rSON_API void writeJSON(const JSONAtom *const atom, stream_t &stream);
-	rSON_API DEPRECATE("writeJSON(const JSONAtom *const, stream_t &) fully replaces this call") char *writeJSON(JSONAtom *atom);
-	rSON_API DEPRECATE("If not using deprecated form of writeJSON(), this must not be called") void freeString(char **str);
+	rSON_DEPRECATE("writeJSON(const JSONAtom *const, stream_t &) fully replaces this call", char *) writeJSON(JSONAtom *atom);
+	rSON_DEPRECATE("If not using deprecated form of writeJSON(), this must not be called", void) freeString(char **str);
 
 	// Utility templates to help with type checking (validation)
 	template<JSONAtomType type> bool typeIs(const JSONAtom &atom) noexcept { return atom.typeIs(type); }

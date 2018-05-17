@@ -123,6 +123,8 @@ rpcStream_t::rpcStream_t(const socketType_t type) : family(type), sock(), buffer
 		sock = socket_t(typeToFamily(family), SOCK_STREAM, IPPROTO_TCP);
 }
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wmissing-field-initializers"
 sockaddr_storage prepare(const socketType_t family, const char *const where, const uint16_t port) noexcept
 {
 	addrinfo *results = nullptr, hints = {};
@@ -151,6 +153,7 @@ sockaddr_storage prepare(const socketType_t family, const char *const where, con
 		return {AF_UNSPEC};
 	return service;
 }
+#pragma GCC diagnostic pop
 
 bool rpcStream_t::connect(const char *const where, const uint16_t port) noexcept
 {
