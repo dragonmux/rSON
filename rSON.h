@@ -263,7 +263,9 @@ namespace rSON
 
 		operator JSONAtom *() const;
 		operator bool() const;
-		//operator int32_t() const;
+		operator int8_t() const { return asInt(); }
+		operator int16_t() const { return asInt(); }
+		operator int32_t() const { return asInt(); }
 		operator int64_t() const;
 		operator double() const;
 		operator float() const { return double(*this); }
