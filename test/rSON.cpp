@@ -65,7 +65,7 @@ void badReadStream()
 void writeArray()
 {
 	std::array<char, 3> dest;
-	std::array<char, 2> testData = {'a', 'b'};
+	std::array<char, 2> testData{'a', 'b'};
 	memoryStream_t srcStream(dest.data(), dest.size());
 	stream_t &stream = srcStream;
 

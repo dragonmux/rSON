@@ -34,6 +34,7 @@ struct printStream_t final : public stream_t
 		const char *const string = static_cast<const char *const>(buffer);
 		for (size_t i = 0; i < stringLen; ++i)
 			fputc(string[i], stdout);
+		return true;
 	}
 	bool atEOF() const noexcept final override { return false; }
 };
