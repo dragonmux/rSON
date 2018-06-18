@@ -30,6 +30,8 @@ char *strnew(const char *str)
 	return ret;
 }
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 void doTest(JSONAtom *atom, const char *result)
 {
 	char *json = writeJSON(atom);
@@ -38,6 +40,7 @@ void doTest(JSONAtom *atom, const char *result)
 	freeString(&json);
 	assertNull(json);
 }
+#pragma GCC diagnostic pop
 
 void testNull()
 {
@@ -125,10 +128,10 @@ void testArray()
 	delete outerArr;
 }
 
-void testBadWrite()
-{
-	assertNull(writeJSON(nullptr));
-}
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+void testBadWrite() { assertNull(writeJSON(nullptr)); }
+#pragma GCC diagnostic pop
 
 void testFileWrite()
 {

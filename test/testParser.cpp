@@ -437,6 +437,8 @@ void testParseJSON()
 
 #undef TRY
 #undef TRY_SHOULD_FAIL
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 #define TRY(testFile, tests) \
 try \
 { \
@@ -476,6 +478,7 @@ void testParseJSONFile()
 	unlink("test.json");
 }
 
+#pragma GCC diagnostic pop
 #undef TRY_SHOULD_FAIL
 #undef TRY
 
