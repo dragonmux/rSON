@@ -28,7 +28,6 @@ typedef struct JSONParser
 private:
 	stream_t &json;
 	char next;
-	const char *jsonEnd;
 	bool lastWasComma;
 
 	void validateUnicodeSequence(std::queue<char> &result);
