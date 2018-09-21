@@ -23,8 +23,8 @@ endif
 ifeq ($(strip $(COVERAGE)), 1)
 	CRUNCHMAKE += -lgcov
 endif
-CRUNCHMAKE += -o../JSONAtom.o -o../JSONErrors.o -o../String.o -o../Writer.o -o../Stream.o
-CRUNCHMAKE += -o../JSONNull.o -o../JSONBool.o -o../JSONInt.o -o../JSONFloat.o -o../JSONString.o -o../JSONObject.o -o../JSONArray.o
+CRUNCHMAKE += -O../JSONAtom.o -O../JSONErrors.o -O../String.o -O../Writer.o -O../Stream.o
+CRUNCHMAKE += -O../JSONNull.o -O../JSONBool.o -O../JSONInt.o -O../JSONFloat.o -O../JSONString.o -O../JSONObject.o -O../JSONArray.o
 CRUNCH = crunch
 
 READER_TESTS = testJSONNull.so testJSONBool.so testJSONInt.so testJSONFloat.so testJSONString.so testJSONObject.so testJSONArray.so testParser.so
@@ -32,7 +32,7 @@ TESTS = testJSONErrors.so $(READER_TESTS) testWriter.so testHeader.so testSocket
 DEPS = ../.dep/test
 
 quiet_cmd_crunchMake = -n
-cmd_crunchMake = $(CRUNCHMAKE) -o$(2) $(3)
+cmd_crunchMake = $(CRUNCHMAKE) -O$(2) $(3)
 quiet_cmd_crunch = -n
 cmd_crunch = $(CRUNCH) $(2)
 
@@ -50,10 +50,10 @@ clean:
 	$(call run-cmd,rm,tests,$(TESTS) rSON.o)
 	$(call run-cmd,rm,makedep,../.dep/test/*.d)
 
-testParser.so testWriter.so: CRUNCHMAKE += -o../Parser.o
+testParser.so testWriter.so: CRUNCHMAKE += -O../Parser.o
 testHeader.so: rSON.o
-testHeader.so: CRUNCHMAKE += -orSON.o
-testSocket.so: CRUNCHMAKE += -o../librSON.a -o../rSON_socket.o -I..
+testHeader.so: CRUNCHMAKE += -OrSON.o
+testSocket.so: CRUNCHMAKE += -O../librSON.a -O../rSON_socket.o -I..
 %.so: %.cpp
 	$(call run-cmd,crunchMake,$(O_FILE),$<)
 
