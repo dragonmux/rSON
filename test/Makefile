@@ -21,7 +21,7 @@ ifeq ($(BUILD_VERBOSE), 0)
 	CRUNCHMAKE += -q
 endif
 ifeq ($(strip $(COVERAGE)), 1)
-	CRUNCHMAKE += -lgcov
+	CRUNCHMAKE += --coverage
 endif
 CRUNCHMAKE += ../JSONAtom.o ../JSONErrors.o ../String.o ../Writer.o ../Stream.o
 CRUNCHMAKE += ../JSONNull.o ../JSONBool.o ../JSONInt.o ../JSONFloat.o ../JSONString.o ../JSONObject.o ../JSONArray.o
