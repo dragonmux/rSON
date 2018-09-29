@@ -15,4 +15,4 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-GCC="gcc -m64 -fPIC -DPIC" GXX="g++ -m64 -fPIC -DPIC" LIBDIR=/usr/lib/x86_64-linux-gnu make "$@"
+GCC="gcc-5 -m64 -fPIC -DPIC" GXX="g++-5 -m64 -fPIC -DPIC" LIBDIR=/usr/lib/x86_64-linux-gnu make "$@"
