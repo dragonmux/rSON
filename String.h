@@ -22,9 +22,10 @@
 #include <stdlib.h>
 #include <memory>
 
-std::unique_ptr<const char []> formatString(const char *format, ...) noexcept;
-extern size_t formatLen(const char *format, ...);
-extern char *strNewDup(const char *str);
+std::unique_ptr<const char []> formatString(const char *const format, ...) noexcept;
+extern size_t formatLen(const char *const format, ...);
+extern char *strNewDup(const char *const str);
+extern std::unique_ptr<char []> stringDup(const char *const str);
 
 template<typename T> struct makeUnique_ { using uniqueType = std::unique_ptr<T>; };
 template<typename T> struct makeUnique_<T []> { using arrayType = std::unique_ptr<T []>; };

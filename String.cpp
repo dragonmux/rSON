@@ -21,7 +21,7 @@
 #include <stdarg.h>
 #include <stdio.h>
 
-std::unique_ptr<const char []> vaFormatString(const char *format, va_list args) noexcept
+std::unique_ptr<const char []> vaFormatString(const char *const format, va_list args) noexcept
 {
 	va_list lenArgs;
 	va_copy(lenArgs, args);
@@ -34,7 +34,7 @@ std::unique_ptr<const char []> vaFormatString(const char *format, va_list args) 
 	return std::unique_ptr<const char []>(ret.release());
 }
 
-std::unique_ptr<const char []> formatString(const char *format, ...) noexcept
+std::unique_ptr<const char []> formatString(const char *const format, ...) noexcept
 {
 	va_list args;
 	va_start(args, format);
@@ -43,7 +43,7 @@ std::unique_ptr<const char []> formatString(const char *format, ...) noexcept
 	return ret;
 }
 
-size_t formatLen(const char *format, ...)
+size_t formatLen(const char *const format, ...)
 {
 	size_t len;
 	va_list args;
@@ -51,6 +51,16 @@ size_t formatLen(const char *format, ...)
 	len = vsnprintf(NULL, 0, format, args);
 	va_end(args);
 	return len;
+}
+
+std::unique_ptr<char []> stringDup(const char *const str)
+{
+	// TODO: Change this to use makeUniqueT<>, a throwing version of this
+	auto ret = makeUnique<char []>(strlen(str) + 1);
+	if (!ret)
+		throw std::bad_alloc();
+	strcpy(ret.get(), str);
+	return ret;
 }
 
 char *strNewDup(const char *str)
