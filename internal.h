@@ -72,6 +72,31 @@ namespace rSON
 			constIter_t end() const noexcept { return children.end(); }
 		};
 
+		struct array_t final
+		{
+		private:
+			using holder_t = std::vector<jsonAtomPtr_t>;
+			holder_t children;
+
+		public:
+			using iter_t = holder_t::iterator;
+			using constIter_t = holder_t::const_iterator;
+
+			array_t() : children{} { }
+			void clone(const array_t &array);
+			void add(jsonAtomPtr_t &&value);
+			void del(const size_t key);
+			void del(const JSONAtom &value);
+			JSONAtom &operator [](const size_t key) const;
+			size_t size() const noexcept { return children.size(); }
+			size_t count() const noexcept { return size(); }
+
+			iter_t begin() noexcept { return children.begin(); }
+			constIter_t begin() const noexcept { return children.begin(); }
+			iter_t end() noexcept { return children.end(); }
+			constIter_t end() const noexcept { return children.end(); }
+		};
+
 		template<typename T> struct makeManaged_ { using uniqueType = managedPtr_t<T>; };
 		template<typename T> struct makeManaged_<T []> { using arrayType = managedPtr_t<T []>; };
 		template<typename T, size_t N> struct makeManaged_<T [N]> { struct invalidType { }; };
