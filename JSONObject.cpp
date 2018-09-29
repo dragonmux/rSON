@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <algorithm>
 #include "internal.h"
 #include "String.h"
 
@@ -69,14 +70,9 @@ void object_t::del(const char *const key)
 	const auto &atom = children.find(key);
 	if (atom != children.end())
 	{
-		for (auto i = mapKeys.begin(); i != mapKeys.end(); ++i)
-		{
-			if (strcmp(key, *i) == 0)
-			{
-				mapKeys.erase(i);
-				break;
-			}
-		}
+		const auto &atomKey = std::find_if(mapKeys.begin(), mapKeys.end(),
+			[&](const char *const atom) -> bool { return strcmp(key, atom) == 0; });
+		mapKeys.erase(atomKey);
 		children.erase(atom);
 	}
 }

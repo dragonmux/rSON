@@ -66,7 +66,7 @@ void array_t::del(const size_t key)
 
 void array_t::del(const JSONAtom &value)
 {
-	auto atom = std::find_if(children.begin(), children.end(),
+	const auto &atom = std::find_if(children.begin(), children.end(),
 		[&](const jsonAtomPtr_t &atom) -> bool { return atom.get() == &value; });
 	children.erase(atom);
 }

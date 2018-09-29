@@ -58,7 +58,7 @@ namespace rSON
 			const std::vector<const char *> &keys() const noexcept { return mapKeys; }
 			bool exists(const char *const key) const noexcept;
 			size_t size() const noexcept { return children.size(); }
-			size_t count() const noexcept { return size(); }
+			size_t count() const noexcept { return children.size(); }
 
 			iter_t begin() noexcept { return children.begin(); }
 			constIter_t begin() const noexcept { return children.begin(); }
@@ -83,7 +83,7 @@ namespace rSON
 			void del(const JSONAtom &value);
 			JSONAtom &operator [](const size_t key) const;
 			size_t size() const noexcept { return children.size(); }
-			size_t count() const noexcept { return size(); }
+			size_t count() const noexcept { return children.size(); }
 			const JSONAtom *last() const noexcept;
 
 			iter_t begin() noexcept { return children.begin(); }
