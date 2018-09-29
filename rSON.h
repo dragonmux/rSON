@@ -262,18 +262,7 @@ namespace rSON
 		managedPtr_t &operator =(const managedPtr_t &) = delete;
 	};
 
-
-	// Support types
-	struct StringLess
-	{
-		inline bool operator()(char *x, char *y) const
-		{
-			return strcmp(x, y) < 0;
-		}
-	};
-
 	// Hierachy types
-
 	class JSONString;
 	class JSONObject;
 	class JSONArray;
