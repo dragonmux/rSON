@@ -137,7 +137,6 @@ namespace rSON
 	};
 
 	// Enumerations
-
 	typedef enum JSONAtomType
 	{
 		JSON_TYPE_NULL,
@@ -168,7 +167,6 @@ namespace rSON
 	} JSONArrayErrorType;
 
 	// Exception classes
-
 	class rSON_CLS_API JSONParserError
 	{
 	private:
@@ -215,6 +213,49 @@ namespace rSON
 		~JSONArrayError();
 		const char *error() const;
 	};
+
+	// Impl types
+	template<typename T> struct managedPtr_t final
+	{
+	private:
+		T *ptr;
+		template<typename U> friend struct managedPtr_t;
+
+	public:
+		using pointer = T *;
+		using reference = T &;
+
+		constexpr managedPtr_t() noexcept : ptr(nullptr) { }
+		managedPtr_t(T *p) noexcept : ptr(p) { }
+		managedPtr_t(managedPtr_t &&p) noexcept : managedPtr_t() { swap(p); }
+		template<typename U, typename = typename std::enable_if<!std::is_same<T, U>::value &&
+			std::is_base_of<T, U>::value>::type> managedPtr_t(managedPtr_t<U> &&p) noexcept :
+			managedPtr_t() { swap(p); }
+		~managedPtr_t() noexcept { delete ptr; }
+		managedPtr_t &operator =(managedPtr_t &&p) noexcept { swap(p); return *this; }
+
+		operator T &() const noexcept { return *ptr; }
+		explicit operator T &&() const = delete;
+		T &operator *() const noexcept { return *ptr; }
+		T *operator ->() const noexcept { return ptr; }
+		T *get() noexcept { return ptr; }
+		T *get() const noexcept { return ptr; }
+		bool valid() const noexcept { return ptr; }
+		explicit operator bool() const noexcept { return ptr; }
+		void swap(managedPtr_t &p) noexcept { std::swap(ptr, p.ptr); }
+
+		template<typename U, typename = typename std::enable_if<!std::is_same<T, U>::value &&
+			std::is_base_of<T, U>::value>::type> void swap(managedPtr_t<U> &p) noexcept
+		{
+			delete ptr;
+			ptr = p.ptr;
+			p.ptr = nullptr;
+		}
+
+		managedPtr_t(const managedPtr_t &) = delete;
+		managedPtr_t &operator =(const managedPtr_t &) = delete;
+	};
+
 
 	// Support types
 	struct StringLess
