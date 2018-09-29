@@ -319,6 +319,8 @@ namespace rSON
 		bool typeIs(const JSONAtomType atomType) const noexcept { return type == atomType; }
 		bool typeIsOrNull(const JSONAtomType atomType) const noexcept { return type == atomType || type == JSON_TYPE_NULL; }
 	};
+	using jsonAtom_t = JSONAtom;
+	using jsonAtomPtr_t = std::unique_ptr<JSONAtom>;
 
 	class rSON_CLS_API JSONNull rSON_FINAL : public JSONAtom
 	{
@@ -401,7 +403,7 @@ namespace rSON
 	public:
 		JSONObject();
 		JSONObject(JSONObject &object);
-		void add(const char *const key, std::unique_ptr<JSONAtom> &&value);
+		void add(const char *const key, jsonAtomPtr_t &&value);
 		void add(const char *const key, JSONAtom *value);
 		void del(const char *const key);
 		JSONAtom &operator [](const char *const key) const;

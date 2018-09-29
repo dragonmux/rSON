@@ -38,8 +38,6 @@ namespace rSON
 			using is_transparent = typename std::less<>::is_transparent;
 		};
 
-		using jsonAtomPtr_t = std::unique_ptr<JSONAtom>;
-
 		struct object_t final
 		{
 		private:
@@ -86,6 +84,7 @@ namespace rSON
 			JSONAtom &operator [](const size_t key) const;
 			size_t size() const noexcept { return children.size(); }
 			size_t count() const noexcept { return size(); }
+			const JSONAtom *last() const noexcept;
 
 			iter_t begin() noexcept { return children.begin(); }
 			constIter_t begin() const noexcept { return children.begin(); }
