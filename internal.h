@@ -27,19 +27,15 @@ namespace rSON
 
 		struct stringLess_t
 		{
-			using is_transparent = typename std::less<>::is_transparent;
-
 			inline bool operator()(const string_t &x, const string_t &y) const
 				{ return strcmp(x.get(), y.get()) < 0; }
-
 			inline bool operator()(const string_t &x, const char *const y) const
 				{ return strcmp(x.get(), y) < 0; }
-
 			inline bool operator()(const char *const x, const string_t &y) const
 				{ return strcmp(x, y.get()) < 0; }
-
 			inline bool operator()(const char *const x, const char *const y) const
 				{ return strcmp(x, y) < 0; }
+			using is_transparent = typename std::less<>::is_transparent;
 		};
 
 		using jsonAtomPtr_t = std::unique_ptr<JSONAtom>;
