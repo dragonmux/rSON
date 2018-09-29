@@ -45,11 +45,11 @@ namespace rSON
 		struct object_t final
 		{
 		private:
-			using atomMap_t = std::map<string_t, std::unique_ptr<JSONAtom>, stringLess_t>;
-			using keyList_t = std::vector<const char *>;
+			using map_t = std::map<string_t, std::unique_ptr<JSONAtom>, stringLess_t>;
+			using list_t = std::vector<const char *>;
 
-			atomMap_t children;
-			keyList_t mapKeys;
+			map_t children;
+			list_t mapKeys;
 
 		public:
 			object_t() : children{}, mapKeys{} { }
@@ -62,10 +62,10 @@ namespace rSON
 			size_t size() const noexcept { return children.size(); }
 			size_t count() const noexcept { return size(); }
 
-			atomMap_t::iterator begin() noexcept { return children.begin(); }
-			atomMap_t::const_iterator begin() const noexcept { return children.begin(); }
-			atomMap_t::iterator end() noexcept { return children.end(); }
-			atomMap_t::const_iterator end() const noexcept { return children.end(); }
+			map_t::iterator begin() noexcept { return children.begin(); }
+			map_t::const_iterator begin() const noexcept { return children.begin(); }
+			map_t::iterator end() noexcept { return children.end(); }
+			map_t::const_iterator end() const noexcept { return children.end(); }
 		};
 
 		template<typename T> struct makeManaged_ { using uniqueType = managedPtr_t<T>; };
