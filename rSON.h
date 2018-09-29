@@ -407,23 +407,17 @@ namespace rSON
 	class rSON_CLS_API JSONObject : public JSONAtom
 	{
 	private:
-		typedef std::map<char *, JSONAtom *, StringLess> atomMap;
-		typedef atomMap::iterator atomMapIter;
-		typedef atomMap::const_iterator atomMapConstIter;
-		typedef std::vector<const char *> keyType;
-		typedef keyType::iterator keyTypeIter;
-		atomMap children;
-		keyType mapKeys;
+		managedPtr_t<internal::object_t> obj;
 
 	public:
 		JSONObject();
 		JSONObject(JSONObject &object);
-		~JSONObject();
-		void add(char *key, JSONAtom *value);
-		void del(const char *key);
+		void add(const char *const key, std::unique_ptr<JSONAtom> &&value);
+		void add(const char *const key, JSONAtom *value);
+		void del(const char *const key);
 		JSONAtom &operator [](const char *const key) const;
 		const std::vector<const char *> &keys() const;
-		bool exists(const char *key) const;
+		bool exists(const char *const key) const;
 		size_t size() const;
 		size_t count() const { return size(); }
 		size_t length() const rSON_VFINAL;

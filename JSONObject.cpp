@@ -1,6 +1,6 @@
 /*
  * This file is part of rSON
- * Copyright © 2012-2013 Rachel Mant (dx-mon@users.sourceforge.net)
+ * Copyright © 2012-2018 Rachel Mant (dx-mon@users.sourceforge.net)
  *
  * rSON is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -19,74 +19,57 @@
 #include "internal.h"
 #include "String.h"
 
-JSONObject::JSONObject() : JSONAtom(JSON_TYPE_OBJECT)
-{
-}
+JSONObject::JSONObject() : JSONAtom{JSON_TYPE_OBJECT}, obj{makeManaged<object_t>()} { }
 
-JSONObject::JSONObject(JSONObject &object) : JSONAtom(JSON_TYPE_OBJECT)
+JSONObject::JSONObject(JSONObject &object) : JSONObject{}
+	{ obj->clone(*object.obj); }
+
+void object_t::clone(const object_t &object)
 {
-	for (const auto &child : object.children)
+	for (const auto &atom : object.children)
 	{
-		char *key = strNewDup(child.first);
-		JSONAtom *value;
-		switch (child.second->getType())
+		add(atom.first.get(), [](const JSONAtom &value) -> std::unique_ptr<JSONAtom>
 		{
-			case JSON_TYPE_NULL:
-				value = new JSONNull();
-				break;
-			case JSON_TYPE_BOOL:
-				value = new JSONBool(*child.second);
-				break;
-			case JSON_TYPE_INT:
-				value = new JSONInt(*child.second);
-				break;
-			case JSON_TYPE_FLOAT:
-				value = new JSONFloat(*child.second);
-				break;
-			case JSON_TYPE_STRING:
-				value = new JSONString(strNewDup(*child.second));
-				break;
-			case JSON_TYPE_OBJECT:
-				value = new JSONObject(*child.second);
-				break;
-			case JSON_TYPE_ARRAY:
-				value = new JSONArray(*child.second);
-				break;
-			default:
-				throw JSONObjectError(JSON_OBJECT_BAD_KEY);
-		}
-		children[key] = value;
+			switch (value.getType())
+			{
+				case JSON_TYPE_NULL:
+					return makeUnique<JSONNull>();
+				case JSON_TYPE_BOOL:
+					return makeUnique<JSONBool>(value);
+				case JSON_TYPE_INT:
+					return makeUnique<JSONInt>(value);
+				case JSON_TYPE_FLOAT:
+					return makeUnique<JSONFloat>(value);
+				case JSON_TYPE_STRING:
+					return makeUnique<JSONString>(strNewDup(value));
+				case JSON_TYPE_OBJECT:
+					return makeUnique<JSONObject>(value);
+				case JSON_TYPE_ARRAY:
+					return makeUnique<JSONArray>(value);
+				default:
+					throw JSONObjectError(JSON_OBJECT_BAD_KEY);
+			}
+		}(*atom.second));
 	}
 }
 
-JSONObject::~JSONObject()
+void object_t::add(const char *const keyStr, std::unique_ptr<JSONAtom> &&value)
 {
-	for (auto &child : children)
-	{
-		delete [] child.first;
-		delete child.second;
-	}
-	mapKeys.clear();
-	children.clear();
-}
-
-void JSONObject::add(char *key, JSONAtom *value)
-{
-	atomMapIter node = children.find(key);
-	if (node != children.end())
+	if (children.find(keyStr) != children.end())
 		return;
-	children[key] = value;
-	mapKeys.push_back((const char *)key);
+	string_t key = stringDup(keyStr);
+	mapKeys.push_back(key.get());
+	children[std::move(key)] = std::move(value);
 }
 
-void JSONObject::del(const char *key)
+void object_t::del(const char *const key)
 {
 	if (!key)
 		return;
-	atomMapIter node = children.find((char *)key);
+	const auto &node = children.find(key);
 	if (node != children.end())
 	{
-		for (keyTypeIter i = mapKeys.begin(); i != mapKeys.end(); i++)
+		for (auto i = mapKeys.begin(); i != mapKeys.end(); ++i)
 		{
 			if (strcmp(key, *i) == 0)
 			{
@@ -94,32 +77,27 @@ void JSONObject::del(const char *key)
 				break;
 			}
 		}
-		delete [] node->first;
-		delete node->second;
 		children.erase(node);
 	}
 }
 
-JSONAtom &JSONObject::operator [](const char *const key) const
+JSONAtom &object_t::operator [](const char *const key) const
 {
-	atomMapConstIter node = children.find((char *)key);
+	const auto &node = children.find(key);
 	if (node == children.end())
 		throw JSONObjectError(JSON_OBJECT_BAD_KEY);
 	return *node->second;
 }
 
-size_t JSONObject::size() const
-{
-	return children.size();
-}
+bool object_t::exists(const char *const key) const noexcept
+	{ return children.find(key) != children.end(); }
 
-const std::vector<const char *> &JSONObject::keys() const
-{
-	return mapKeys;
-}
-
-bool JSONObject::exists(const char *key) const
-{
-	atomMapConstIter node = children.find((char *)key);
-	return node != children.end();
-}
+void JSONObject::add(const char *const key, std::unique_ptr<JSONAtom> &&value)
+	{ obj->add(key, std::move(value)); }
+void JSONObject::add(const char *const key, JSONAtom *value)
+	{ obj->add(key, std::unique_ptr<JSONAtom>{value}); }
+void JSONObject::del(const char *const key) { obj->del(key); }
+JSONAtom &JSONObject::operator [](const char *const key) const { return (*obj)[key]; }
+const std::vector<const char *> &JSONObject::keys() const { return obj->keys(); }
+bool JSONObject::exists(const char *const key) const { return obj->exists(key); }
+size_t JSONObject::size() const { return obj->size(); }

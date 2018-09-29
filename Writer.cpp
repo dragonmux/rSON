@@ -133,7 +133,7 @@ void JSONBool::store(stream_t &stream) const
 size_t JSONObject::length() const
 {
 	size_t nChildren, len = 2;
-	for (const auto &child : children)
+	for (const auto &child : *obj)
 	{
 		len += strlen(child.first) + 2;
 		len += child.second->length() + 2;
@@ -150,10 +150,10 @@ void JSONObject::store(stream_t &stream) const
 	size_t j = 0;
 
 	stream.write('{');
-	for (const auto &child : children)
+	for (const auto &child : *obj)
 	{
 		stream.write('"');
-		stream.write(child.first, strlen(child.first));
+		stream.write(child.first.get(), strlen(child.first));
 		stream.write("\": ", 3);
 		child.second->store(stream);
 		if (++j < nodes)
