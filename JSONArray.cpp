@@ -20,7 +20,7 @@
 #include "internal.h"
 #include "String.h"
 
-JSONArray::JSONArray() : JSONAtom(JSON_TYPE_ARRAY) { }
+JSONArray::JSONArray() : JSONAtom(JSON_TYPE_ARRAY), arr{makeManaged<array_t>()} { }
 
 JSONArray::JSONArray(JSONArray &array) : JSONAtom{}
 	{ arr->clone(*array.arr); }
