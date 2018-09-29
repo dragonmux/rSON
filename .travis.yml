@@ -29,6 +29,8 @@ matrix:
               key_url: 'http://apt.llvm.org/llvm-snapshot.gpg.key'
             - ubuntu-toolchain-r-test
           packages:
+            - gcc-5
+            - g++-5
             - clang-4.0
             - llvm-4.0
     - compiler: clang-5.0
@@ -40,6 +42,8 @@ matrix:
               key_url: 'http://apt.llvm.org/llvm-snapshot.gpg.key'
             - ubuntu-toolchain-r-test
           packages:
+            - gcc-5
+            - g++-5
             - clang-5.0
             - llvm-5.0
     - compiler: clang-6.0
@@ -51,6 +55,8 @@ matrix:
               key_url: 'http://apt.llvm.org/llvm-snapshot.gpg.key'
             - ubuntu-toolchain-r-test
           packages:
+            - gcc-5
+            - g++-5
             - clang-6.0
             - llvm-6.0
     - compiler: gcc-5
