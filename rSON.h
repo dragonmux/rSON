@@ -215,6 +215,12 @@ namespace rSON
 	};
 
 	// Impl types
+	namespace internal
+	{
+		struct object_t;
+		struct array_t;
+	}
+
 	template<typename T> struct managedPtr_t final
 	{
 	private:

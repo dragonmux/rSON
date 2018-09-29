@@ -16,12 +16,58 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <functional>
 #include "rSON.h"
 
 namespace rSON
 {
 	namespace internal
 	{
+		using string_t = std::unique_ptr<char []>;
+
+		struct stringLess_t
+		{
+			using is_transparent = typename std::less<>::is_transparent;
+
+			inline bool operator()(const string_t &x, const string_t &y) const
+				{ return strcmp(x.get(), y.get()) < 0; }
+
+			inline bool operator()(const string_t &x, const char *const y) const
+				{ return strcmp(x.get(), y) < 0; }
+
+			inline bool operator()(const char *const x, const string_t &y) const
+				{ return strcmp(x, y.get()) < 0; }
+
+			inline bool operator()(const char *const x, const char *const y) const
+				{ return strcmp(x, y) < 0; }
+		};
+
+		struct object_t final
+		{
+		private:
+			using atomMap_t = std::map<string_t, std::unique_ptr<JSONAtom>, stringLess_t>;
+			using keyList_t = std::vector<const char *>;
+
+			atomMap_t children;
+			keyList_t mapKeys;
+
+		public:
+			object_t() : children{}, mapKeys{} { }
+			void clone(const object_t &object);
+			void add(const char *const key, std::unique_ptr<JSONAtom> &&value);
+			void del(const char *const key);
+			JSONAtom &operator [](const char *const key) const;
+			const std::vector<const char *> &keys() const noexcept { return mapKeys; }
+			bool exists(const char *const key) const noexcept;
+			size_t size() const noexcept { return children.size(); }
+			size_t count() const noexcept { return size(); }
+
+			atomMap_t::iterator begin() noexcept { return children.begin(); }
+			atomMap_t::const_iterator begin() const noexcept { return children.begin(); }
+			atomMap_t::iterator end() noexcept { return children.end(); }
+			atomMap_t::const_iterator end() const noexcept { return children.end(); }
+		};
+
 		template<typename T> struct makeManaged_ { using uniqueType = managedPtr_t<T>; };
 		template<typename T> struct makeManaged_<T []> { using arrayType = managedPtr_t<T []>; };
 		template<typename T, size_t N> struct makeManaged_<T [N]> { struct invalidType { }; };
@@ -44,3 +90,5 @@ namespace rSON
 
 using namespace rSON;
 using namespace rSON::internal;
+
+inline size_t strlen(const string_t &str) noexcept { return strlen(str.get()); }
