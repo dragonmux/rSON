@@ -416,6 +416,7 @@ namespace rSON
 	class rSON_CLS_API JSONArray : public JSONAtom
 	{
 	private:
+		managedPtr_t<internal::array_t> arr;
 		typedef std::vector<JSONAtom *> childType;
 		typedef childType::iterator childTypeIter;
 		childType children;

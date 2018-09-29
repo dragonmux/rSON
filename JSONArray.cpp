@@ -19,42 +19,37 @@
 #include "internal.h"
 #include "String.h"
 
-JSONArray::JSONArray() : JSONAtom(JSON_TYPE_ARRAY)
-{
-}
+JSONArray::JSONArray() : JSONAtom(JSON_TYPE_ARRAY) { }
 
-JSONArray::JSONArray(JSONArray &array) : JSONAtom(JSON_TYPE_ARRAY)
+JSONArray::JSONArray(JSONArray &array) : JSONAtom{}
+	{ arr->clone(*array.arr); }
+
+void array_t::clone(const array_t &array)
 {
-	for (const JSONAtom *const child : array)
+	for (const auto &atom : array)
 	{
-		JSONAtom *value;
-		switch (child->getType())
+		add([](const JSONAtom &value) -> std::unique_ptr<JSONAtom>
 		{
-			case JSON_TYPE_NULL:
-				value = new JSONNull();
-				break;
-			case JSON_TYPE_BOOL:
-				value = new JSONBool(*child);
-				break;
-			case JSON_TYPE_INT:
-				value = new JSONInt(*child);
-				break;
-			case JSON_TYPE_FLOAT:
-				value = new JSONFloat(*child);
-				break;
-			case JSON_TYPE_STRING:
-				value = new JSONString(strNewDup(*child));
-				break;
-			case JSON_TYPE_OBJECT:
-				value = new JSONObject(*child);
-				break;
-			case JSON_TYPE_ARRAY:
-				value = new JSONArray(*child);
-				break;
-			default:
-				throw JSONArrayError(JSON_ARRAY_BAD_ATOM);
-		}
-		children.push_back(value);
+			switch (value.getType())
+			{
+				case JSON_TYPE_NULL:
+					return makeUnique<JSONNull>();
+				case JSON_TYPE_BOOL:
+					return makeUnique<JSONBool>(value);
+				case JSON_TYPE_INT:
+					return makeUnique<JSONInt>(value);
+				case JSON_TYPE_FLOAT:
+					return makeUnique<JSONFloat>(value);
+				case JSON_TYPE_STRING:
+					return makeUnique<JSONString>(strNewDup(value));
+				case JSON_TYPE_OBJECT:
+					return makeUnique<JSONObject>(value);
+				case JSON_TYPE_ARRAY:
+					return makeUnique<JSONArray>(value);
+				default:
+					throw JSONArrayError(JSON_ARRAY_BAD_ATOM);
+			}
+		}(*atom));
 	}
 }
 
