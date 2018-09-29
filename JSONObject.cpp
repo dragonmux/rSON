@@ -66,8 +66,8 @@ void object_t::del(const char *const key)
 {
 	if (!key)
 		return;
-	const auto &node = children.find(key);
-	if (node != children.end())
+	const auto &atom = children.find(key);
+	if (atom != children.end())
 	{
 		for (auto i = mapKeys.begin(); i != mapKeys.end(); ++i)
 		{
@@ -77,7 +77,7 @@ void object_t::del(const char *const key)
 				break;
 			}
 		}
-		children.erase(node);
+		children.erase(atom);
 	}
 }
 

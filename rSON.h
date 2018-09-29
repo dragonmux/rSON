@@ -414,6 +414,7 @@ namespace rSON
 		size_t length() const rSON_VFINAL;
 		void store(stream_t &stream) const rSON_VFINAL;
 	};
+	using jsonObject_t = JSONObject;
 
 	class rSON_CLS_API JSONArray : public JSONAtom
 	{
@@ -438,6 +439,7 @@ namespace rSON
 		size_t length() const rSON_VFINAL;
 		void store(stream_t &stream) const rSON_VFINAL;
 	};
+	using jsonArray_t = JSONArray;
 
 	rSON_API JSONAtom *parseJSON(stream_t &json);
 	rSON_API JSONAtom *parseJSON(const char *json);
