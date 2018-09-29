@@ -26,7 +26,7 @@ JSONObject::JSONObject(JSONObject &object) : JSONObject{}
 
 void object_t::clone(const object_t &object)
 {
-	for (const auto &atom : object.children)
+	for (const auto &atom : object)
 	{
 		add(atom.first.get(), [](const JSONAtom &value) -> std::unique_ptr<JSONAtom>
 		{
