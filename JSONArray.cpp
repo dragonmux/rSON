@@ -1,6 +1,6 @@
 /*
  * This file is part of rSON
- * Copyright © 2012-2013 Rachel Mant (dx-mon@users.sourceforge.net)
+ * Copyright © 2012-2018 Rachel Mant (dx-mon@users.sourceforge.net)
  *
  * rSON is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <algorithm>
 #include "internal.h"
 #include "String.h"
 
@@ -56,29 +57,18 @@ void array_t::clone(const array_t &array)
 void array_t::add(jsonAtomPtr_t &&value)
 	{ children.emplace_back(std::move(value)); }
 
-void JSONArray::del(size_t key)
+void array_t::del(const size_t key)
 {
-	childTypeIter i;
 	if (key >= children.size())
 		throw JSONArrayError(JSON_ARRAY_OOB);
-
-	i = children.begin() + key;
-	delete *i;
-	children.erase(i);
+	children.erase(children.begin() + key);
 }
 
-void JSONArray::del(JSONAtom *value)
+void array_t::del(const JSONAtom &value)
 {
-	childTypeIter i;
-	for (i = children.begin(); i != children.end(); i++)
-	{
-		if (*i == value)
-		{
-			delete value;
-			children.erase(i);
-			break;
-		}
-	}
+	auto atom = std::find_if(children.begin(), children.end(),
+		[&](const jsonAtomPtr_t &atom) -> bool { return atom.get() == &value; });
+	children.erase(atom);
 }
 
 JSONAtom &JSONArray::operator [](const size_t key) const
@@ -88,22 +78,17 @@ JSONAtom &JSONArray::operator [](const size_t key) const
 	return *children[key];
 }
 
-size_t JSONArray::size() const
-{
-	return children.size();
-}
-
 JSONArray::iterator JSONArray::begin() const
-{
-	return children.begin();
-}
-
+	{ return children.begin(); }
 JSONArray::iterator JSONArray::end() const
-{
-	return children.end();
-}
+	{ return children.end(); }
 
 void JSONArray::add(jsonAtomPtr_t &&value)
 	{ arr->add(std::move(value)); }
 void JSONArray::add(JSONAtom *value)
 	{ arr->add(jsonAtomPtr_t{value}); }
+void JSONArray::del(const size_t key) { arr->del(key); }
+void JSONArray::del(const JSONAtom *value) { arr->del(*value); }
+void JSONArray::del(const JSONAtom &value) { arr->del(value); }
+//JSONAtom &JSONArray::operator [](const size_t key) const { return (*arr)[key]; }
+size_t JSONArray::size() const { return arr->size(); }

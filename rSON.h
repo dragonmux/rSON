@@ -428,8 +428,9 @@ namespace rSON
 		JSONArray(JSONArray &array);
 		void add(std::unique_ptr<JSONAtom> &&value);
 		void add(JSONAtom *value);
-		void del(size_t key);
-		void del(JSONAtom *value);
+		void del(const size_t key);
+		void del(const JSONAtom *value);
+		void del(const JSONAtom &value);
 		JSONAtom &operator [](const size_t key) const;
 		size_t size() const;
 		size_t count() const { return size(); }
