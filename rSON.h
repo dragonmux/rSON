@@ -1,6 +1,6 @@
 /*
  * This file is part of rSON
- * Copyright © 2012-2017 Rachel Mant (dx-mon@users.sourceforge.net)
+ * Copyright © 2012-2018 Rachel Mant (dx-mon@users.sourceforge.net)
  *
  * rSON is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -44,7 +44,7 @@
 #if __cplusplus >= 201103L && __cplusplus < 201402L
 #define rSON_DEPRECATE(reason, type) [[gnu::deprecated(reason)]] rSON_API type
 #elif __cplusplus >= 201402L
-#define rSON_DEPRECATE(reason, type) rSON_API [[deprecated(reason)]] type
+#define rSON_DEPRECATE(reason, type) [[deprecated(reason)]] rSON_API type
 #else
 #define rSON_DEPRECATE(reason, type) rSON_API type
 #endif
