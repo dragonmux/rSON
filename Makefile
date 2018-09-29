@@ -16,7 +16,7 @@
 
 include Makefile.inc
 
-DEFS = $(OPTIM_FLAGS) -pedantic -Wall -Wextra -std=c++11 -D__rSON__
+DEFS = $(OPTIM_FLAGS) -pedantic -Wall -Wextra -std=c++14 -D__rSON__
 CFLAGS = -c $(DEFS) -o $@ $<
 DEPFLAGS = -E -MM $(DEFS) -o .dep/$*.d $<
 LFLAGS = $(OPTIM_FLAGS) -shared $^ -Wl,-soname,$@ -o $@ -lstdc++ -lm -z defs
@@ -34,8 +34,8 @@ H = rSON.h rSON_socket.h
 O = JSONErrors.o JSONAtom.o JSONNull.o JSONBool.o JSONInt.o JSONFloat.o JSONString.o JSONObject.o JSONArray.o String.o Stream.o Parser.o Writer.o
 O_SOCK = rSON_socket.o
 VERMAJ = .0
-VERMIN = $(VERMAJ).2
-VERREV = $(VERMIN).2
+VERMIN = $(VERMAJ).3
+VERREV = $(VERMIN).0
 VER = $(VERREV)
 SO = librSON.so librSON.socket.so
 PC = rSON.pc rSON_socket.pc
