@@ -419,16 +419,13 @@ namespace rSON
 	{
 	private:
 		managedPtr_t<internal::array_t> arr;
-		typedef std::vector<JSONAtom *> childType;
-		typedef childType::iterator childTypeIter;
-		childType children;
 
 	public:
-		typedef childType::const_iterator iterator;
+		using iterator = const jsonAtomPtr_t *;
 
 		JSONArray();
 		JSONArray(JSONArray &array);
-		void add(std::unique_ptr<JSONAtom> &&value);
+		void add(jsonAtomPtr_t &&value);
 		void add(JSONAtom *value);
 		void del(const size_t key);
 		void del(const JSONAtom *value);
