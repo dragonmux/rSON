@@ -165,8 +165,8 @@ void JSONObject::store(stream_t &stream) const
 size_t JSONArray::length() const
 {
 	size_t i, len = 2;
-	for (i = 0; i < size(); i++)
-		len += children[i]->length();
+	for (i = 0; i < size(); ++i)
+		len += (*arr)[i].length();
 	if (size() > 0)
 		len += (size() - 1) * 2;
 	return len;
@@ -174,13 +174,13 @@ size_t JSONArray::length() const
 
 void JSONArray::store(stream_t &stream) const
 {
-	const JSONAtom *const last = children.empty() ? nullptr : children.back();
+	const JSONAtom *const last = arr->last();
 
 	stream.write('[');
-	for (const auto &child : children)
+	for (const auto &child : *arr)
 	{
 		child->store(stream);
-		if (child != last)
+		if (child.get() != last)
 			stream.write(", ", 2);
 	}
 	stream.write(']');
