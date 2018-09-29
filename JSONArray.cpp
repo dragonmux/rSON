@@ -53,17 +53,8 @@ void array_t::clone(const array_t &array)
 	}
 }
 
-JSONArray::~JSONArray()
-{
-	for (size_t i = 0; i < children.size(); i++)
-		delete children[i];
-	children.clear();
-}
-
-void JSONArray::add(JSONAtom *value)
-{
-	children.push_back(value);
-}
+void array_t::add(jsonAtomPtr_t &&value)
+	{ children.emplace_back(std::move(value)); }
 
 void JSONArray::del(size_t key)
 {
@@ -111,3 +102,8 @@ JSONArray::iterator JSONArray::end() const
 {
 	return children.end();
 }
+
+void JSONArray::add(jsonAtomPtr_t &&value)
+	{ arr->add(std::move(value)); }
+void JSONArray::add(JSONAtom *value)
+	{ arr->add(jsonAtomPtr_t{value}); }
