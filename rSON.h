@@ -426,7 +426,7 @@ namespace rSON
 
 		JSONArray();
 		JSONArray(JSONArray &array);
-		~JSONArray();
+		void add(std::unique_ptr<JSONAtom> &&value);
 		void add(JSONAtom *value);
 		void del(size_t key);
 		void del(JSONAtom *value);
