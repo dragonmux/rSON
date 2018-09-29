@@ -1,5 +1,5 @@
 # This file is part of rSON
-# Copyright © 2012-2017 Rachel Mant (dx-mon@users.sourceforge.net)
+# Copyright © 2012-2018 Rachel Mant (dx-mon@users.sourceforge.net)
 #
 # rSON is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -16,7 +16,7 @@
 
 include ../Makefile.inc
 
-CRUNCHMAKE = crunchMake $(shell pkg-config --cflags --libs crunch) -lstdc++ -lm
+CRUNCHMAKE = crunchMake $(shell pkg-config --cflags --libs crunch) -lstdc++ -lm -std=c++14
 ifeq ($(BUILD_VERBOSE), 0)
 	CRUNCHMAKE += -q
 endif

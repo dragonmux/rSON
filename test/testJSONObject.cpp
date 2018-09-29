@@ -33,23 +33,12 @@ public:
 	size_t length() const final override { return 0; }
 };
 
-void insert(const char *const keyValue, JSONAtom *value)
-{
-	char *key = new char[strlen(keyValue) + 1];
-	strcpy(key, keyValue);
-	testObject->add(key, value);
-}
-
 void testConstruct()
 {
 	try
-	{
-		testObject = new JSONObject();
-	}
+		{ testObject = new JSONObject(); }
 	catch (std::bad_alloc &badAlloc)
-	{
-		fail(badAlloc.what());
-	}
+		{ fail(badAlloc.what()); }
 	assertNotNull(testObject);
 }
 
@@ -75,27 +64,24 @@ void testSize()
 
 void testAdd()
 {
-	JSONAtom *child;
-
 	assertNotNull(testObject);
 	assertIntEqual(testObject->size(), 0);
 
-	insert(testKey1, new JSONInt(1));
+	testObject->add(testKey1, new JSONInt(1));
 	assertIntEqual(testObject->size(), 1);
 
-	insert(testKey2, new JSONInt(2));
+	testObject->add(testKey2, new JSONInt(2));
 	assertIntEqual(testObject->size(), 2);
 
-	child = new JSONInt(3);
-	testObject->add((char *)testKey2, child);
-	delete child;
+	auto child = makeUnique<JSONInt>(3);
+	testObject->add(testKey2, std::move(child));
 
 	assertIntEqual(testObject->size(), 2);
 }
 
 void testKeys()
 {
-	std::vector<const char *> keys = testObject->keys();
+	const auto &keys = testObject->keys();
 
 	assertIntEqual(keys.size(), 2);
 	assertIntEqual(strcmp(keys[0], testKey1), 0);
@@ -133,24 +119,24 @@ void testDuplicate()
 {
 	KEY(a); KEY(b); KEY(c); KEY(d); KEY(e); KEY(f); KEY(g);
 	assertNotNull(testObject);
-	insert(a, new JSONNull());
-	insert(b, new JSONBool(true));
-	insert(c, new JSONFloat(1.5));
-	insert(d, new JSONString(strNewDup("This is only a test")));
-	insert(e, new JSONArray());
-	insert(f, new JSONObject());
+	testObject->add(a, new JSONNull());
+	testObject->add(b, new JSONBool(true));
+	testObject->add(c, new JSONFloat(1.5));
+	testObject->add(d, new JSONString(strNewDup("This is only a test")));
+	testObject->add(e, new JSONArray());
+	testObject->add(f, new JSONObject());
 	assertIntEqual(testObject->size(), 8);
 
 	JSONObject dupObject(*testObject);
 	assertIntNotEqual(dupObject.size(), 0);
 	assertIntEqual(dupObject.size(), testObject->size());
 
-	insert(g, new JSONBad());
+	testObject->add(g, new JSONBad());
 	assertIntEqual(testObject->size(), 9);
 	try
 	{
 		JSONObject redup(*testObject);
-		fail("JSONObject constructor failed to throw JSONObjectError when it should have been!");
+		fail("JSONObject constructor failed to throw JSONObjectError when it should have!");
 	}
 	catch (JSONObjectError &) { }
 	testObject->del("g");
