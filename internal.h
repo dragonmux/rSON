@@ -42,19 +42,23 @@ namespace rSON
 				{ return strcmp(x, y) < 0; }
 		};
 
+		using jsonAtomPtr_t = std::unique_ptr<JSONAtom>;
+
 		struct object_t final
 		{
 		private:
-			using map_t = std::map<string_t, std::unique_ptr<JSONAtom>, stringLess_t>;
+			using holder_t = std::map<string_t, jsonAtomPtr_t, stringLess_t>;
 			using list_t = std::vector<const char *>;
-
-			map_t children;
+			holder_t children;
 			list_t mapKeys;
 
 		public:
+			using iter_t = holder_t::iterator;
+			using constIter_t = holder_t::const_iterator;
+
 			object_t() : children{}, mapKeys{} { }
 			void clone(const object_t &object);
-			void add(const char *const key, std::unique_ptr<JSONAtom> &&value);
+			void add(const char *const key, jsonAtomPtr_t &&value);
 			void del(const char *const key);
 			JSONAtom &operator [](const char *const key) const;
 			const std::vector<const char *> &keys() const noexcept { return mapKeys; }
@@ -62,10 +66,10 @@ namespace rSON
 			size_t size() const noexcept { return children.size(); }
 			size_t count() const noexcept { return size(); }
 
-			map_t::iterator begin() noexcept { return children.begin(); }
-			map_t::const_iterator begin() const noexcept { return children.begin(); }
-			map_t::iterator end() noexcept { return children.end(); }
-			map_t::const_iterator end() const noexcept { return children.end(); }
+			iter_t begin() noexcept { return children.begin(); }
+			constIter_t begin() const noexcept { return children.begin(); }
+			iter_t end() noexcept { return children.end(); }
+			constIter_t end() const noexcept { return children.end(); }
 		};
 
 		template<typename T> struct makeManaged_ { using uniqueType = managedPtr_t<T>; };
