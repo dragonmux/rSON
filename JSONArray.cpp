@@ -22,7 +22,7 @@
 
 JSONArray::JSONArray() : JSONAtom(JSON_TYPE_ARRAY), arr{makeManaged<array_t>()} { }
 
-JSONArray::JSONArray(JSONArray &array) : JSONAtom{}
+JSONArray::JSONArray(JSONArray &array) : JSONArray{}
 	{ arr->clone(*array.arr); }
 
 void array_t::clone(const array_t &array)

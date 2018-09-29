@@ -32,13 +32,9 @@ public:
 void testConstruct()
 {
 	try
-	{
-		testArray = new JSONArray();
-	}
+		{ testArray = new JSONArray(); }
 	catch (std::bad_alloc &badAlloc)
-	{
-		fail(badAlloc.what());
-	}
+		{ fail(badAlloc.what()); }
 	assertNotNull(testArray);
 }
 
