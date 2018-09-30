@@ -17,6 +17,7 @@ if target_machine.system() != 'windows'
 else
 	add_project_arguments('-DWIN32', '-D_WINDOWS', language: 'cpp')
 	add_project_arguments('-D_CRT_SECURE_NO_WARNINGS', language: 'cpp')
+	add_global_arguments('-wd4996', '-wd4800', '-wd4459', language: ['c', 'cpp'])
 endif
 
 rSONSrc = [
