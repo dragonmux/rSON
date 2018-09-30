@@ -67,7 +67,7 @@ namespace rSON
 		rSON_CLS_API socket_t accept(sockaddr *peerAddr = nullptr, socklen_t *peerAddrLen = nullptr) const noexcept;
 		rSON_CLS_API ssize_t write(const void *const bufferPtr, const size_t len) const noexcept;
 		rSON_CLS_API ssize_t read(void *const bufferPtr, const size_t len) const noexcept;
-		char peek() const noexcept;
+		rsON_CLS_API char peek() const noexcept;
 	};
 
 	inline void swap(socket_t &a, socket_t &b) noexcept
