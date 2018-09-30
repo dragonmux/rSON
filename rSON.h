@@ -294,12 +294,12 @@ namespace rSON
 
 		operator JSONAtom *() const;
 		operator bool() const;
-		operator int8_t() const { return asInt(); }
-		operator int16_t() const { return asInt(); }
-		operator int32_t() const { return asInt(); }
+		operator int8_t() const { return int8_t(asInt()); }
+		operator int16_t() const { return int16_t(asInt()); }
+		operator int32_t() const { return int32_t(asInt()); }
 		operator int64_t() const;
 		operator double() const;
-		operator float() const { return double(*this); }
+		operator float() const { return float(asFloat()); }
 		operator const char *() const;
 		operator JSONString &() const;
 		operator JSONObject &() const;
