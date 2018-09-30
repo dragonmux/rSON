@@ -24,8 +24,8 @@ before_build:
 build_script:
   - cmd: ninja
 
-#test_script:
-#  - cmd: ninja test
+test_script:
+  - cmd: ninja test
 
 configuration:
   - Debug
