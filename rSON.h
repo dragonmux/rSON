@@ -167,19 +167,18 @@ namespace rSON
 	} JSONArrayErrorType;
 
 	// Exception classes
-	class rSON_CLS_API JSONParserError
+	class rSON_CLS_API JSONParserError rSON_FINAL
 	{
 	private:
 		JSONParserErrorType parserError;
 
 	public:
 		JSONParserError(JSONParserErrorType errorType);
-		~JSONParserError();
 		JSONParserErrorType errorType() const;
 		const char *error() const;
 	};
 
-	class rSON_CLS_API JSONTypeError
+	class rSON_CLS_API JSONTypeError rSON_FINAL
 	{
 	private:
 		std::unique_ptr<const char []> errorStr;
@@ -188,29 +187,26 @@ namespace rSON
 	public:
 		JSONTypeError(JSONAtomType actual, JSONAtomType expected);
 		JSONTypeError(JSONTypeError &&error) noexcept : errorStr(std::move(error.errorStr)) { }
-		~JSONTypeError();
 		const char *error() const;
 	};
 
-	class rSON_CLS_API JSONObjectError
+	class rSON_CLS_API JSONObjectError rSON_FINAL
 	{
 	private:
 		JSONObjectErrorType objectError;
 
 	public:
 		JSONObjectError(JSONObjectErrorType errorType);
-		~JSONObjectError();
 		const char *error() const;
 	};
 
-	class rSON_CLS_API JSONArrayError
+	class rSON_CLS_API JSONArrayError rSON_FINAL
 	{
 	private:
 		JSONArrayErrorType arrayError;
 
 	public:
 		JSONArrayError(JSONArrayErrorType errorType);
-		~JSONArrayError();
 		const char *error() const;
 	};
 

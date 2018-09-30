@@ -1,6 +1,6 @@
 /*
  * This file is part of rSON
- * Copyright © 2012-2013 Rachel Mant (dx-mon@users.sourceforge.net)
+ * Copyright © 2012-2018 Rachel Mant (dx-mon@users.sourceforge.net)
  *
  * rSON is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -22,18 +22,8 @@
 #include "internal.h"
 #include "String.h"
 
-JSONParserError::JSONParserError(JSONParserErrorType errorType) : parserError(errorType)
-{
-}
-
-JSONParserError::~JSONParserError()
-{
-}
-
-JSONParserErrorType JSONParserError::errorType() const
-{
-	return parserError;
-}
+JSONParserError::JSONParserError(JSONParserErrorType errorType) : parserError(errorType) { }
+JSONParserErrorType JSONParserError::errorType() const { return parserError; }
 
 const char *JSONParserError::error() const
 {
@@ -54,8 +44,6 @@ JSONTypeError::JSONTypeError(JSONAtomType actual, JSONAtomType expected)
 {
 	errorStr = formatString("Expecting %s, found %s", typeToString(expected), typeToString(actual));
 }
-
-JSONTypeError::~JSONTypeError() { }
 
 const char *JSONTypeError::typeToString(JSONAtomType type) const
 {
@@ -79,18 +67,8 @@ const char *JSONTypeError::typeToString(JSONAtomType type) const
 	throw std::exception();
 }
 
-const char *JSONTypeError::error() const
-{
-	return errorStr.get();
-}
-
-JSONObjectError::JSONObjectError(JSONObjectErrorType errorType) : objectError(errorType)
-{
-}
-
-JSONObjectError::~JSONObjectError()
-{
-}
+const char *JSONTypeError::error() const { return errorStr.get(); }
+JSONObjectError::JSONObjectError(JSONObjectErrorType errorType) : objectError(errorType) { }
 
 const char *JSONObjectError::error() const
 {
@@ -103,13 +81,7 @@ const char *JSONObjectError::error() const
 	}
 }
 
-JSONArrayError::JSONArrayError(JSONArrayErrorType errorType) : arrayError(errorType)
-{
-}
-
-JSONArrayError::~JSONArrayError()
-{
-}
+JSONArrayError::JSONArrayError(JSONArrayErrorType errorType) : arrayError(errorType) { }
 
 const char *JSONArrayError::error() const
 {
