@@ -10,6 +10,7 @@ project(
 )
 
 cxx = meson.get_compiler('cpp')
+pkgconfig = import('pkgconfig')
 
 if target_machine.system() != 'windows'
 	add_project_link_arguments('-z', 'defs', language: 'cpp')
@@ -38,4 +39,20 @@ rSONSocket = library(
 	link_with: [rSON],
 	version: meson.project_version(),
 	install: true
+)
+
+pkgconfig.generate(
+	name: 'rSON',
+	filebase: 'rSON',
+	libraries: rSON,
+	version: meson.project_version(),
+	description: 'A simple but effective JSON parser for C++'
+)
+
+pkgconfig.generate(
+	name: 'rSON Socket',
+	filebase: 'rSON_socket',
+	libraries: [rSONSocket, rSON],
+	version: meson.project_version(),
+	description: 'Sockets handling for rSON, a simple but effective JSON parser for C++'
 )
