@@ -20,6 +20,8 @@ else
 	add_global_arguments('-wd4996', '-wd4800', '-wd4459', language: ['c', 'cpp'])
 endif
 
+add_project_arguments('-D__rSON__', language: 'cpp')
+
 rSONSrc = [
 	'JSONErrors.cpp', 'JSONAtom.cpp', 'JSONNull.cpp', 'JSONBool.cpp',
 	'JSONInt.cpp', 'JSONFloat.cpp', 'JSONString.cpp', 'JSONObject.cpp',
@@ -32,7 +34,6 @@ rSONSocketSrc = ['rSON_socket.cpp']
 rSON = library(
 	'rSON',
 	rSONSrc,
-	cpp_args: ['-D__rSON__'],
 	version: meson.project_version(),
 	install: true
 )
