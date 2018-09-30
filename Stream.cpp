@@ -17,11 +17,14 @@
  */
 
 #include <sys/stat.h>
+#include <stddef.h>
 #include <fcntl.h>
 #ifndef _MSC_VER
 #include <unistd.h>
 #else
 #include <io.h>
+#include <type_traits>
+using ssize_t = typedef std::make_signed<size_t>::type;
 #endif
 #include <errno.h>
 #include <system_error>
