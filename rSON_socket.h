@@ -21,6 +21,11 @@
 
 #include <rSON.h>
 
+#ifdef _MSC_VER
+#include <type_traits>
+using ssize_t = typedef std::make_signed<size_t>::type;
+#endif
+
 struct sockaddr;
 struct sockaddr_storage;
 
@@ -59,7 +64,7 @@ namespace rSON
 			{ return connect(static_cast<const void *>(&addr), sizeof(T)); }
 		rSON_CLS_API bool connect(const sockaddr_storage &addr) const noexcept;
 		rSON_CLS_API bool listen(const int32_t queueLength) const noexcept;
-		rSON_CLS_API rSON_CLS_API socket_t accept(sockaddr *peerAddr = nullptr, socklen_t *peerAddrLen = nullptr) const noexcept;
+		rSON_CLS_API socket_t accept(sockaddr *peerAddr = nullptr, socklen_t *peerAddrLen = nullptr) const noexcept;
 		rSON_CLS_API ssize_t write(const void *const bufferPtr, const size_t len) const noexcept;
 		rSON_CLS_API ssize_t read(void *const bufferPtr, const size_t len) const noexcept;
 		char peek() const noexcept;
