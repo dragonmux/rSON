@@ -98,7 +98,7 @@ public:
 size_t JSONInt::length() const { return fromInt_t<int64_t, int64_t>(value).length(); }
 
 void JSONInt::store(stream_t &stream) const
-	{ fromInt_t<int32_t, int32_t>(value).convert(stream); }
+	{ fromInt_t<int64_t, int64_t>(value).convert(stream); }
 
 size_t JSONFloat::length() const { return formatLen("%.16f", value); }
 
