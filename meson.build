@@ -11,6 +11,7 @@ project(
 
 cxx = meson.get_compiler('cpp')
 pkgconfig = import('pkgconfig')
+rSONSocketLibs = []
 
 if target_machine.system() != 'windows'
 	add_project_link_arguments('-z', 'defs', language: 'cpp')
@@ -18,6 +19,7 @@ else
 	add_project_arguments('-DWIN32', '-D_WINDOWS', language: 'cpp')
 	add_project_arguments('-D_CRT_SECURE_NO_WARNINGS', language: 'cpp')
 	add_global_arguments('-wd4996', '-wd4800', '-wd4459', '-wd5030', language: ['c', 'cpp'])
+	rSONSocketLibs += cxx.find_library('Ws2_32')
 endif
 
 add_project_arguments('-D__rSON__', language: 'cpp')
@@ -42,6 +44,7 @@ rSONSocket = library(
 	'rSON.socket',
 	rSONSocketSrc,
 	link_with: [rSON],
+	dependencies: rSONSocketLibs,
 	version: meson.project_version(),
 	install: true
 )
