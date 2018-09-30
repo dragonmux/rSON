@@ -384,8 +384,8 @@ JSONAtom *number(JSONParser &parser)
 	}
 	else
 	{
-		const int64_t mul = pow10(multiplier);
-		double num = decimal / pow10(decDigits);
+		const int64_t mul = power10(multiplier);
+		double num = decimal / power10(decDigits);
 		num += integer;
 		if (mulSign)
 			num /= mul;
