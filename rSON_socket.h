@@ -31,7 +31,11 @@ struct sockaddr_storage;
 
 namespace rSON
 {
+#ifndef _MSC_VER
 	using socklen_t = unsigned int;
+#else
+	using socklen_t = int;
+#endif
 
 	struct socket_t final
 	{
