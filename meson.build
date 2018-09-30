@@ -14,6 +14,8 @@ pkgconfig = import('pkgconfig')
 
 if target_machine.system() != 'windows'
 	add_project_link_arguments('-z', 'defs', language: 'cpp')
+else
+	add_project_arguments('-DWIN32', '-D_WINDOWS', language: 'cpp')
 endif
 
 rSONSrc = [
