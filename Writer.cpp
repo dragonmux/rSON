@@ -95,7 +95,7 @@ public:
 	bool convert(stream_t &stream) const noexcept { success = true; format(stream); return success; }
 };
 
-size_t JSONInt::length() const { return fromInt_t<int32_t, int32_t>(value).length(); }
+size_t JSONInt::length() const { return fromInt_t<int64_t, int64_t>(value).length(); }
 
 void JSONInt::store(stream_t &stream) const
 	{ fromInt_t<int32_t, int32_t>(value).convert(stream); }
