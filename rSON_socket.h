@@ -36,15 +36,15 @@ namespace rSON
 {
 #ifndef _MSC_VER
 	using socklen_t = unsigned int;
-	using socketType_t = int32_t;
+	using sockType_t = int32_t;
 #else
-	using socketType_t = SOCKET;
+	using sockType_t = SOCKET;
 #endif
 
 	struct socket_t final
 	{
 	private:
-		socketType_t socket;
+		sockType_t socket;
 
 		bool bind(const void *const addr, const size_t len) const noexcept;
 		bool connect(const void *const addr, const size_t len) const noexcept;
