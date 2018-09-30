@@ -90,7 +90,7 @@ private:
 	}
 
 public:
-	constexpr fromInt_t(const valueType_t &value) noexcept : _value(value) { }
+	constexpr fromInt_t(const valueType_t &value) noexcept : _value(value), success{false} { }
 	uint8_t length() const noexcept { return digits(_value); }
 	bool convert(stream_t &stream) const noexcept { success = true; format(stream); return success; }
 };
