@@ -47,7 +47,11 @@ bool fileStream_t::read(void *const value, const size_t valueLen, size_t &actual
 	// If write-only and not read-write mode, or we got to eof.. return false.
 	if (eof || ((mode & O_WRONLY) && !(mode & O_RDWR)))
 		return false;
+#ifndef _MSC_VER
 	ssize_t ret = ::read(fd, value, valueLen);
+#else
+	ssize_t ret = ::read(fd, value, uint32_t(valueLen));
+#endif
 	if (ret < 0)
 		throw std::system_error(errno, std::system_category());
 	// This call sets EOF for us.
@@ -61,7 +65,11 @@ bool fileStream_t::write(const void *const value, const size_t valueLen)
 	// If read-only and not read-write mode, or we ran out of space.. return false.
 	if (eof || !(mode & (O_WRONLY | O_RDWR)))
 		return false;
+#ifndef _MSC_VER
 	ssize_t ret = ::write(fd, value, valueLen);
+#else
+	ssize_t ret = ::write(fd, value, uint32_t(valueLen));
+#endif
 	if (ret < 0)
 		throw std::system_error(errno, std::system_category());
 	eof = ret == 0;
