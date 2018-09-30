@@ -24,7 +24,7 @@
 #else
 #include <io.h>
 #include <type_traits>
-using ssize_t = typedef std::make_signed<size_t>::type;
+using ssize_t = typename std::make_signed<size_t>::type;
 #endif
 #include <errno.h>
 #include <system_error>
