@@ -32,6 +32,7 @@ rSONSrc = [
 ]
 
 rSONSocketSrc = ['rSON_socket.cpp']
+rSONSrcDir = meson.current_source_dir()
 
 rSON = library(
 	'rSON',
@@ -64,3 +65,5 @@ pkgconfig.generate(
 	version: meson.project_version(),
 	description: 'Sockets handling for rSON, a simple but effective JSON parser for C++'
 )
+
+subdir('test')
