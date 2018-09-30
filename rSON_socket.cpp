@@ -91,10 +91,17 @@ bool socket_t::listen(const int32_t queueLength) const noexcept
 	{ return ::listen(socket, queueLength) == 0; }
 socket_t socket_t::accept(sockaddr *peerAddr, socklen_t *peerAddrLen) const noexcept
 	{ return ::accept(socket, peerAddr, peerAddrLen); }
+#ifndef _MSC_VER
 ssize_t socket_t::write(const void *const bufferPtr, const size_t len) const noexcept
 	{ return ::write(socket, bufferPtr, len); }
 ssize_t socket_t::read(void *const bufferPtr, const size_t len) const noexcept
 	{ return ::read(socket, bufferPtr, len); }
+#else
+ssize_t socket_t::write(const void *const bufferPtr, const size_t len) const noexcept
+	{ return ::send(socket, bufferPtr, len, 0); }
+ssize_t socket_t::read(void *const bufferPtr, const size_t len) const noexcept
+	{ return ::recv(socket, bufferPtr, len, 0); }
+#endif
 
 char socket_t::peek() const noexcept
 {
