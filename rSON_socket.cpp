@@ -1,6 +1,6 @@
 /*
  * This file is part of rSON
- * Copyright © 2017 Rachel Mant (dx-mon@users.sourceforge.net)
+ * Copyright © 2017-2018 Rachel Mant (dx-mon@users.sourceforge.net)
  *
  * rSON is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -44,6 +44,7 @@ inline int closesocket(const int s) { return close(s); }
 #else
 #define WIN32_LEAN_AND_MEAN
 #include <Winsock2.h>
+#include <ws2tcpip.h>
 #endif
 
 inline uint16_t swapBytes(const uint16_t val) noexcept
