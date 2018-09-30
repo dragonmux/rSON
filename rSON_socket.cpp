@@ -98,9 +98,9 @@ ssize_t socket_t::read(void *const bufferPtr, const size_t len) const noexcept
 	{ return ::read(socket, bufferPtr, len); }
 #else
 ssize_t socket_t::write(const void *const bufferPtr, const size_t len) const noexcept
-	{ return ::send(socket, bufferPtr, len, 0); }
+	{ return ::send(socket, static_cast<const char *const>(bufferPtr), int32_t(len), 0); }
 ssize_t socket_t::read(void *const bufferPtr, const size_t len) const noexcept
-	{ return ::recv(socket, bufferPtr, len, 0); }
+	{ return ::recv(socket, static_cast<char *const>(bufferPtr), int32_t(len), 0); }
 #endif
 
 char socket_t::peek() const noexcept
