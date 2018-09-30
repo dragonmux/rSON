@@ -22,7 +22,10 @@
 #include <rSON.h>
 
 #ifdef _MSC_VER
+#define WIN32_LEAN_AND_MEAN
+#include <ws2tcpip.h>
 #include <type_traits>
+
 using ssize_t = typename std::make_signed<size_t>::type;
 #endif
 
@@ -34,7 +37,7 @@ namespace rSON
 #ifndef _MSC_VER
 	using socklen_t = unsigned int;
 #else
-	using socklen_t = int;
+	using socklen_t = ::socklen_t;
 #endif
 
 	struct socket_t final

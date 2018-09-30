@@ -42,9 +42,7 @@
 #include <unistd.h>
 inline int closesocket(const int s) { return close(s); }
 #else
-#define WIN32_LEAN_AND_MEAN
 #include <Winsock2.h>
-#include <ws2tcpip.h>
 #endif
 
 inline uint16_t swapBytes(const uint16_t val) noexcept
