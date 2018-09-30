@@ -17,6 +17,7 @@
  */
 
 #include <functional>
+#include <map>
 #include "rSON.h"
 
 namespace rSON

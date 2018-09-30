@@ -20,10 +20,9 @@
 #define rSON__H
 
 #include <stdint.h>
-#include <map>
-#include <vector>
 #include <string.h>
 #include <memory>
+#include <vector>
 
 #ifdef _WINDOWS
 	#ifdef __rSON__
