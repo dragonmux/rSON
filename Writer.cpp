@@ -17,7 +17,7 @@
  */
 
 #include "internal.h"
-#include "String.h"
+#include "String.hxx"
 #include <type_traits>
 #include <utility>
 #include <string.h>

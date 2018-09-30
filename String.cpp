@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "String.h"
+#include "String.hxx"
 #include <string.h>
 #include <stdarg.h>
 #include <stdio.h>

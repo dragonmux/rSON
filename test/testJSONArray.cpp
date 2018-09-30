@@ -17,7 +17,7 @@
  */
 
 #include "test.h"
-#include "../String.h"
+#include "../String.hxx"
 
 JSONArray *testArray = NULL;
 

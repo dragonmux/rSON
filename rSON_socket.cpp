@@ -23,7 +23,7 @@
 
 #include "internal.h"
 #include "rSON_socket.h"
-#include "String.h"
+#include "String.hxx"
 
 #ifdef __GNUC__
 #if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__

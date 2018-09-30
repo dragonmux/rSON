@@ -20,7 +20,7 @@
 #include <malloc.h>
 
 #include "internal.h"
-#include "String.h"
+#include "String.hxx"
 
 JSONParserError::JSONParserError(JSONParserErrorType errorType) : parserError(errorType) { }
 JSONParserErrorType JSONParserError::errorType() const { return parserError; }

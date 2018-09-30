@@ -18,7 +18,7 @@
 
 #include <algorithm>
 #include "internal.h"
-#include "String.h"
+#include "String.hxx"
 
 JSONObject::JSONObject() : JSONAtom{JSON_TYPE_OBJECT}, obj{makeManaged<object_t>()} { }
 

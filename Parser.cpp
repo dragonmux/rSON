@@ -17,7 +17,7 @@
  */
 
 #include "internal.h"
-//#include "String.h"
+//#include "String.hxx"
 #include <string.h>
 #include <math.h>
 #include <stdio.h>
