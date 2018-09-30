@@ -390,28 +390,28 @@ namespace rSON
 		void store(stream_t &stream) const rSON_VFINAL;
 	};
 
-	class rSON_CLS_API JSONObject : public JSONAtom
+	class JSONObject : public JSONAtom
 	{
 	private:
 		managedPtr_t<internal::object_t> obj;
 
 	public:
-		JSONObject();
-		JSONObject(JSONObject &object);
-		void add(const char *const key, jsonAtomPtr_t &&value);
-		void add(const char *const key, JSONAtom *value);
-		void del(const char *const key);
-		JSONAtom &operator [](const char *const key) const;
-		const std::vector<const char *> &keys() const;
-		bool exists(const char *const key) const;
-		size_t size() const;
-		size_t count() const { return size(); }
-		size_t length() const rSON_VFINAL;
-		void store(stream_t &stream) const rSON_VFINAL;
+		rSON_CLS_API JSONObject();
+		rSON_CLS_API JSONObject(JSONObject &object);
+		rSON_CLS_API void add(const char *const key, jsonAtomPtr_t &&value);
+		rSON_CLS_API void add(const char *const key, JSONAtom *value);
+		rSON_CLS_API void del(const char *const key);
+		rSON_CLS_API JSONAtom &operator [](const char *const key) const;
+		rSON_CLS_API const std::vector<const char *> &keys() const;
+		rSON_CLS_API bool exists(const char *const key) const;
+		rSON_CLS_API size_t size() const;
+		rSON_CLS_API size_t count() const { return size(); }
+		rSON_CLS_API size_t length() const rSON_VFINAL;
+		rSON_CLS_API void store(stream_t &stream) const rSON_VFINAL;
 	};
 	using jsonObject_t = JSONObject;
 
-	class rSON_CLS_API JSONArray : public JSONAtom
+	class JSONArray : public JSONAtom
 	{
 	private:
 		managedPtr_t<internal::array_t> arr;
@@ -419,20 +419,20 @@ namespace rSON
 	public:
 		using iterator = const jsonAtomPtr_t *;
 
-		JSONArray();
-		JSONArray(JSONArray &array);
-		void add(jsonAtomPtr_t &&value);
-		void add(JSONAtom *value);
-		void del(const size_t key);
-		void del(const JSONAtom *value);
-		void del(const JSONAtom &value);
-		JSONAtom &operator [](const size_t key) const;
-		size_t size() const;
-		size_t count() const { return size(); }
-		iterator begin() const;
-		iterator end() const;
-		size_t length() const rSON_VFINAL;
-		void store(stream_t &stream) const rSON_VFINAL;
+		rSON_CLS_API JSONArray();
+		rSON_CLS_API JSONArray(JSONArray &array);
+		rSON_CLS_API void add(jsonAtomPtr_t &&value);
+		rSON_CLS_API void add(JSONAtom *value);
+		rSON_CLS_API void del(const size_t key);
+		rSON_CLS_API void del(const JSONAtom *value);
+		rSON_CLS_API void del(const JSONAtom &value);
+		rSON_CLS_API JSONAtom &operator [](const size_t key) const;
+		rSON_CLS_API size_t size() const;
+		rSON_CLS_API size_t count() const { return size(); }
+		rSON_CLS_API iterator begin() const;
+		rSON_CLS_API iterator end() const;
+		rSON_CLS_API size_t length() const rSON_VFINAL;
+		rSON_CLS_API void store(stream_t &stream) const rSON_VFINAL;
 	};
 	using jsonArray_t = JSONArray;
 
