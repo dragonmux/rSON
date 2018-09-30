@@ -58,7 +58,7 @@
 
 namespace rSON
 {
-	struct rSON_CLS_API notImplemented_t : public std::exception { };
+	struct notImplemented_t : public std::exception { };
 
 	// Stream types for JSON IO
 	struct stream_t
@@ -81,7 +81,7 @@ namespace rSON
 		template<typename T, size_t N> bool write(const std::array<T, N> &value)
 			{ return write(value.data(), N); }
 
-		bool read(void *const value, const size_t valueLen)
+		rSON_CLS_API bool read(void *const value, const size_t valueLen)
 		{
 			size_t actualLen = 0;
 			if (!read(value, valueLen, actualLen))
@@ -96,7 +96,7 @@ namespace rSON
 		virtual void writeSync() noexcept { }
 	};
 
-	struct rSON_CLS_API fileStream_t rSON_FINAL : public stream_t
+	struct fileStream_t rSON_FINAL : public stream_t
 	{
 	private:
 		int fd;
@@ -105,22 +105,22 @@ namespace rSON
 		int32_t mode;
 
 	public:
-		fileStream_t(const char *const fileName, const int32_t mode, const int32_t perms = 0);
+		rSON_CLS_API fileStream_t(const char *const fileName, const int32_t mode, const int32_t perms = 0);
 		fileStream_t(const fileStream_t &) = delete;
-		fileStream_t(fileStream_t &&) = default;
-		~fileStream_t() noexcept final override;
+		rSON_CLS_API fileStream_t(fileStream_t &&) = default;
+		rSON_CLS_API ~fileStream_t() noexcept final override;
 		fileStream_t &operator =(const fileStream_t &) = delete;
-		fileStream_t &operator =(fileStream_t &&) = default;
+		rSON_CLS_API fileStream_t &operator =(fileStream_t &&) = default;
 
-		bool read(void *const value, const size_t valueLen, size_t &actualLen) final override;
-		bool write(const void *const value, const size_t valueLen) final override;
-		bool atEOF() const noexcept final override { return eof; }
-		off_t seek(const off_t offset, const int whence) noexcept;
-		size_t size() const noexcept { return length; }
-		bool valid() const noexcept { return fd != -1; }
+		rSON_CLS_API bool read(void *const value, const size_t valueLen, size_t &actualLen) final override;
+		rSON_CLS_API bool write(const void *const value, const size_t valueLen) final override;
+		rSON_CLS_API bool atEOF() const noexcept final override { return eof; }
+		rSON_CLS_API off_t seek(const off_t offset, const int whence) noexcept;
+		rSON_CLS_API size_t size() const noexcept { return length; }
+		rSON_CLS_API bool valid() const noexcept { return fd != -1; }
 	};
 
-	struct rSON_CLS_API memoryStream_t rSON_FINAL : public stream_t
+	struct memoryStream_t rSON_FINAL : public stream_t
 	{
 	private:
 		char *const memory;
@@ -128,11 +128,11 @@ namespace rSON
 		size_t pos;
 
 	public:
-		memoryStream_t(void *const stream, const size_t streamLength) noexcept;
+		rSON_CLS_API memoryStream_t(void *const stream, const size_t streamLength) noexcept;
 
-		bool read(void *const value, const size_t valueLen, size_t &actualLen) noexcept final override;
-		bool write(const void *const value, const size_t valueLen) noexcept final override;
-		bool atEOF() const noexcept final override { return pos == length; }
+		rSON_CLS_API bool read(void *const value, const size_t valueLen, size_t &actualLen) noexcept final override;
+		rSON_CLS_API bool write(const void *const value, const size_t valueLen) noexcept final override;
+		rSON_CLS_API bool atEOF() const noexcept final override { return pos == length; }
 	};
 
 	// Enumerations
