@@ -214,49 +214,44 @@ namespace rSON
 	// Impl types
 	namespace internal
 	{
+		using delete_t = void (*)(void *const);
+
 		struct object_t;
 		struct array_t;
 	}
 
-	template<typename T> struct managedPtr_t final
+	template<typename T> struct opaquePtr_t final
 	{
 	private:
-		T *ptr;
-		template<typename U> friend struct managedPtr_t;
+		void *ptr;
+		internal::delete_t deleteFunc;
+
+		T *value() noexcept { return static_cast<T *>(ptr); }
+		const T *value() const noexcept { return static_cast<const T *const>(ptr); }
 
 	public:
-		using pointer = T *;
-		using reference = T &;
+		constexpr opaquePtr_t() noexcept : ptr{nullptr}, deleteFunc{nullptr} { }
+		opaquePtr_t(void *p, internal::delete_t &&del) noexcept : ptr{p}, deleteFunc{del} { }
+		opaquePtr_t(opaquePtr_t &&p) noexcept : opaquePtr_t{} { swap(p); }
+		~opaquePtr_t() noexcept { if (deleteFunc) deleteFunc(ptr); }
+		opaquePtr_t &operator =(opaquePtr_t &&p) noexcept { swap(p); return *this; }
 
-		constexpr managedPtr_t() noexcept : ptr(nullptr) { }
-		managedPtr_t(T *p) noexcept : ptr(p) { }
-		managedPtr_t(managedPtr_t &&p) noexcept : managedPtr_t() { swap(p); }
-		template<typename U, typename = typename std::enable_if<!std::is_same<T, U>::value &&
-			std::is_base_of<T, U>::value>::type> managedPtr_t(managedPtr_t<U> &&p) noexcept :
-			managedPtr_t() { swap(p); }
-		~managedPtr_t() noexcept { delete ptr; }
-		managedPtr_t &operator =(managedPtr_t &&p) noexcept { swap(p); return *this; }
-
-		operator T &() const noexcept { return *ptr; }
+		operator T &() const noexcept { return *value(); }
 		explicit operator T &&() const = delete;
-		T &operator *() const noexcept { return *ptr; }
-		T *operator ->() const noexcept { return ptr; }
-		T *get() noexcept { return ptr; }
-		T *get() const noexcept { return ptr; }
-		bool valid() const noexcept { return ptr; }
+		T &operator *() noexcept { return *value(); }
+		const T &operator *() const noexcept { return *value(); }
+		T *operator ->() noexcept { return value(); }
+		const T *operator ->() const noexcept { return value(); }
 		explicit operator bool() const noexcept { return ptr; }
-		void swap(managedPtr_t &p) noexcept { std::swap(ptr, p.ptr); }
 
-		template<typename U, typename = typename std::enable_if<!std::is_same<T, U>::value &&
-			std::is_base_of<T, U>::value>::type> void swap(managedPtr_t<U> &p) noexcept
+		void swap(opaquePtr_t &p) noexcept
 		{
-			delete ptr;
-			ptr = p.ptr;
-			p.ptr = nullptr;
+			std::swap(ptr, p.ptr);
+			std::swap(deleteFunc, p.deleteFunc);
 		}
 
-		managedPtr_t(const managedPtr_t &) = delete;
-		managedPtr_t &operator =(const managedPtr_t &) = delete;
+		opaquePtr_t(const opaquePtr_t &) = delete;
+		opaquePtr_t &operator =(const opaquePtr_t &) = delete;
 	};
 
 	// Hierachy types
@@ -395,7 +390,7 @@ namespace rSON
 	class JSONObject : public JSONAtom
 	{
 	private:
-		managedPtr_t<internal::object_t> obj;
+		opaquePtr_t<internal::object_t> obj;
 
 	public:
 		rSON_CLS_API JSONObject();
@@ -416,7 +411,7 @@ namespace rSON
 	class JSONArray : public JSONAtom
 	{
 	private:
-		managedPtr_t<internal::array_t> arr;
+		opaquePtr_t<internal::array_t> arr;
 
 	public:
 		using iterator = const jsonAtomPtr_t *;
