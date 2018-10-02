@@ -16,7 +16,7 @@
 
 include ../Makefile.inc
 
-CRUNCHMAKE = crunchMake $(shell pkg-config --cflags --libs crunch) -lstdc++ -lm -std=c++14 -I..
+CRUNCHMAKE = crunchMake $(shell pkg-config --cflags --libs crunch) -lstdc++ -lm -std=c++14
 ifeq ($(BUILD_VERBOSE), 0)
 	CRUNCHMAKE += -q
 endif

@@ -16,6 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#ifndef INTERNAL__H
+#define INTERNAL__H
+
 #include <functional>
 #include <map>
 #include "rSON.h"
@@ -124,3 +127,5 @@ using namespace rSON;
 using namespace rSON::internal;
 
 inline size_t strlen(const string_t &str) noexcept { return strlen(str.get()); }
+
+#endif /*INTERNAL__H*/
