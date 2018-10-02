@@ -20,7 +20,7 @@
 #include "internal.h"
 #include "String.hxx"
 
-JSONObject::JSONObject() : JSONAtom{JSON_TYPE_OBJECT}, obj{makeManaged<object_t>()} { }
+JSONObject::JSONObject() : JSONAtom{JSON_TYPE_OBJECT}, obj{makeOpaque<object_t>()} { }
 
 JSONObject::JSONObject(JSONObject &object) : JSONObject{}
 	{ obj->clone(*object.obj); }

@@ -93,23 +93,30 @@ namespace rSON
 			constIter_t end() const noexcept { return children.end(); }
 		};
 
-		template<typename T> struct makeManaged_ { using uniqueType = managedPtr_t<T>; };
-		template<typename T> struct makeManaged_<T []> { using arrayType = managedPtr_t<T []>; };
-		template<typename T, size_t N> struct makeManaged_<T [N]> { struct invalidType { }; };
+		template<typename T> inline static void del(void *const object)
+		{
+			if (object)
+				static_cast<T *>(object)->~T();
+			operator delete(object);
+		}
 
-		template<typename T, typename... Args> inline typename makeManaged_<T>::uniqueType makeManaged(Args &&...args)
+		template<typename T> struct makeOpaque_ { using uniqueType = opaquePtr_t<T>; };
+		template<typename T> struct makeOpaque_<T []> { using arrayType = opaquePtr_t<T []>; };
+		template<typename T, size_t N> struct makeOpaque_<T [N]> { struct invalidType { }; };
+
+		template<typename T, typename... Args> inline typename makeOpaque_<T>::uniqueType makeOpaque(Args &&...args)
 		{
 			using consT = typename std::remove_const<T>::type;
-			return managedPtr_t<T>(new consT(std::forward<Args>(args)...));
+			return opaquePtr_t<T>(new consT(std::forward<Args>(args)...), del<T>);
 		}
 
-		template<typename T> inline typename makeManaged_<T>::arrayType makeManaged(const size_t num)
+		template<typename T> inline typename makeOpaque_<T>::arrayType makeOpaque(const size_t num)
 		{
 			using consT = typename std::remove_const<typename std::remove_extent<T>::type>::type;
-			return managedPtr_t<T>(new consT[num]());
+			return opaquePtr_t<T>(new consT[num](), del<T []>);
 		}
 
-		template<typename T, typename... Args> inline typename makeManaged_<T>::invalidType makeManaged(Args &&...) noexcept = delete;
+		template<typename T, typename... Args> inline typename makeOpaque_<T>::invalidType makeOpaque(Args &&...) noexcept = delete;
 	}
 }
 
