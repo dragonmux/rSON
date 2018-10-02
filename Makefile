@@ -21,7 +21,7 @@ CFLAGS = -c $(DEFS) -o $@ $<
 DEPFLAGS = -E -MM $(DEFS) -o .dep/$*.d $<
 LFLAGS = $(OPTIM_FLAGS) -shared $^ -Wl,-soname,$@ -o $@ -lstdc++ -lm -z defs
 ifeq ($(strip $(FOR_TESTS)), 1)
-	CFLAGS += $(shell pkg-config --cflags crunch)
+	CFLAGS += -I. $(shell pkg-config --cflags crunch)
 endif
 
 SED = sed -e 's:@LIBDIR@:$(LIBDIR):g' -e 's:@PREFIX@:$(PREFIX):g' -e 's:@VERSION@:$(VER):g'
