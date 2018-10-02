@@ -70,7 +70,7 @@ uninstall:
 	rm $(PKGDIR)/$(PC)
 
 librSON.so: $(O)
-librSON.socket.so: $(O_SOCK)
+librSON.socket.so: $(O_SOCK) | librSON.so
 librSON.socket.so: LFLAGS += ./librSON.so$(VER)
 $(SO): A = $(patsubst %.so,%.a,$@)
 $(SO):
