@@ -1,6 +1,6 @@
 /*
  * This file is part of rSON
- * Copyright © 2012-2013 Rachel Mant (dx-mon@users.sourceforge.net)
+ * Copyright © 2012-2018 Rachel Mant (dx-mon@users.sourceforge.net)
  *
  * rSON is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -21,7 +21,8 @@
 #include <unistd.h>
 #endif
 
-#include "../internal.h"
+#include <rSON.h>
+using namespace rSON;
 
 #define WANTED_TYPE(whatToDo) \
 try \
