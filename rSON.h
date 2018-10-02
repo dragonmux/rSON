@@ -223,25 +223,22 @@ namespace rSON
 	template<typename T> struct opaquePtr_t final
 	{
 	private:
-		void *ptr;
+		T *ptr;
 		internal::delete_t deleteFunc;
-
-		T *value() noexcept { return static_cast<T *>(ptr); }
-		const T *value() const noexcept { return static_cast<const T *const>(ptr); }
 
 	public:
 		constexpr opaquePtr_t() noexcept : ptr{nullptr}, deleteFunc{nullptr} { }
-		opaquePtr_t(void *p, internal::delete_t &&del) noexcept : ptr{p}, deleteFunc{del} { }
+		opaquePtr_t(T *p, internal::delete_t &&del) noexcept : ptr{p}, deleteFunc{del} { }
 		opaquePtr_t(opaquePtr_t &&p) noexcept : opaquePtr_t{} { swap(p); }
 		~opaquePtr_t() noexcept { if (deleteFunc) deleteFunc(ptr); }
 		opaquePtr_t &operator =(opaquePtr_t &&p) noexcept { swap(p); return *this; }
 
-		operator T &() const noexcept { return *value(); }
+		operator T &() const noexcept { return *ptr; }
 		explicit operator T &&() const = delete;
-		T &operator *() noexcept { return *value(); }
-		const T &operator *() const noexcept { return *value(); }
-		T *operator ->() noexcept { return value(); }
-		const T *operator ->() const noexcept { return value(); }
+		T &operator *() noexcept { return *ptr; }
+		const T &operator *() const noexcept { return *ptr; }
+		T *operator ->() noexcept { return ptr; }
+		const T *operator ->() const noexcept { return ptr; }
 		explicit operator bool() const noexcept { return ptr; }
 
 		void swap(opaquePtr_t &p) noexcept
