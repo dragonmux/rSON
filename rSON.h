@@ -51,9 +51,11 @@
 #if __cplusplus >= 201103L
 #define rSON_FINAL final
 #define rSON_VFINAL final override
+#define rSON_NOEXCEPT noexcept
 #else
 #define rSON_FINAL
 #define rSON_VFINAL
+#define rSON_NOEXCEPT
 #endif
 
 namespace rSON
@@ -92,8 +94,8 @@ namespace rSON
 		virtual bool read(void *const, const size_t, size_t &) { throw notImplemented_t(); }
 		virtual bool write(const void *const, const size_t) { throw notImplemented_t(); }
 		virtual bool atEOF() const { throw notImplemented_t(); }
-		virtual void readSync() noexcept { }
-		virtual void writeSync() noexcept { }
+		virtual void readSync() rSON_NOEXCEPT { }
+		virtual void writeSync() rSON_NOEXCEPT { }
 	};
 
 	struct fileStream_t rSON_FINAL : public stream_t
@@ -108,16 +110,16 @@ namespace rSON
 		rSON_CLS_API fileStream_t(const char *const fileName, const int32_t mode, const int32_t perms = 0);
 		fileStream_t(const fileStream_t &) = delete;
 		rSON_CLS_API fileStream_t(fileStream_t &&) = default;
-		rSON_CLS_API ~fileStream_t() noexcept final override;
+		rSON_CLS_API ~fileStream_t() rSON_NOEXCEPT final override;
 		fileStream_t &operator =(const fileStream_t &) = delete;
 		rSON_CLS_API fileStream_t &operator =(fileStream_t &&) = default;
 
 		rSON_CLS_API bool read(void *const value, const size_t valueLen, size_t &actualLen) final override;
 		rSON_CLS_API bool write(const void *const value, const size_t valueLen) final override;
-		rSON_CLS_API bool atEOF() const noexcept final override { return eof; }
-		rSON_CLS_API off_t seek(const off_t offset, const int whence) noexcept;
-		rSON_CLS_API size_t size() const noexcept { return length; }
-		rSON_CLS_API bool valid() const noexcept { return fd != -1; }
+		rSON_CLS_API bool atEOF() const rSON_NOEXCEPT final override { return eof; }
+		rSON_CLS_API off_t seek(const off_t offset, const int whence) rSON_NOEXCEPT;
+		rSON_CLS_API size_t size() const rSON_NOEXCEPT { return length; }
+		rSON_CLS_API bool valid() const rSON_NOEXCEPT { return fd != -1; }
 	};
 
 	struct memoryStream_t rSON_FINAL : public stream_t
@@ -128,11 +130,11 @@ namespace rSON
 		size_t pos;
 
 	public:
-		rSON_CLS_API memoryStream_t(void *const stream, const size_t streamLength) noexcept;
+		rSON_CLS_API memoryStream_t(void *const stream, const size_t streamLength) rSON_NOEXCEPT;
 
-		rSON_CLS_API bool read(void *const value, const size_t valueLen, size_t &actualLen) noexcept final override;
-		rSON_CLS_API bool write(const void *const value, const size_t valueLen) noexcept final override;
-		rSON_CLS_API bool atEOF() const noexcept final override { return pos == length; }
+		rSON_CLS_API bool read(void *const value, const size_t valueLen, size_t &actualLen) rSON_NOEXCEPT final override;
+		rSON_CLS_API bool write(const void *const value, const size_t valueLen) rSON_NOEXCEPT final override;
+		rSON_CLS_API bool atEOF() const rSON_NOEXCEPT final override { return pos == length; }
 	};
 
 	// Enumerations
@@ -186,7 +188,7 @@ namespace rSON
 	public:
 		rSON_CLS_API JSONTypeError(JSONAtomType actual, JSONAtomType expected);
 #if __cplusplus >= 201103L
-		rSON_CLS_API JSONTypeError(JSONTypeError &&error) noexcept : errorStr(std::move(error.errorStr)) { }
+		rSON_CLS_API JSONTypeError(JSONTypeError &&error) rSON_NOEXCEPT : errorStr(std::move(error.errorStr)) { }
 #endif
 		rSON_CLS_API const char *error() const;
 	};
@@ -227,21 +229,21 @@ namespace rSON
 		internal::delete_t deleteFunc;
 
 	public:
-		constexpr opaquePtr_t() noexcept : ptr{nullptr}, deleteFunc{nullptr} { }
-		opaquePtr_t(T *p, internal::delete_t &&del) noexcept : ptr{p}, deleteFunc{del} { }
-		opaquePtr_t(opaquePtr_t &&p) noexcept : opaquePtr_t{} { swap(p); }
-		~opaquePtr_t() noexcept { if (deleteFunc) deleteFunc(ptr); }
-		opaquePtr_t &operator =(opaquePtr_t &&p) noexcept { swap(p); return *this; }
+		constexpr opaquePtr_t() rSON_NOEXCEPT : ptr{nullptr}, deleteFunc{nullptr} { }
+		opaquePtr_t(T *p, internal::delete_t &&del) rSON_NOEXCEPT : ptr{p}, deleteFunc{del} { }
+		opaquePtr_t(opaquePtr_t &&p) rSON_NOEXCEPT : opaquePtr_t{} { swap(p); }
+		~opaquePtr_t() rSON_NOEXCEPT { if (deleteFunc) deleteFunc(ptr); }
+		opaquePtr_t &operator =(opaquePtr_t &&p) rSON_NOEXCEPT { swap(p); return *this; }
 
-		operator T &() const noexcept { return *ptr; }
+		operator T &() const rSON_NOEXCEPT { return *ptr; }
 		explicit operator T &&() const = delete;
-		T &operator *() noexcept { return *ptr; }
-		const T &operator *() const noexcept { return *ptr; }
-		T *operator ->() noexcept { return ptr; }
-		const T *operator ->() const noexcept { return ptr; }
-		explicit operator bool() const noexcept { return ptr; }
+		T &operator *() rSON_NOEXCEPT { return *ptr; }
+		const T &operator *() const rSON_NOEXCEPT { return *ptr; }
+		T *operator ->() rSON_NOEXCEPT { return ptr; }
+		const T *operator ->() const rSON_NOEXCEPT { return ptr; }
+		explicit operator bool() const rSON_NOEXCEPT { return ptr; }
 
-		void swap(opaquePtr_t &p) noexcept
+		void swap(opaquePtr_t &p) rSON_NOEXCEPT
 		{
 			std::swap(ptr, p.ptr);
 			std::swap(deleteFunc, p.deleteFunc);
@@ -262,19 +264,19 @@ namespace rSON
 		const JSONAtomType type;
 
 	protected:
-		constexpr JSONAtom() noexcept : type(JSON_TYPE_NULL) { }
-		constexpr JSONAtom(const JSONAtomType atomType) noexcept : type(atomType) { }
+		constexpr JSONAtom() rSON_NOEXCEPT : type(JSON_TYPE_NULL) { }
+		constexpr JSONAtom(const JSONAtomType atomType) rSON_NOEXCEPT : type(atomType) { }
 
 	public:
 		// TODO: Implement full move semantics, which solves the issue of having pointers not references for all JSONAtom's.. well, maybe.
 		// Move semantics would be good anyway as it makes handling a JSONAtom tree cheaper and easier.
 		// We already have a virtual distructor so can safely delete.. perhaps virtual assignment operators will work.. have to figure out how to make move construction work with this (or copy construction).
 		virtual ~JSONAtom() { }
-		JSONAtomType getType() const noexcept { return type; }
+		JSONAtomType getType() const rSON_NOEXCEPT { return type; }
 		virtual void store(stream_t &stream) const = 0;
 		virtual size_t length() const = 0;
 
-		bool isNull() const noexcept { return typeIs(JSON_TYPE_NULL); }
+		bool isNull() const rSON_NOEXCEPT { return typeIs(JSON_TYPE_NULL); }
 		void *asNull() const;
 		bool asBool() const { return *this; }
 		int64_t asInt() const { return *this; }
@@ -305,8 +307,8 @@ namespace rSON
 		JSONAtom &operator [](const size_t key) const;
 
 		// Utility functions to help with type checking (validation)
-		bool typeIs(const JSONAtomType atomType) const noexcept { return type == atomType; }
-		bool typeIsOrNull(const JSONAtomType atomType) const noexcept { return type == atomType || type == JSON_TYPE_NULL; }
+		bool typeIs(const JSONAtomType atomType) const rSON_NOEXCEPT { return type == atomType; }
+		bool typeIsOrNull(const JSONAtomType atomType) const rSON_NOEXCEPT { return type == atomType || type == JSON_TYPE_NULL; }
 	};
 	using jsonAtom_t = JSONAtom;
 	using jsonAtomPtr_t = std::unique_ptr<JSONAtom>;
@@ -356,13 +358,13 @@ namespace rSON
 		~JSONString();
 		operator const char *() const;
 		void set(char *strValue);
-		const char *get() const noexcept { return value; }
+		const char *get() const rSON_NOEXCEPT { return value; }
 		size_t len() const;
 		size_t length() const rSON_VFINAL;
 		void store(stream_t &stream) const rSON_VFINAL;
 
-		bool isIn(const char *const _value) const noexcept { return strcmp(value, _value) == 0; }
-		template<typename... Values> bool isIn(const char *const _value, Values ...values) const noexcept
+		bool isIn(const char *const _value) const rSON_NOEXCEPT { return strcmp(value, _value) == 0; }
+		template<typename... Values> bool isIn(const char *const _value, Values ...values) const rSON_NOEXCEPT
 		{
 			if (isIn(_value))
 				return true;
@@ -439,8 +441,8 @@ namespace rSON
 	rSON_DEPRECATE("If not using deprecated form of writeJSON(), this must not be called", void) freeString(char **str);
 
 	// Utility templates to help with type checking (validation)
-	template<JSONAtomType type> bool typeIs(const JSONAtom &atom) noexcept { return atom.typeIs(type); }
-	template<JSONAtomType type> bool typeIsOrNull(const JSONAtom &atom) noexcept { return atom.typeIsOrNull(type); }
+	template<JSONAtomType type> bool typeIs(const JSONAtom &atom) rSON_NOEXCEPT { return atom.typeIs(type); }
+	template<JSONAtomType type> bool typeIsOrNull(const JSONAtom &atom) rSON_NOEXCEPT { return atom.typeIsOrNull(type); }
 }
 
 #endif /*rSON__H*/
