@@ -110,13 +110,13 @@ namespace rSON
 		rSON_CLS_API fileStream_t(const char *const fileName, const int32_t mode, const int32_t perms = 0);
 		fileStream_t(const fileStream_t &) = delete;
 		rSON_CLS_API fileStream_t(fileStream_t &&) = default;
-		rSON_CLS_API ~fileStream_t() rSON_NOEXCEPT final override;
+		rSON_CLS_API ~fileStream_t() rSON_NOEXCEPT rSON_VFINAL;
 		fileStream_t &operator =(const fileStream_t &) = delete;
 		rSON_CLS_API fileStream_t &operator =(fileStream_t &&) = default;
 
-		rSON_CLS_API bool read(void *const value, const size_t valueLen, size_t &actualLen) final override;
-		rSON_CLS_API bool write(const void *const value, const size_t valueLen) final override;
-		rSON_CLS_API bool atEOF() const rSON_NOEXCEPT final override { return eof; }
+		rSON_CLS_API bool read(void *const value, const size_t valueLen, size_t &actualLen) rSON_VFINAL;
+		rSON_CLS_API bool write(const void *const value, const size_t valueLen) rSON_VFINAL;
+		rSON_CLS_API bool atEOF() const rSON_NOEXCEPT rSON_VFINAL { return eof; }
 		rSON_CLS_API off_t seek(const off_t offset, const int whence) rSON_NOEXCEPT;
 		rSON_CLS_API size_t size() const rSON_NOEXCEPT { return length; }
 		rSON_CLS_API bool valid() const rSON_NOEXCEPT { return fd != -1; }
@@ -132,9 +132,9 @@ namespace rSON
 	public:
 		rSON_CLS_API memoryStream_t(void *const stream, const size_t streamLength) rSON_NOEXCEPT;
 
-		rSON_CLS_API bool read(void *const value, const size_t valueLen, size_t &actualLen) rSON_NOEXCEPT final override;
-		rSON_CLS_API bool write(const void *const value, const size_t valueLen) rSON_NOEXCEPT final override;
-		rSON_CLS_API bool atEOF() const rSON_NOEXCEPT final override { return pos == length; }
+		rSON_CLS_API bool read(void *const value, const size_t valueLen, size_t &actualLen) rSON_NOEXCEPT rSON_VFINAL;
+		rSON_CLS_API bool write(const void *const value, const size_t valueLen) rSON_NOEXCEPT rSON_VFINAL;
+		rSON_CLS_API bool atEOF() const rSON_NOEXCEPT rSON_VFINAL { return pos == length; }
 	};
 
 	// Enumerations
