@@ -30,14 +30,15 @@
 	#else
 		#define rSON_API __declspec(dllimport)
 	#endif
+	#define rSON_DEFAULT_VISIBILITY
 	#define rSON_CLS_API	rSON_API
 #else
 	#if __GNUC__ >= 4
-		#define DEFAULT_VISIBILITY __attribute__ ((visibility("default")))
+		#define rSON_DEFAULT_VISIBILITY __attribute__ ((visibility("default")))
 	#else
-		#define DEFAULT_VISIBILITY
+		#error "This library cannot be compiled or used correctly with a GCC less than 4.x series"
 	#endif
-	#define rSON_CLS_API DEFAULT_VISIBILITY
+	#define rSON_CLS_API rSON_DEFAULT_VISIBILITY
 	#define rSON_API extern rSON_CLS_API
 #endif
 #if __cplusplus >= 201103L && __cplusplus < 201402L
@@ -63,7 +64,7 @@ namespace rSON
 	struct notImplemented_t : public std::exception { };
 
 	// Stream types for JSON IO
-	struct stream_t
+	struct rSON_DEFAULT_VISIBILITY stream_t
 	{
 	public:
 		stream_t() = default;
@@ -98,7 +99,7 @@ namespace rSON
 		virtual void writeSync() rSON_NOEXCEPT { }
 	};
 
-	struct fileStream_t rSON_FINAL : public stream_t
+	struct rSON_DEFAULT_VISIBILITY fileStream_t rSON_FINAL : public stream_t
 	{
 	private:
 		int fd;
@@ -122,7 +123,7 @@ namespace rSON
 		rSON_CLS_API bool valid() const rSON_NOEXCEPT { return fd != -1; }
 	};
 
-	struct memoryStream_t rSON_FINAL : public stream_t
+	struct rSON_DEFAULT_VISIBILITY memoryStream_t rSON_FINAL : public stream_t
 	{
 	private:
 		char *const memory;
@@ -168,7 +169,7 @@ namespace rSON
 	} JSONArrayErrorType;
 
 	// Exception classes
-	class JSONParserError rSON_FINAL
+	class rSON_DEFAULT_VISIBILITY JSONParserError rSON_FINAL
 	{
 	private:
 		JSONParserErrorType parserError;
@@ -179,7 +180,7 @@ namespace rSON
 		rSON_CLS_API const char *error() const;
 	};
 
-	class JSONTypeError rSON_FINAL
+	class rSON_DEFAULT_VISIBILITY JSONTypeError rSON_FINAL
 	{
 	private:
 		std::unique_ptr<const char []> errorStr;
@@ -193,7 +194,7 @@ namespace rSON
 		rSON_CLS_API const char *error() const;
 	};
 
-	class JSONObjectError rSON_FINAL
+	class rSON_DEFAULT_VISIBILITY JSONObjectError rSON_FINAL
 	{
 	private:
 		JSONObjectErrorType objectError;
@@ -203,7 +204,7 @@ namespace rSON
 		rSON_CLS_API const char *error() const;
 	};
 
-	class JSONArrayError rSON_FINAL
+	class rSON_DEFAULT_VISIBILITY JSONArrayError rSON_FINAL
 	{
 	private:
 		JSONArrayErrorType arrayError;
@@ -386,7 +387,7 @@ namespace rSON
 		void store(stream_t &stream) const rSON_VFINAL;
 	};
 
-	class JSONObject : public JSONAtom
+	class rSON_DEFAULT_VISIBILITY JSONObject : public JSONAtom
 	{
 	private:
 		opaquePtr_t<internal::object_t> obj;
@@ -407,7 +408,7 @@ namespace rSON
 	};
 	using jsonObject_t = JSONObject;
 
-	class JSONArray : public JSONAtom
+	class rSON_DEFAULT_VISIBILITY JSONArray : public JSONAtom
 	{
 	private:
 		opaquePtr_t<internal::array_t> arr;
