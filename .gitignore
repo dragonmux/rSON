@@ -4,6 +4,7 @@ librSON.so*
 librSON.a
 rSON.pc
 
+build
 .dep
 *.gcda
 *.gcno
