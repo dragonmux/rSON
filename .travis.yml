@@ -1,14 +1,11 @@
 language: cpp
 sudo: required
 
-before_install:
-  - export GCC="$CC -m64 -fPIC -DPIC" GXX="$CXX -m64 -fPIC -DPIC"
-  - pushd $HOME/build
-  - git clone https://github.com/DX-MON/crunch.git DX-MON/crunch
-  - cd DX-MON/crunch
-  - sudo make install
-  - popd
 install:
+  - .travis-ci/install.sh
+  - export GCC="$CC -m64 -fPIC -DPIC" GXX="$CXX -m64 -fPIC -DPIC"
+  - export PREFIX=$HOME/.local PKG_CONFIG_PATH=$HOME/.local/lib/pkgconfig;
+before_script:
   - make
 script:
   - make tests
