@@ -181,3 +181,8 @@ matrix:
 env:
   global:
     - COVERAGE=1
+
+notifications:
+  email:
+    on_success: change
+    on_failure: change
