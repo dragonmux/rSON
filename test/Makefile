@@ -53,7 +53,7 @@ clean:
 testParser.so testWriter.so: CRUNCHMAKE += ../Parser.o
 testHeader.so: rSON.o
 testHeader.so: CRUNCHMAKE += rSON.o
-testSocket.so: CRUNCHMAKE += ../librSON.a ../rSON_socket.o
+testSocket.so: CRUNCHMAKE += ../librSON.a ../rSON_socket.o -I..
 %.so: %.cpp
 	$(call run-cmd,crunchMake,$(O_FILE),$<)
 
