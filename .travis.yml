@@ -9,7 +9,7 @@ install:
 before_script:
   - make
 script:
-  - make tests V=1
+  - make tests
   - make check
 after_success:
   - if [ "$COVERAGE" == "1" ]; then
