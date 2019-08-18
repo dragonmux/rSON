@@ -2,7 +2,7 @@ language: cpp
 sudo: required
 
 before_install:
-  - export GCC="$GCC -m64 -fPIC -DPIC" GXX="$GXX -m64 -fPIC -DPIC"
+  - export GCC="$CC -m64 -fPIC -DPIC" GXX="$CXX -m64 -fPIC -DPIC"
   - pushd $HOME/build
   - git clone https://github.com/DX-MON/crunch.git DX-MON/crunch
   - cd DX-MON/crunch
@@ -21,7 +21,7 @@ after_success:
 matrix:
   include:
     - compiler: clang-4.0
-      env: GCC=clang-4.0 GXX=clang++-4.0 COVERAGE=0
+      env: CC=clang-4.0 CXX=clang++-4.0 COVERAGE=0
       addons:
         apt:
           sources:
@@ -32,7 +32,7 @@ matrix:
             - clang-4.0
             - llvm-4.0
     - compiler: clang-5.0
-      env: GCC=clang-5.0 GXX=clang++-5.0 COVERAGE=0
+      env: CC=clang-5.0 CXX=clang++-5.0 COVERAGE=0
       addons:
         apt:
           sources:
@@ -43,7 +43,7 @@ matrix:
             - clang-5.0
             - llvm-5.0
     - compiler: clang-6.0
-      env: GCC=clang-6.0 GXX=clang++-6.0 GCOV='llvm-cov gcov'
+      env: CC=clang-6.0 CXX=clang++-6.0 GCOV='llvm-cov gcov'
       addons:
         apt:
           sources:
@@ -54,7 +54,7 @@ matrix:
             - clang-6.0
             - llvm-6.0
     - compiler: clang-6.0
-      env: GCC=clang-6.0 GXX=clang++-6.0 COVERAGE=0
+      env: CC=clang-6.0 CXX=clang++-6.0 COVERAGE=0
       addons:
         apt:
           sources:
@@ -65,7 +65,7 @@ matrix:
             - clang-6.0
             - llvm-6.0
     - compiler: clang-7
-      env: GCC=clang-7 GXX=clang++-7 GCOV='llvm-cov gcov'
+      env: CC=clang-7 CXX=clang++-7 GCOV='llvm-cov gcov'
       addons:
         apt:
           sources:
@@ -76,7 +76,7 @@ matrix:
             - clang-7
             - llvm-7
     - compiler: clang-7
-      env: GCC=clang-7 GXX=clang++-7 COVERAGE=0
+      env: CC=clang-7 CXX=clang++-7 COVERAGE=0
       addons:
         apt:
           sources:
@@ -87,7 +87,7 @@ matrix:
             - clang-7
             - llvm-7
     - compiler: gcc-5
-      env: GCC=gcc-5 GXX=g++-5 COVERAGE=0
+      env: CC=gcc-5 CXX=g++-5 COVERAGE=0
       addons:
         apt:
           sources:
@@ -96,7 +96,7 @@ matrix:
             - gcc-5
             - g++-5
     - compiler: gcc-6
-      env: GCC=gcc-6 GXX=g++-6 COVERAGE=0
+      env: CC=gcc-6 CXX=g++-6 COVERAGE=0
       addons:
         apt:
           sources:
@@ -105,7 +105,7 @@ matrix:
             - gcc-6
             - g++-6
     - compiler: gcc-7
-      env: GCC=gcc-7 GXX=g++-7 GCOV=gcov-7
+      env: CC=gcc-7 CXX=g++-7 GCOV=gcov-7
       addons:
         apt:
           sources:
@@ -114,7 +114,7 @@ matrix:
             - gcc-7
             - g++-7
     - compiler: gcc-7
-      env: GCC=gcc-7 GXX=g++-7 COVERAGE=0
+      env: CC=gcc-7 CXX=g++-7 COVERAGE=0
       addons:
         apt:
           sources:
@@ -123,7 +123,7 @@ matrix:
             - gcc-7
             - g++-7
     - compiler: gcc-8
-      env: GCC=gcc-8 GXX=g++-8 GCOV=gcov-8
+      env: CC=gcc-8 CXX=g++-8 GCOV=gcov-8
       addons:
         apt:
           sources:
@@ -132,7 +132,7 @@ matrix:
             - gcc-8
             - g++-8
     - compiler: gcc-8
-      env: GCC=gcc-8 GXX=g++-8 COVERAGE=0
+      env: CC=gcc-8 CXX=g++-8 COVERAGE=0
       addons:
         apt:
           sources:
@@ -141,7 +141,7 @@ matrix:
             - gcc-8
             - g++-8
     - compiler: gcc-9
-      env: GCC=gcc-9 GXX=g++-9 GCOV=gcov-9
+      env: CC=gcc-9 CXX=g++-9 GCOV=gcov-9
       addons:
         apt:
           sources:
@@ -150,7 +150,7 @@ matrix:
             - gcc-9
             - g++-9
     - compiler: gcc-9
-      env: GCC=gcc-9 GXX=g++-9 COVERAGE=0
+      env: CC=gcc-9 CXX=g++-9 COVERAGE=0
       addons:
         apt:
           sources:
