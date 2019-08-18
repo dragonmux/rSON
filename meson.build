@@ -51,17 +51,18 @@ rSONSocket = library(
 )
 
 pkgconfig.generate(
+	rSON,
 	name: 'rSON',
 	filebase: 'rSON',
-	libraries: rSON,
 	version: meson.project_version(),
 	description: 'A simple but effective JSON parser for C++'
 )
 
 pkgconfig.generate(
+	rSONSocket,
 	name: 'rSON Socket',
 	filebase: 'rSON_socket',
-	libraries: [rSONSocket, rSON],
+	libraries: [rSON],
 	version: meson.project_version(),
 	description: 'Sockets handling for rSON, a simple but effective JSON parser for C++'
 )
