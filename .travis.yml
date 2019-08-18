@@ -27,10 +27,11 @@ matrix:
           sources:
             - sourceline: 'deb http://apt.llvm.org/xenial/ llvm-toolchain-xenial-4.0 main'
               key_url: 'http://apt.llvm.org/llvm-snapshot.gpg.key'
-            - ubuntu-toolchain-r-test
+            - deadsnakes
           packages:
             - clang-4.0
             - llvm-4.0
+            - python3.6
     - compiler: clang-5.0
       env: CC=clang-5.0 CXX=clang++-5.0 COVERAGE=0
       addons:
@@ -38,10 +39,11 @@ matrix:
           sources:
             - sourceline: 'deb http://apt.llvm.org/xenial/ llvm-toolchain-xenial-5.0 main'
               key_url: 'http://apt.llvm.org/llvm-snapshot.gpg.key'
-            - ubuntu-toolchain-r-test
+            - deadsnakes
           packages:
             - clang-5.0
             - llvm-5.0
+            - python3.6
     - compiler: clang-6.0
       env: CC=clang-6.0 CXX=clang++-6.0 GCOV='llvm-cov gcov'
       addons:
@@ -49,10 +51,11 @@ matrix:
           sources:
             - sourceline: 'deb http://apt.llvm.org/xenial/ llvm-toolchain-xenial-6.0 main'
               key_url: 'http://apt.llvm.org/llvm-snapshot.gpg.key'
-            - ubuntu-toolchain-r-test
+            - deadsnakes
           packages:
             - clang-6.0
             - llvm-6.0
+            - python3.6
     - compiler: clang-6.0
       env: CC=clang-6.0 CXX=clang++-6.0 COVERAGE=0
       addons:
@@ -60,10 +63,11 @@ matrix:
           sources:
             - sourceline: 'deb http://apt.llvm.org/xenial/ llvm-toolchain-xenial-6.0 main'
               key_url: 'http://apt.llvm.org/llvm-snapshot.gpg.key'
-            - ubuntu-toolchain-r-test
+            - deadsnakes
           packages:
             - clang-6.0
             - llvm-6.0
+            - python3.6
     - compiler: clang-7
       env: CC=clang-7 CXX=clang++-7 GCOV='llvm-cov gcov'
       addons:
@@ -71,10 +75,11 @@ matrix:
           sources:
             - sourceline: 'deb http://apt.llvm.org/xenial/ llvm-toolchain-xenial-7 main'
               key_url: 'http://apt.llvm.org/llvm-snapshot.gpg.key'
-            - ubuntu-toolchain-r-test
+            - deadsnakes
           packages:
             - clang-7
             - llvm-7
+            - python3.6
     - compiler: clang-7
       env: CC=clang-7 CXX=clang++-7 COVERAGE=0
       addons:
@@ -82,82 +87,99 @@ matrix:
           sources:
             - sourceline: 'deb http://apt.llvm.org/xenial/ llvm-toolchain-xenial-7 main'
               key_url: 'http://apt.llvm.org/llvm-snapshot.gpg.key'
-            - ubuntu-toolchain-r-test
+            - deadsnakes
           packages:
             - clang-7
             - llvm-7
+            - python3.6
     - compiler: gcc-5
       env: CC=gcc-5 CXX=g++-5 COVERAGE=0
       addons:
         apt:
           sources:
             - ubuntu-toolchain-r-test
+            - deadsnakes
           packages:
             - gcc-5
             - g++-5
+            - python3.6
     - compiler: gcc-6
       env: CC=gcc-6 CXX=g++-6 COVERAGE=0
       addons:
         apt:
           sources:
             - ubuntu-toolchain-r-test
+            - deadsnakes
           packages:
             - gcc-6
             - g++-6
+            - python3.6
     - compiler: gcc-7
       env: CC=gcc-7 CXX=g++-7 GCOV=gcov-7
       addons:
         apt:
           sources:
             - ubuntu-toolchain-r-test
+            - deadsnakes
           packages:
             - gcc-7
             - g++-7
+            - python3.6
     - compiler: gcc-7
       env: CC=gcc-7 CXX=g++-7 COVERAGE=0
       addons:
         apt:
           sources:
             - ubuntu-toolchain-r-test
+            - deadsnakes
           packages:
             - gcc-7
             - g++-7
+            - python3.6
     - compiler: gcc-8
       env: CC=gcc-8 CXX=g++-8 GCOV=gcov-8
       addons:
         apt:
           sources:
             - ubuntu-toolchain-r-test
+            - deadsnakes
           packages:
             - gcc-8
             - g++-8
+            - python3.6
     - compiler: gcc-8
       env: CC=gcc-8 CXX=g++-8 COVERAGE=0
       addons:
         apt:
           sources:
             - ubuntu-toolchain-r-test
+            - deadsnakes
           packages:
             - gcc-8
             - g++-8
+            - python3.6
     - compiler: gcc-9
       env: CC=gcc-9 CXX=g++-9 GCOV=gcov-9
       addons:
         apt:
           sources:
             - ubuntu-toolchain-r-test
+            - deadsnakes
           packages:
             - gcc-9
             - g++-9
+            - python3.6
     - compiler: gcc-9
       env: CC=gcc-9 CXX=g++-9 COVERAGE=0
       addons:
         apt:
           sources:
             - ubuntu-toolchain-r-test
+            - deadsnakes
           packages:
             - gcc-9
             - g++-9
+            - python3.6
 
 env:
   global:
