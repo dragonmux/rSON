@@ -1,5 +1,6 @@
 language: cpp
-sudo: required
+os: linux
+dist: xenial
 
 install:
   - .travis-ci/install.sh
