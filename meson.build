@@ -67,4 +67,8 @@ pkgconfig.generate(
 	description: 'Sockets handling for rSON, a simple but effective JSON parser for C++'
 )
 
+install_headers(
+	'rSON.h', 'rSON_socket.h'
+)
+
 subdir('test')
