@@ -7,3 +7,5 @@ extraction:
       build_command:
         - cd build
         - ninja
+queries:
+  - include: "*"
