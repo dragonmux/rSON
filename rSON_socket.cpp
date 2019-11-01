@@ -144,17 +144,18 @@ sockaddr_storage prepare(const socketType_t family, const char *const where, con
 	if (getaddrinfo(where, nullptr, &hints, &results) || !results)
 		return {AF_UNSPEC};
 
-	sockaddr_storage service = *reinterpret_cast<sockaddr_storage *>(results->ai_addr);
+	sockaddr_storage service{};
+	memcpy(&service, &results->ai_addr, sizeof(sockaddr_storage));
 	freeaddrinfo(results);
 
 	if (service.ss_family == AF_INET)
 	{
-		auto &addr = reinterpret_cast<sockaddr_in &>(service);
+		auto &addr = reinterpret_cast<sockaddr_in &>(service); // NOLINT(cppcoreguidelines-pro-type-reinterpret-cast) lgtm[cpp/reinterpret-cast]
 		addr.sin_port = swapBytes(port);
 	}
 	else if (service.ss_family == AF_INET6)
 	{
-		auto &addr = reinterpret_cast<sockaddr_in6 &>(service);
+		auto &addr = reinterpret_cast<sockaddr_in6 &>(service); // NOLINT(cppcoreguidelines-pro-type-reinterpret-cast) lgtm[cpp/reinterpret-cast]
 		addr.sin6_port = swapBytes(port);
 	}
 	else
