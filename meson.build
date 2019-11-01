@@ -6,7 +6,8 @@ project(
 		'warning_level=3',
 		'b_pch=false'
 	],
-	version: '0.3.1'
+	version: '0.3.1',
+	meson_version: '>=0.52'
 )
 
 cxx = meson.get_compiler('cpp')
