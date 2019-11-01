@@ -52,10 +52,12 @@ if crunchMake.found()
 		build_by_default: true
 	)
 
-	test(
-		'rSON',
-		crunch,
-		args: rSONTests,
-		workdir: meson.current_build_dir()
-	)
+	foreach test : rSONTests
+		test(
+			test,
+			crunch,
+			args: test,
+			workdir: meson.current_build_dir()
+		)
+	endforeach
 endif
