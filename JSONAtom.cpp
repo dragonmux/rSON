@@ -18,11 +18,6 @@
 
 #include "internal.h"
 
-JSONAtom::operator JSONAtom *() const
-{
-	return const_cast<JSONAtom *>(this);
-}
-
 void *JSONAtom::asNull() const
 {
 	if (!typeIs(JSON_TYPE_NULL))

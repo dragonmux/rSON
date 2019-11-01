@@ -289,7 +289,8 @@ namespace rSON
 		JSONArray *asArray() const;
 		JSONArray &asArrayRef() const { return *this; }
 
-		operator JSONAtom *() const;
+		operator JSONAtom *() rSON_NOEXCEPT { return this; }
+		operator const JSONAtom *() const rSON_NOEXCEPT { return this; }
 		operator bool() const;
 		operator int8_t() const { return int8_t(asInt()); }
 		operator int16_t() const { return int16_t(asInt()); }
