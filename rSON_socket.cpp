@@ -202,7 +202,7 @@ bool rpcStream_t::read(void *const value, const size_t valueLen, size_t &actualL
 	if (result > 0)
 	{
 		actualLen = size_t(result);
-		lastRead = static_cast<char *const>(value)[actualLen - 1];
+		lastRead = static_cast<char *>(value)[actualLen - 1];
 	}
 	return actualLen == valueLen;
 }
@@ -211,7 +211,7 @@ bool rpcStream_t::write(const void *const valuePtr, const size_t valueLen)
 {
 	if (!buffer)
 		return false;
-	auto value = static_cast<const char *const>(valuePtr);
+	const auto value = static_cast<const char *>(valuePtr);
 	size_t offs = 0, toWrite = valueLen, written = 0;
 	while (toWrite > 0)
 	{
