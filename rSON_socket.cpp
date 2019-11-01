@@ -80,11 +80,11 @@ socket_t::socket_t(const int family, const int type, const int protocol) noexcep
 socket_t::~socket_t() noexcept
 	{ if (socket != -1) closesocket(socket); }
 bool socket_t::bind(const void *const addr, const size_t len) const noexcept
-	{ return ::bind(socket, reinterpret_cast<const sockaddr *>(addr), len) == 0; }
+	{ return ::bind(socket, static_cast<const sockaddr *>(addr), len) == 0; }
 bool socket_t::bind(const sockaddr_storage &addr) const noexcept
 	{ return bind(static_cast<const void *>(&addr), sockaddrLen(addr)); }
 bool socket_t::connect(const void *const addr, const size_t len) const noexcept
-	{ return ::connect(socket, reinterpret_cast<const sockaddr *>(addr), len) == 0; }
+	{ return ::connect(socket, static_cast<const sockaddr *>(addr), len) == 0; }
 bool socket_t::connect(const sockaddr_storage &addr) const noexcept
 	{ return connect(static_cast<const void *>(&addr), sockaddrLen(addr)); }
 bool socket_t::listen(const int32_t queueLength) const noexcept
