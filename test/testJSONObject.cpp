@@ -94,7 +94,7 @@ void testLookup()
 	assertNotNull(testObject);
 	assertIntEqual(testObject->size(), 2);
 	try
-		{ child = (*testObject)[testKey1]; }
+		{ child = &(*testObject)[testKey1]; }
 	catch (JSONTypeError &err)
 		{ fail(err.error()); }
 	assertIntEqual(child->asInt(), 1);
@@ -102,14 +102,14 @@ void testLookup()
 	JSONAtom &atom = *testObject;
 	JSONObject &obj = *testObject;
 	try
-		{ assertPtrEqual(atom[testKey1], (*testObject)[testKey1]); }
+		{ assertPtrEqual(&atom[testKey1], &(*testObject)[testKey1]); }
 	catch (JSONTypeError &err)
 		{ fail(err.error()); }
 	catch (JSONObjectError &err)
 		{ fail(err.error()); }
 	try
 	{
-		child = obj["nonExistant"];
+		child = &obj["nonExistant"];
 		fail("Object failed to throw exception for bad key");
 	}
 	catch (JSONObjectError &) { }

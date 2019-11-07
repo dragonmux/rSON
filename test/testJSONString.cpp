@@ -108,7 +108,7 @@ void testConversions()
 		assertStringEqual(testString->asString(), "testValue");
 		JSONAtom &atom = *testString;
 		JSONString &str = atom;
-		assertPtrEqual(str, testString)
+		assertPtrEqual(&str, testString)
 	)
 	UNWANTED_TYPE(testString, Object)
 	UNWANTED_TYPE(testString, Array)

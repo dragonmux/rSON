@@ -330,16 +330,16 @@ void testArray()
 	tryArrayOk("[0]", [](const JSONArray &arrayAtom)
 	{
 		assertIntEqual(arrayAtom.size(), 1);
-		assertNotNull(arrayAtom[0]);
+		assertNotNull(&arrayAtom[0]);
 		assertIntEqual(arrayAtom[0].asInt(), 0);
 	});
 
 	tryArrayOk("[0, true]", [](const JSONArray &arrayAtom)
 	{
 		assertIntEqual(arrayAtom.size(), 2);
-		assertNotNull(arrayAtom[0]);
+		assertNotNull(&arrayAtom[0]);
 		assertIntEqual(arrayAtom[0].asInt(), 0);
-		assertNotNull(arrayAtom[1]);
+		assertNotNull(&arrayAtom[1]);
 		assertTrue(arrayAtom[1].asBool());
 	});
 
@@ -394,9 +394,9 @@ void testParseJSON()
 		assertTrue(object->exists("testArray"));
 		array = (*object)["testArray"].asArray();
 		assertIntEqual(array->size(), 3);
-		assertNotNull((*array)[0]);
-		assertNotNull((*array)[1]);
-		assertNotNull((*array)[2]);
+		assertNotNull(&(*array)[0]);
+		assertNotNull(&(*array)[1]);
+		assertNotNull(&(*array)[2]);
 		assertNull((*array)[0].asNull());
 		assertTrue((*array)[1].asBool());
 		assertFalse((*array)[2].asBool())
@@ -406,14 +406,14 @@ void testParseJSON()
 		assertNotNull(atom);
 		array = atom->asArray();
 		assertIntEqual(array->size(), 2);
-		assertNotNull((*array)[0]);
+		assertNotNull(&(*array)[0]);
 		assertIntEqual((*array)[0].asInt(), 0);
-		assertNotNull((*array)[1]);
+		assertNotNull(&(*array)[1]);
 		innerArray = (*array)[1].asArray();
 		assertIntEqual(innerArray->size(), 3);
-		assertNotNull((*innerArray)[0]);
-		assertNotNull((*innerArray)[1]);
-		assertNotNull((*innerArray)[2]);
+		assertNotNull(&(*innerArray)[0]);
+		assertNotNull(&(*innerArray)[1]);
+		assertNotNull(&(*innerArray)[2]);
 		assertNull((*innerArray)[0].asNull());
 		assertTrue((*innerArray)[1].asBool());
 		assertFalse((*innerArray)[2].asBool())

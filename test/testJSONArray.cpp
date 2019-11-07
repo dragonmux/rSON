@@ -71,17 +71,17 @@ void testAdd()
 }
 
 #define COMMON_CATCH(tryStuff) \
-try \
-{ \
-	tryStuff; \
-} \
-catch (JSONTypeError &err) \
-	{ fail(err.error()); }
+	try \
+	{ \
+		tryStuff; \
+	} \
+	catch (JSONTypeError &err) \
+		{ fail(err.error()); }
 
 #define CATCH_FAIL(tryStuff) \
-COMMON_CATCH(tryStuff) \
-catch (JSONArrayError &err) \
-	{ fail(err.error()); }
+	COMMON_CATCH(tryStuff) \
+	catch (JSONArrayError &err) \
+		{ fail(err.error()); }
 
 void testLookup()
 {
@@ -91,25 +91,25 @@ void testLookup()
 	assertIntEqual(testArray->size(), 2);
 
 	CATCH_FAIL( \
-		child = (*testArray)[0]; \
+		child = &(*testArray)[0]; \
 		assertNotNull(child); \
 		assertIntEqual(child->asInt(), 1)
 	)
 
 	CATCH_FAIL( \
-		child = (*testArray)[1]; \
+		child = &(*testArray)[1]; \
 		assertNotNull(child); \
 		assertIntEqual(child->asInt(), 2)
 	)
 
 	COMMON_CATCH( \
-		child = (*testArray)[2]; \
+		child = &(*testArray)[2]; \
 		fail("Array index out of bounds exception not thrown when it should have been!")
 	)
 	catch (JSONArrayError &) { }
 
 	child = testArray;
-	CATCH_FAIL(assertPtrEqual((*child)[size_t(0)], (*testArray)[0]))
+	CATCH_FAIL(assertPtrEqual(&(*child)[size_t(0)], &(*testArray)[0]))
 }
 
 void testDuplicate()
@@ -145,7 +145,7 @@ void testDel()
 	assertIntEqual(testArray->size(), 8);
 	testArray->del(size_t(0));
 	assertIntEqual(testArray->size(), 7);
-	JSONAtom *child = (*testArray)[6];
+	JSONAtom *child = &(*testArray)[6];
 	assertNotNull(child);
 	testArray->del(child);
 	assertIntEqual(testArray->size(), 6);
