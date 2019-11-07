@@ -1,6 +1,6 @@
 /*
  * This file is part of rSON
- * Copyright © 2012-2013 Rachel Mant (dx-mon@users.sourceforge.net)
+ * Copyright © 2012-2019 Rachel Mant (dx-mon@users.sourceforge.net)
  *
  * rSON is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -32,6 +32,13 @@ uint8_t hex2int(char c)
 	}
 	else
 		throw JSONParserError(JSON_PARSER_BAD_JSON);
+}
+
+void writeValue(char *&readPos, uint8_t *&writePos, const char value)
+{
+	*writePos = value;
+	++readPos;
+	++writePos;
 }
 
 JSONString::JSONString(char *strValue) : JSONAtom(JSON_TYPE_STRING), value(strValue)
@@ -93,36 +100,24 @@ JSONString::JSONString(char *strValue) : JSONAtom(JSON_TYPE_STRING), value(strVa
 						break;
 					}
 					case 'n':
-						*writePos = '\n';
-						readPos++;
-						writePos++;
+						writeValue(readPos, writePos, '\n');
 						break;
 					case 'r':
-						*writePos = '\r';
-						readPos++;
-						writePos++;
+						writeValue(readPos, writePos, '\r');
 						break;
 					case 't':
-						*writePos = '\t';
-						readPos++;
-						writePos++;
+						writeValue(readPos, writePos, '\t');
 						break;
 					case '"':
 					case '\\':
 					case '/':
-						*writePos = *readPos;
-						readPos++;
-						writePos++;
+						writeValue(readPos, writePos, *readPos);
 						break;
 					case 'b':
-						*writePos = '\x08';
-						readPos++;
-						writePos++;
+						writeValue(readPos, writePos, '\x08');
 						break;
 					case 'f':
-						*writePos = '\x0C';
-						readPos++;
-						writePos++;
+						writeValue(readPos, writePos, '\x0C');
 						break;
 				}
 				slash = false;
