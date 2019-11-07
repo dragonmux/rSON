@@ -145,7 +145,7 @@ sockaddr_storage prepare(const socketType_t family, const char *const where, con
 		return {AF_UNSPEC};
 
 	sockaddr_storage service{};
-	memcpy(&service, &results->ai_addr, sizeof(sockaddr_storage));
+	memcpy(&service, results->ai_addr, sizeof(sockaddr_storage));
 	freeaddrinfo(results);
 
 	if (service.ss_family == AF_INET)
