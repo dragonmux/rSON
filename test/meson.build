@@ -6,7 +6,7 @@ rSONReaderTests = [
 	'testJSONString', 'testJSONObject', 'testJSONArray', 'testParser',
 ]
 rSONGeneralTests = [
-	'testJSONErrors', 'testWriter'#, 'testHeader', 'testSocket'
+	'testJSONErrors', 'testWriter', 'testHeader'#, 'testSocket'
 ]
 rSONTests = rSONReaderTests + rSONGeneralTests
 
@@ -14,6 +14,19 @@ rSONObjs = rSON.extract_objects(
 	'JSONAtom.cpp', 'JSONErrors.cpp', 'String.cpp', 'Writer.cpp',
 	'Stream.cpp', 'JSONNull.cpp', 'JSONBool.cpp', 'JSONInt.cpp',
 	'JSONFloat.cpp', 'JSONString.cpp', 'JSONObject.cpp', 'JSONArray.cpp'
+)
+
+testSrcs = [
+	'rSON.cpp'
+]
+
+testHelpers = static_library(
+	'testHelpers',
+	testSrcs,
+	pic: true,
+	include_directories: include_directories('..'),
+	install: false,
+	build_by_default: true
 )
 
 foreach test : rSONReaderTests
@@ -47,6 +60,14 @@ custom_target(
 	input: ['testWriter.cpp', rSONObjs, rSON.extract_objects('Parser.cpp')],
 	output: 'testWriter.so',
 #	depends: rSON,
+	build_by_default: true
+)
+
+custom_target(
+	'testHeader',
+	command: [crunchMake, '-s', '@INPUT@', '-o', '@OUTPUT@', '-I' + rSONSrcDir],
+	input: ['testHeader.cpp', objects, testHelpers.extract_objects('rSON.cpp')],
+	output: 'testHeader.so',
 	build_by_default: true
 )
 
