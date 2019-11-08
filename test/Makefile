@@ -28,7 +28,7 @@ CRUNCHMAKE += ../JSONNull.o ../JSONBool.o ../JSONInt.o ../JSONFloat.o ../JSONStr
 CRUNCH = crunch
 
 READER_TESTS = testJSONNull.so testJSONBool.so testJSONInt.so testJSONFloat.so testJSONString.so testJSONObject.so testJSONArray.so testParser.so
-TESTS = testJSONErrors.so $(READER_TESTS) testWriter.so testHeader.so testSocket.so
+TESTS = testJSONErrors.so $(READER_TESTS) testWriter.so testHeader.so testSocket.so testStream.so
 DEPS = ../.dep/test
 
 quiet_cmd_crunchMake = -n
@@ -54,6 +54,8 @@ testParser.so testWriter.so: CRUNCHMAKE += ../Parser.o
 testHeader.so: rSON.o
 testHeader.so: CRUNCHMAKE += rSON.o
 testSocket.so: CRUNCHMAKE += ../librSON.a ../rSON_socket.o -I..
+testStream.so: stream.o
+testStream.so: CRUNCHMAKE += stream.o
 %.so: %.cpp
 	$(call run-cmd,crunchMake,$(O_FILE),$<)
 

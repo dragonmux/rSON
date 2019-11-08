@@ -6,7 +6,8 @@ rSONReaderTests = [
 	'testJSONString', 'testJSONObject', 'testJSONArray', 'testParser',
 ]
 rSONGeneralTests = [
-	'testJSONErrors', 'testWriter', 'testHeader'#, 'testSocket'
+	'testJSONErrors', 'testWriter', 'testHeader', #'testSocket',
+	'testStream'
 ]
 rSONTests = rSONReaderTests + rSONGeneralTests
 
@@ -17,7 +18,7 @@ rSONObjs = rSON.extract_objects(
 )
 
 testSrcs = [
-	'rSON.cpp'
+	'rSON.cpp', 'stream.cpp'
 ]
 
 testHelpers = static_library(
@@ -68,6 +69,14 @@ custom_target(
 	command: [crunchMake, '-s', '@INPUT@', '-o', '@OUTPUT@', '-I' + rSONSrcDir],
 	input: ['testHeader.cpp', objects, testHelpers.extract_objects('rSON.cpp')],
 	output: 'testHeader.so',
+	build_by_default: true
+)
+
+custom_target(
+	'testStream',
+	command: [crunchMake, '-s', '@INPUT@', '-o', '@OUTPUT@', '-I' + rSONSrcDir],
+	input: ['testStream.cpp', objects, testHelpers.extract_objects('stream.cpp')],
+	output: 'testStream.so',
 	build_by_default: true
 )
 
