@@ -72,4 +72,5 @@ install_headers(
 	'rSON.h', 'rSON_socket.h'
 )
 
-subdir('test')
+crunchMake = find_program('crunchMake', required: false)
+subdir('test', if_found: crunchMake)
