@@ -24,7 +24,7 @@
 #include "test.h"
 #include "testHeader.h"
 
-void throwNotImplemented() { throw notImplemented_t(); }
+void throwNotImplemented() { throw notImplemented_t{}; }
 
 bool streamTest_t::read()
 {

@@ -41,7 +41,7 @@ void tryStreamFail(streamTest_t &stream, void operation(streamTest_t &))
 
 void testStreamType()
 {
-	streamTest_t stream;
+	streamTest_t stream{};
 	tryStreamFail(stream, [](streamTest_t &stream) { stream.read(); });
 	tryStreamFail(stream, [](streamTest_t &stream) { stream.write(); });
 	tryStreamFail(stream, [](streamTest_t &stream) { stream.atEOF(); });
