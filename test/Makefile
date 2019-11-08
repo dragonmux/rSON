@@ -47,7 +47,7 @@ check: all
 	$(call run-cmd,crunch,$(subst .so,,$(TESTS)))
 
 clean:
-	$(call run-cmd,rm,tests,$(TESTS) rSON.o)
+	$(call run-cmd,rm,tests,$(TESTS) rSON.o stream.o)
 	$(call run-cmd,rm,makedep,../.dep/test/*.d)
 
 testParser.so testWriter.so: CRUNCHMAKE += ../Parser.o
@@ -61,6 +61,8 @@ testStream.so: CRUNCHMAKE += stream.o
 
 rSON.o: $(DEPS) rSON.cpp
 	$(Q)$(MAKE) FOR_TESTS=1 -C .. test/rSON.o
+stream.o: $(DEPS) stream.cpp
+	$(Q)$(MAKE) FOR_TESTS=1 -C .. test/stream.o
 
 .PHONY: default all check clean
 .SUFFIXES: .cpp .so

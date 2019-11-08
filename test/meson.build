@@ -38,7 +38,7 @@ foreach test : rSONReaderTests
 
 	custom_target(
 		test,
-		command: [crunchMake, '-s', '@INPUT@', '-o', '@OUTPUT@', '-I' + rSONSrcDir],
+		command: [crunchMake, '-s', '-std=c++14', '@INPUT@', '-o', '@OUTPUT@', '-I' + rSONSrcDir],
 		input: [test + '.cpp', objects],
 		output: test + '.so',
 		build_by_default: true
@@ -47,7 +47,7 @@ endforeach
 
 custom_target(
 	'testJSONErrors',
-	command: [crunchMake, '-s', '@INPUT@', '-o', '@OUTPUT@', '-I' + rSONSrcDir],
+	command: [crunchMake, '-s', '-std=c++14', '@INPUT@', '-o', '@OUTPUT@', '-I' + rSONSrcDir],
 	input: ['testJSONErrors.cpp', rSON.extract_objects('JSONErrors.cpp')],
 	output: 'testJSONErrors.so',
 	build_by_default: true
@@ -55,8 +55,8 @@ custom_target(
 
 custom_target(
 	'testWriter',
-#	command: [crunchMake, '-s', '@INPUT@', '-o', '@OUTPUT@', '-I' + rSONSrcDir, rSON.full_path()],
-	command: [crunchMake, '-s', '@INPUT@', '-o', '@OUTPUT@', '-I' + rSONSrcDir],
+#	command: [crunchMake, '-s', '-std=c++14', '@INPUT@', '-o', '@OUTPUT@', '-I' + rSONSrcDir, rSON.full_path()],
+	command: [crunchMake, '-s', '-std=c++14', '@INPUT@', '-o', '@OUTPUT@', '-I' + rSONSrcDir],
 #	input: ['testWriter.cpp'],
 	input: ['testWriter.cpp', rSONObjs, rSON.extract_objects('Parser.cpp')],
 	output: 'testWriter.so',
@@ -66,7 +66,7 @@ custom_target(
 
 custom_target(
 	'testHeader',
-	command: [crunchMake, '-s', '@INPUT@', '-o', '@OUTPUT@', '-I' + rSONSrcDir],
+	command: [crunchMake, '-s', '-std=c++14', '@INPUT@', '-o', '@OUTPUT@', '-I' + rSONSrcDir],
 	input: ['testHeader.cpp', objects, testHelpers.extract_objects('rSON.cpp')],
 	output: 'testHeader.so',
 	build_by_default: true
@@ -74,7 +74,7 @@ custom_target(
 
 custom_target(
 	'testStream',
-	command: [crunchMake, '-s', '@INPUT@', '-o', '@OUTPUT@', '-I' + rSONSrcDir],
+	command: [crunchMake, '-s', '-std=c++14', '@INPUT@', '-o', '@OUTPUT@', '-I' + rSONSrcDir],
 	input: ['testStream.cpp', objects, testHelpers.extract_objects('stream.cpp')],
 	output: 'testStream.so',
 	build_by_default: true
