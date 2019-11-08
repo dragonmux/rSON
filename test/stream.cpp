@@ -20,9 +20,7 @@
 #include "testStream.h"
 
 bool writeStream(stream_t &stream)
-{
-	return stream.write(nullptr, 0);
-}
+	{ return stream.write(nullptr, 0); }
 
 bool readStream(stream_t &stream)
 {
@@ -31,6 +29,10 @@ bool readStream(stream_t &stream)
 }
 
 bool streamAtEOF(stream_t &stream)
-{
-	return stream.atEOF();
-}
+	{ return stream.atEOF(); }
+void streamReadSync(stream_t &stream)
+	{ stream.readSync(); }
+void streamWriteSync(stream_t &stream)
+	{ stream.writeSync(); }
+void streamDelete(stream_t *stream)
+	{ delete stream; }

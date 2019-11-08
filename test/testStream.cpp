@@ -18,6 +18,7 @@
 
 #include "test.h"
 #include "testStream.h"
+#include <memory>
 
 void tryStreamFail(stream_t &stream, bool operation(stream_t &))
 {
@@ -37,6 +38,15 @@ void testStreamThrows()
 	tryStreamFail(stream, streamAtEOF);
 }
 
+void testStreamNOPs()
+{
+	auto stream = std::make_unique<stream_t>();
+	assertNotNull(stream.get());
+	streamReadSync(*stream);
+	streamWriteSync(*stream);
+	streamDelete(stream.release());
+}
+
 #ifdef __cplusplus
 extern "C"
 {
@@ -44,6 +54,7 @@ extern "C"
 
 BEGIN_REGISTER_TESTS()
 	TEST(testStreamThrows)
+	TEST(testStreamNOPs)
 END_REGISTER_TESTS()
 
 #ifdef __cplusplus
