@@ -164,6 +164,11 @@ void testDel()
 		fail("Array index out of bounds exception not thrown when it should have been!");
 	}
 	catch (JSONArrayError &) { }
+
+	assertIntEqual(testArray->size(), 4);
+	const JSONAtom &childRef = (*testArray)[3];
+	testArray->del(childRef);
+	assertIntEqual(testArray->size(), 3);
 }
 
 void testDistruct()
