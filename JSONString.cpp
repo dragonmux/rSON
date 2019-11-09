@@ -34,7 +34,7 @@ uint8_t hex2int(char c)
 		throw JSONParserError(JSON_PARSER_BAD_JSON);
 }
 
-void writeValue(char *&readPos, uint8_t *&writePos, const char value)
+void writeValue(const char *&readPos, uint8_t *&writePos, const char value)
 {
 	*writePos = value;
 	++readPos;
@@ -43,7 +43,7 @@ void writeValue(char *&readPos, uint8_t *&writePos, const char value)
 
 JSONString::JSONString(char *strValue) : JSONAtom(JSON_TYPE_STRING), value(strValue)
 {
-	char *readPos = strValue;
+	const char *readPos = strValue;
 	uint8_t *writePos = (uint8_t *)strValue;
 	bool slash = false;
 
