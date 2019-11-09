@@ -90,5 +90,7 @@ void JSONArray::del(const JSONAtom *value) { arr->del(*value); }
 void JSONArray::del(const JSONAtom &value) { arr->del(value); }
 JSONAtom &JSONArray::operator [](const size_t key) const { return (*arr)[key]; }
 size_t JSONArray::size() const { return arr->size(); }
-const jsonAtomPtr_t *JSONArray::begin() const { return &*arr->begin(); }
-const jsonAtomPtr_t *JSONArray::end() const { return &*arr->end(); }
+JSONArray::iterator JSONArray::begin() noexcept { return &*arr->begin(); }
+JSONArray::iterator JSONArray::begin() const noexcept { return &*arr->begin(); }
+JSONArray::iterator JSONArray::end() noexcept { return &*arr->end(); }
+JSONArray::iterator JSONArray::end() const noexcept { return &*arr->end(); }

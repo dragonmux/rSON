@@ -425,8 +425,10 @@ namespace rSON
 		rSON_CLS_API JSONAtom &operator [](const size_t key) const;
 		rSON_CLS_API size_t size() const;
 		rSON_CLS_API size_t count() const { return size(); }
-		rSON_CLS_API iterator begin() const;
-		rSON_CLS_API iterator end() const;
+		rSON_CLS_API iterator begin() rSON_NOEXCEPT;
+		rSON_CLS_API iterator begin() const rSON_NOEXCEPT;
+		rSON_CLS_API iterator end() rSON_NOEXCEPT;
+		rSON_CLS_API iterator end() const rSON_NOEXCEPT;
 		rSON_CLS_API size_t length() const rSON_VFINAL;
 		rSON_CLS_API void store(stream_t &stream) const rSON_VFINAL;
 	};

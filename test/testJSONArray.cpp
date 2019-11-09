@@ -204,6 +204,17 @@ void testIterate()
 		assertLessThan(i, 7);
 	}
 	assertIntEqual(i, 6);
+	i = 0;
+	for (const auto &valuePtr : array)
+	{
+		assertNotNull(valuePtr.get());
+		auto &valueAtom = *valuePtr;
+		assertIntEqual(valueAtom.getType(), JSON_TYPE_INT);
+		int32_t value = valueAtom;
+		assertIntEqual(value, testValues[i++]);
+		assertLessThan(i, 7);
+	}
+	assertIntEqual(i, 6);
 }
 
 #ifdef __cplusplus
