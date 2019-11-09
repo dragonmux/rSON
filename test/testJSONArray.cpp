@@ -173,6 +173,8 @@ void testDel()
 
 void testDistruct()
 {
+	assertNotNull(testArray);
+	assertIntEqual(testArray->size(), 3);
 	delete testArray;
 	testArray = NULL;
 }
