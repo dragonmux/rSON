@@ -20,6 +20,10 @@
 #include "../String.hxx"
 
 JSONArray *testArray = NULL;
+constexpr std::array<int32_t, 6> testValues
+{
+	-50, 0, 128, 65536, INT32_MIN, INT32_MAX
+};
 
 class JSONBad final : public JSONAtom
 {
@@ -36,6 +40,7 @@ void testConstruct()
 	catch (std::bad_alloc &badAlloc)
 		{ fail(badAlloc.what()); }
 	assertNotNull(testArray);
+	assertIntEqual(testArray->count(), 0);
 }
 
 void testConversions()
@@ -167,6 +172,33 @@ void testDistruct()
 	testArray = NULL;
 }
 
+void testIterate()
+{
+	JSONArray array{};
+	for (const auto &value : testValues)
+	{
+		try
+		{
+			std::unique_ptr<JSONAtom> jsonAtom = std::make_unique<JSONInt>(value);
+			array.add(std::move(jsonAtom));
+		}
+		catch (std::bad_alloc &)
+			{ fail("Out of memory occured during construction phase of test"); }
+	}
+	assertIntEqual(array.count(), 6);
+	size_t i = 0;
+	for (auto &valuePtr : array)
+	{
+		assertNotNull(valuePtr.get());
+		auto &valueAtom = *valuePtr;
+		assertIntEqual(valueAtom.getType(), JSON_TYPE_INT);
+		int32_t value = valueAtom;
+		assertIntEqual(value, testValues[i++]);
+		assertLessThan(i, 7);
+	}
+	assertIntEqual(i, 6);
+}
+
 #ifdef __cplusplus
 extern "C"
 {
@@ -181,6 +213,7 @@ BEGIN_REGISTER_TESTS()
 	TEST(testDuplicate)
 	TEST(testDel)
 	TEST(testDistruct)
+	TEST(testIterate)
 END_REGISTER_TESTS()
 
 #ifdef __cplusplus
