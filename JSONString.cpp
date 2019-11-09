@@ -41,6 +41,45 @@ void writeValue(const char *&readPos, uint8_t *&writePos, const char value)
 	++writePos;
 }
 
+void parseUnicode(const char *&readPos, uint8_t *&writePos)
+{
+	uint8_t i;
+	uint16_t charVal = 0;
+	for (i = 1; i < 5; i++)
+	{
+		charVal <<= 4;
+		charVal += hex2int(readPos[i]);
+	}
+	readPos += 5;
+	if (charVal == 0x0000)
+	{
+		writePos[0] = 0xC0;
+		writePos[1] = 0x80;
+		writePos += 2;
+	}
+	else if (charVal <= 0x007F)
+	{
+		writePos[0] = charVal & 0x7F;
+		writePos++;
+	}
+	else if (charVal <= 0x07FF)
+	{
+		writePos[1] = 0x80 | (charVal & 0x3F);
+		charVal >>= 6;
+		writePos[0] = 0xC0 | (charVal & 0x1F);
+		writePos += 2;
+	}
+	else
+	{
+		writePos[2] = 0x80 | (charVal & 0x3F);
+		charVal >>= 6;
+		writePos[1] = 0x80 | (charVal & 0x3F);
+		charVal >>= 6;
+		writePos[0] = 0xE0 | (charVal & 0x0F);
+		writePos += 3;
+	}
+}
+
 JSONString::JSONString(char *strValue) : JSONAtom(JSON_TYPE_STRING), value(strValue)
 {
 	const char *readPos = strValue;
@@ -62,41 +101,7 @@ JSONString::JSONString(char *strValue) : JSONAtom(JSON_TYPE_STRING), value(strVa
 				{
 					case 'u':
 					{
-						uint8_t i;
-						uint16_t charVal = 0;
-						for (i = 1; i < 5; i++)
-						{
-							charVal <<= 4;
-							charVal += hex2int(readPos[i]);
-						}
-						readPos += 5;
-						if (charVal == 0x0000)
-						{
-							writePos[0] = 0xC0;
-							writePos[1] = 0x80;
-							writePos += 2;
-						}
-						else if (charVal <= 0x007F)
-						{
-							writePos[0] = charVal & 0x7F;
-							writePos++;
-						}
-						else if (charVal <= 0x07FF)
-						{
-							writePos[1] = 0x80 | (charVal & 0x3F);
-							charVal >>= 6;
-							writePos[0] = 0xC0 | (charVal & 0x1F);
-							writePos += 2;
-						}
-						else
-						{
-							writePos[2] = 0x80 | (charVal & 0x3F);
-							charVal >>= 6;
-							writePos[1] = 0x80 | (charVal & 0x3F);
-							charVal >>= 6;
-							writePos[0] = 0xE0 | (charVal & 0x0F);
-							writePos += 3;
-						}
+						parseUnicode(readPos, writePos);
 						break;
 					}
 					case 'n':
