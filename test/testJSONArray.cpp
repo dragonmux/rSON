@@ -179,6 +179,21 @@ void testDistruct()
 	testArray = NULL;
 }
 
+template<typename T> void checkArray(T &array)
+{
+	size_t i = 0;
+	for (const auto &valuePtr : array)
+	{
+		assertNotNull(valuePtr.get());
+		auto &valueAtom = *valuePtr;
+		assertIntEqual(valueAtom.getType(), JSON_TYPE_INT);
+		int32_t value = valueAtom;
+		assertIntEqual(value, testValues[i++]);
+		assertLessThan(i, 7);
+	}
+	assertIntEqual(i, 6);
+}
+
 void testIterate()
 {
 	JSONArray array{};
@@ -193,28 +208,8 @@ void testIterate()
 			{ fail("Out of memory occured during construction phase of test"); }
 	}
 	assertIntEqual(array.count(), 6);
-	size_t i = 0;
-	for (auto &valuePtr : array)
-	{
-		assertNotNull(valuePtr.get());
-		auto &valueAtom = *valuePtr;
-		assertIntEqual(valueAtom.getType(), JSON_TYPE_INT);
-		int32_t value = valueAtom;
-		assertIntEqual(value, testValues[i++]);
-		assertLessThan(i, 7);
-	}
-	assertIntEqual(i, 6);
-	i = 0;
-	for (const auto &valuePtr : array)
-	{
-		assertNotNull(valuePtr.get());
-		auto &valueAtom = *valuePtr;
-		assertIntEqual(valueAtom.getType(), JSON_TYPE_INT);
-		int32_t value = valueAtom;
-		assertIntEqual(value, testValues[i++]);
-		assertLessThan(i, 7);
-	}
-	assertIntEqual(i, 6);
+	checkArray<JSONArray>(array);
+	checkArray<const JSONArray>(array);
 }
 
 #ifdef __cplusplus
