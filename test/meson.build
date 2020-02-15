@@ -1,5 +1,6 @@
 crunch = find_program('crunch')
 crunchpp = find_program('crunch++')
+libcrunchpp = find_program('crunch++')
 
 rSONReaderTests = [
 	'testJSONNull', 'testJSONBool', 'testJSONInt', 'testJSONFloat',
@@ -25,6 +26,7 @@ testHelpers = static_library(
 	'testHelpers',
 	testSrcs,
 	pic: true,
+	dependencies: [libcrunchpp],
 	include_directories: include_directories('..'),
 	install: false,
 	build_by_default: true
