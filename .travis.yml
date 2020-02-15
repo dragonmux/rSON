@@ -200,7 +200,7 @@ matrix:
       env:
         - CC=gcc-9 CXX=g++-9 COVERAGE=0 COVERITY_PROJECT_NAME=DX-MON/rSON
         - secure: "H0ughaQih4R+b6hJkp32tTwxDWAkaxFe6dfEtPsN5io6VIgNIB11/HE5bgSANN39LGCc71FIRr+B+L8JennYFxcys8FxXPFYslnXghIm6j9xQ8EvEu+hOZFAch3cRXsNsIWbopxB9Dm5r2EZ2BpBUzvW6WCbJ0fCt3T5EoAHhR8="
-      compiler: gcc-9 addons:
+      addons:
         apt:
           sources:
             - ubuntu-toolchain-r-test
