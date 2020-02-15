@@ -83,29 +83,25 @@ void testFloat()
 
 void testObject()
 {
-	char *key;
-	JSONObject *obj;
+	std::unique_ptr<char []> key{};
+	JSONObject obj{};
+	doTest(&obj, "{}");
 
-	obj = new JSONObject();
-	doTest(obj, "{}");
+	key.reset(strnew("test"));
+	obj.add(key.get(), new JSONNull());
+	doTest(&obj, "{\"test\": null}");
 
-	key = strnew("test");
-	obj->add(key, new JSONNull());
-	doTest(obj, "{\"test\": null}");
+	key.reset(strnew("array"));
+	obj.add(key.get(), new JSONArray());
+	doTest(&obj, "{\"array\": [], \"test\": null}");
 
-	key = strnew("array");
-	obj->add(key, new JSONArray());
-	doTest(obj, "{\"array\": [], \"test\": null}");
+	key.reset(strnew("a"));
+	obj.add(key.get(), new JSONInt(55));
+	doTest(&obj, "{\"a\": 55, \"array\": [], \"test\": null}");
 
-	key = strnew("a");
-	obj->add(key, new JSONInt(55));
-	doTest(obj, "{\"a\": 55, \"array\": [], \"test\": null}");
-
-	key = strnew("b");
-	obj->add(key, new JSONString(strnew("This is only a test")));
-	doTest(obj, "{\"a\": 55, \"array\": [], \"b\": \"This is only a test\", \"test\": null}");
-
-	delete obj;
+	key.reset(strnew("b"));
+	obj.add(key.get(), new JSONString(strnew("This is only a test")));
+	doTest(&obj, "{\"a\": 55, \"array\": [], \"b\": \"This is only a test\", \"test\": null}");
 }
 
 void testArray()
