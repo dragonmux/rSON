@@ -219,7 +219,7 @@ matrix:
           branch_pattern: coverityScan
       before_install:
         - .travis-ci/installCoverity.sh
-        - PKG_CONFIG_PATH=$HOME/.local/lib/pkgconfig;
+        - export PKG_CONFIG_PATH=$HOME/.local/lib/pkgconfig;
       before_script:
       script: touch build
       after_failure: cat cov-int/build-log.txt
