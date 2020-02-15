@@ -5,6 +5,7 @@ The project was conceived after surveying the C/C++ based JSON implementations f
 [![Build Status](https://travis-ci.org/DX-MON/rSON.svg?branch=master)](https://travis-ci.org/DX-MON/rSON)
 [![codecov](https://codecov.io/gh/DX-MON/rSON/branch/master/graph/badge.svg)](https://codecov.io/gh/DX-MON/rSON)
 [![Total alerts](https://img.shields.io/lgtm/alerts/g/DX-MON/rSON.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/DX-MON/rSON/alerts/)
+[![Coverity Status](https://scan.coverity.com/projects/20295/badge.svg)](https://scan.coverity.com/projects/dx-mon-rson)
 
 ## The Idea
 
