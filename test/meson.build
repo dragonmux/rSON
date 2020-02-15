@@ -1,6 +1,6 @@
 crunch = find_program('crunch')
 crunchpp = find_program('crunch++')
-libcrunchpp = find_program('crunch++')
+libcrunchpp = dependency('crunch++')
 
 rSONReaderTests = [
 	'testJSONNull', 'testJSONBool', 'testJSONInt', 'testJSONFloat',
