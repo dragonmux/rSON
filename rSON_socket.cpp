@@ -135,7 +135,7 @@ rpcStream_t::rpcStream_t(const socketType_t type) : family(type), sock(), buffer
 #pragma GCC diagnostic ignored "-Wmissing-field-initializers"
 sockaddr_storage prepare(const socketType_t family, const char *const where, const uint16_t port) noexcept
 {
-	addrinfo *results = nullptr, hints = {};
+	addrinfo *results = nullptr, hints{};
 	hints.ai_family = typeToFamily(family);
 	hints.ai_socktype = SOCK_STREAM;
 	hints.ai_protocol = IPPROTO_TCP;
