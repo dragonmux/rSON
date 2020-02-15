@@ -34,14 +34,14 @@ uint8_t hex2int(char c)
 		throw JSONParserError(JSON_PARSER_BAD_JSON);
 }
 
-void writeValue(const char *&readPos, uint8_t *&writePos, const char value)
+void writeValue(const uint8_t *&readPos, uint8_t *&writePos, const char value)
 {
 	*writePos = value;
 	++readPos;
 	++writePos;
 }
 
-void parseUnicode(const char *&readPos, uint8_t *&writePos)
+void parseUnicode(const uint8_t *&readPos, uint8_t *&writePos)
 {
 	uint8_t i;
 	uint16_t charVal = 0;
@@ -82,22 +82,22 @@ void parseUnicode(const char *&readPos, uint8_t *&writePos)
 
 JSONString::JSONString(char *strValue) : JSONAtom(JSON_TYPE_STRING), value(strValue)
 {
-	const char *readPos = strValue;
+	const uint8_t *readPos = (uint8_t *)strValue;
 	uint8_t *writePos = (uint8_t *)strValue;
 	bool slash = false;
 
-	while (readPos[0] != 0)
+	while (*readPos != 0)
 	{
-		if (slash == false && readPos[0] == '\\')
+		if (!slash && *readPos == '\\')
 		{
 			slash = true;
 			readPos++;
 		}
 		else
 		{
-			if (slash == true)
+			if (slash)
 			{
-				switch (readPos[0])
+				switch (*readPos)
 				{
 					case 'u':
 					{
@@ -129,7 +129,8 @@ JSONString::JSONString(char *strValue) : JSONAtom(JSON_TYPE_STRING), value(strVa
 			}
 			else
 			{
-				*writePos = *readPos;
+				if (writePos != readPos)
+					*writePos = *readPos;
 				writePos++;
 				readPos++;
 			}
