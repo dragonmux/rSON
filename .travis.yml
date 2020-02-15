@@ -2,11 +2,10 @@ language: cpp
 os: linux
 dist: xenial
 
-install:
-  - .travis-ci/install.sh
+install: .travis-ci/install.sh
+before_script:
   - export GCC="$CC -m64 -fPIC -DPIC" GXX="$CXX -m64 -fPIC -DPIC"
   - export PREFIX=$HOME/.local PKG_CONFIG_PATH=$HOME/.local/lib/pkgconfig;
-before_script:
   - make
 script:
   - make tests
