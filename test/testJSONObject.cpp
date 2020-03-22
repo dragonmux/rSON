@@ -16,8 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <substrate/utility>
 #include "test.h"
-#include "../String.hxx"
+#include <String.hxx>
 
 JSONObject *testObject = NULL;
 #define KEY(name) \
@@ -73,7 +74,7 @@ void testAdd()
 	testObject->add(testKey2, new JSONInt(2));
 	assertIntEqual(testObject->size(), 2);
 
-	auto child = makeUnique<JSONInt>(3);
+	auto child = substrate::make_unique<JSONInt>(3);
 	testObject->add(testKey2, std::move(child));
 
 	assertIntEqual(testObject->size(), 2);

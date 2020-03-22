@@ -40,7 +40,9 @@ foreach test : rSONReaderTests
 
 	custom_target(
 		test,
-		command: [crunchMake, '-s', '-std=c++14', '@INPUT@', '-o', '@OUTPUT@', '-I' + rSONSrcDir],
+		command: [
+			crunchMake, '-s', '-std=c++14', '@INPUT@', '-o', '@OUTPUT@', '-I' + rSONSrcDir, '-I' + substrateDir
+		],
 		input: [test + '.cpp', objects],
 		output: test + '.so',
 		build_by_default: true

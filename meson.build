@@ -35,6 +35,7 @@ rSONSrc = [
 
 rSONSocketSrc = ['rSON_socket.cpp']
 rSONSrcDir = meson.current_source_dir()
+substrateDir = rSONSrcDir + '/substrate'
 
 rSON = library(
 	'rSON',
