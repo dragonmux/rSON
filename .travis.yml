@@ -4,12 +4,12 @@ dist: xenial
 
 install: .travis-ci/install.sh
 before_script:
-  - export GCC="$CC -m64 -fPIC -DPIC" GXX="$CXX -m64 -fPIC -DPIC"
-  - export PREFIX=$HOME/.local PKG_CONFIG_PATH=$HOME/.local/lib/pkgconfig;
-  - make
+  - export PREFIX=$HOME/.local
+  - .travis-ci/beforeScript.sh
 script:
-  - make tests
-  - make check
+  - ninja -C build
+  - ninja -C build test
+  - ninja -C build install
 after_success:
   - if [ "$COVERAGE" == "1" ]; then
       bash <(curl -s https://codecov.io/bash) -x $GCOV;
