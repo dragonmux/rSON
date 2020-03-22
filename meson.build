@@ -24,6 +24,7 @@ else
 endif
 
 add_project_arguments('-D__rSON__', language: 'cpp')
+substrate = include_directories('substrate')
 
 rSONSrc = [
 	'JSONErrors.cpp', 'JSONAtom.cpp', 'JSONNull.cpp', 'JSONBool.cpp',
@@ -38,6 +39,7 @@ rSONSrcDir = meson.current_source_dir()
 rSON = library(
 	'rSON',
 	rSONSrc,
+	include_directories: substrate,
 	version: meson.project_version(),
 	install: true
 )
@@ -46,6 +48,7 @@ rSONSocket = library(
 	'rSON.socket',
 	rSONSocketSrc,
 	link_with: [rSON],
+	include_directories: substrate,
 	dependencies: rSONSocketLibs,
 	version: meson.project_version(),
 	install: true

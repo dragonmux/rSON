@@ -1,6 +1,6 @@
 /*
  * This file is part of rSON
- * Copyright © 2017-2018 Rachel Mant (dx-mon@users.sourceforge.net)
+ * Copyright © 2017-2020 Rachel Mant (dx-mon@users.sourceforge.net)
  *
  * rSON is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -23,9 +23,9 @@
 #include <netinet/in.h>
 #endif
 
+#include <substrate/utility>
 #include "internal.h"
 #include "rSON_socket.h"
-#include "String.hxx"
 
 #ifdef __GNUC__
 #if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
@@ -122,7 +122,7 @@ int typeToFamily(const socketType_t type) noexcept
 
 rpcStream_t::rpcStream_t() noexcept : family(socketType_t::unknown), sock(), buffer(), pos(0), lastRead(0) { }
 bool rpcStream_t::valid() const noexcept { return family != socketType_t::unknown && sock != -1; }
-void rpcStream_t::makeBuffer() noexcept { buffer = makeUnique<char []>(bufferLen); }
+void rpcStream_t::makeBuffer() noexcept { buffer = substrate::make_unique<char []>(bufferLen); }
 
 rpcStream_t::rpcStream_t(const socketType_t type) : family(type), sock(), buffer(),
 	pos(0), lastRead(0)
@@ -192,7 +192,7 @@ rpcStream_t rpcStream_t::accept() const noexcept
 	FD_SET(sock, &selectSet);
 	if (select(FD_SETSIZE, &selectSet, nullptr, nullptr, nullptr) < 1)
 		return {};
-	return {family, sock.accept(nullptr, nullptr), makeUnique<char []>(bufferLen)};
+	return {family, sock.accept(nullptr, nullptr), substrate::make_unique<char []>(bufferLen)};
 }
 
 bool rpcStream_t::read(void *const value, const size_t valueLen, size_t &actualLen)

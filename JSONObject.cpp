@@ -1,6 +1,6 @@
 /*
  * This file is part of rSON
- * Copyright © 2012-2018 Rachel Mant (dx-mon@users.sourceforge.net)
+ * Copyright © 2012-2020 Rachel Mant (dx-mon@users.sourceforge.net)
  *
  * rSON is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -17,6 +17,7 @@
  */
 
 #include <algorithm>
+#include <substrate/utility>
 #include "internal.h"
 #include "String.hxx"
 
@@ -34,19 +35,19 @@ void object_t::clone(const object_t &object)
 			switch (value.getType())
 			{
 				case JSON_TYPE_NULL:
-					return makeUnique<JSONNull>();
+					return substrate::make_unique<JSONNull>();
 				case JSON_TYPE_BOOL:
-					return makeUnique<JSONBool>(value);
+					return substrate::make_unique<JSONBool>(value);
 				case JSON_TYPE_INT:
-					return makeUnique<JSONInt>(value);
+					return substrate::make_unique<JSONInt>(value);
 				case JSON_TYPE_FLOAT:
-					return makeUnique<JSONFloat>(value);
+					return substrate::make_unique<JSONFloat>(value);
 				case JSON_TYPE_STRING:
-					return makeUnique<JSONString>(strNewDup(value));
+					return substrate::make_unique<JSONString>(strNewDup(value));
 				case JSON_TYPE_OBJECT:
-					return makeUnique<JSONObject>(value);
+					return substrate::make_unique<JSONObject>(value);
 				case JSON_TYPE_ARRAY:
-					return makeUnique<JSONArray>(value);
+					return substrate::make_unique<JSONArray>(value);
 				default:
 					throw JSONObjectError(JSON_OBJECT_BAD_KEY);
 			}

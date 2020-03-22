@@ -1,6 +1,6 @@
 /*
  * This file is part of rSON
- * Copyright © 2012-2013 Rachel Mant (dx-mon@users.sourceforge.net)
+ * Copyright © 2012-2020 Rachel Mant (dx-mon@users.sourceforge.net)
  *
  * rSON is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -16,10 +16,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <cstring>
+#include <cstdarg>
+#include <cstdio>
+#include <substrate/utility>
 #include "String.hxx"
-#include <string.h>
-#include <stdarg.h>
-#include <stdio.h>
 
 std::unique_ptr<const char []> vaFormatString(const char *const format, va_list args) noexcept
 {
@@ -27,7 +28,7 @@ std::unique_ptr<const char []> vaFormatString(const char *const format, va_list 
 	va_copy(lenArgs, args);
 	const size_t len = vsnprintf(NULL, 0, format, lenArgs) + 1;
 	va_end(lenArgs);
-	auto ret = makeUnique<char []>(len);
+	auto ret = substrate::make_unique_nothrow<char []>(len);
 	if (!ret)
 		return nullptr;
 	vsprintf(ret.get(), format, args);
@@ -55,8 +56,7 @@ size_t formatLen(const char *const format, ...)
 
 std::unique_ptr<char []> stringDup(const char *const str)
 {
-	// TODO: Change this to use makeUniqueT<>, a throwing version of this
-	auto ret = makeUnique<char []>(strlen(str) + 1);
+	auto ret = substrate::make_unique<char []>(strlen(str) + 1);
 	if (!ret)
 		throw std::bad_alloc();
 	strcpy(ret.get(), str);
