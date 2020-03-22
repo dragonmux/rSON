@@ -10,7 +10,7 @@ unzip ninja-linux.zip -d ~/.local/bin
 rm get-pip.py ninja-linux.zip
 
 pushd $HOME/build
-git clone https://github.com/DX-MON/crunch.git DX-MON/crunch
+git clone --shallow --recurse-submodules=substrate --shallow-submodules https://github.com/DX-MON/crunch.git DX-MON/crunch
 cd DX-MON/crunch
 
 [ "$TRAVIS_OS_NAME" == "windows" -a "$CC" == "clang" ] && EXTRA_OPTS="-Dcpp_std=c++14" || EXTRA_OPTS=""
