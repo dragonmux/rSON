@@ -39,7 +39,7 @@ void readStream()
 {
 	std::array<char, 1> dest;
 	const char *const testData = "a";
-	memoryStream_t srcStream(const_cast<char *const>(testData), strlen(testData));
+	memoryStream_t srcStream(const_cast<char *>(testData), strlen(testData));
 	stream_t &stream = srcStream;
 
 	assertFalse(stream.atEOF());
@@ -53,7 +53,7 @@ void badReadStream()
 {
 	std::array<char, 2> dest;
 	const char *const testData = "abc";
-	memoryStream_t srcStream(const_cast<char *const>(testData), strlen(testData));
+	memoryStream_t srcStream(const_cast<char *>(testData), strlen(testData));
 	stream_t &stream = srcStream;
 
 	assertFalse(stream.atEOF());

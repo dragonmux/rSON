@@ -85,7 +85,7 @@ off_t fileStream_t::seek(const off_t offset, const int whence) noexcept
 }
 
 memoryStream_t::memoryStream_t(void *const stream, const size_t streamLength) noexcept :
-	memory(static_cast<char *const>(stream)), length(streamLength), pos(0) { }
+	memory(static_cast<char *>(stream)), length(streamLength), pos(0) { }
 
 bool memoryStream_t::read(void *const value, const size_t valueLen, size_t &actualLen) noexcept
 {

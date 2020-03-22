@@ -463,7 +463,7 @@ catch (JSONParserError &) { json.readSync(); throw; }
 
 JSONAtom *rSON::parseJSON(const char *json)
 {
-	memoryStream_t stream(const_cast<char *const>(json), length(json));
+	memoryStream_t stream(const_cast<char *>(json), length(json));
 	return rSON::parseJSON(stream);
 }
 
