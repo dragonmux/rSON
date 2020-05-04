@@ -92,7 +92,7 @@ void testEscapes()
 void testOperatorString()
 {
 	assertNotNull(testString);
-	assertConstNotNull(static_cast<const char *>(*testString));
+	assertNotNull(static_cast<const char *>(*testString));
 	assertStringEqual(*testString, "testValue");
 }
 
@@ -104,7 +104,7 @@ void testConversions()
 	UNWANTED_TYPE(testString, Int)
 	UNWANTED_TYPE(testString, Float)
 	WANTED_TYPE( \
-		assertConstNotNull(testString->asString()); \
+		assertNotNull(testString->asString()); \
 		assertStringEqual(testString->asString(), "testValue");
 		JSONAtom &atom = *testString;
 		JSONString &str = atom;
