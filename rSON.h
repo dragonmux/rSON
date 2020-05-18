@@ -25,21 +25,22 @@
 #include <vector>
 
 #ifdef _WINDOWS
-	#ifdef __rSON__
-		#define rSON_API __declspec(dllexport)
-	#else
-		#define rSON_API __declspec(dllimport)
-	#endif
-	#define rSON_DEFAULT_VISIBILITY
-	#define rSON_CLS_API	rSON_API
+#	ifdef __rSON__
+#		define rSON_API __declspec(dllexport)
+#	else
+#		define rSON_API __declspec(dllimport)
+#	endif
+#	define rSON_DEFAULT_VISIBILITY
+#	define rSON_CLS_API	rSON_API
 #else
-	#if __GNUC__ >= 4
-		#define rSON_DEFAULT_VISIBILITY __attribute__ ((visibility("default")))
-	#else
-		#error "This library cannot be compiled or used correctly with a GCC less than 4.x series"
-	#endif
-	#define rSON_CLS_API rSON_DEFAULT_VISIBILITY
-	#define rSON_API extern rSON_CLS_API
+#	if __GNUC__ >= 4
+#		define rSON_DEFAULT_VISIBILITY __attribute__ ((visibility("default")))
+#	else
+#		error "This library cannot be compiled or used correctly with a GCC less than 4.x series"
+#	endif
+#	define rSON_CLS_API rSON_DEFAULT_VISIBILITY
+#	define rSON_API extern rSON_CLS_API
+#	include <sys/types.h>
 #endif
 #if __cplusplus >= 201103L && __cplusplus < 201402L
 #define rSON_DEPRECATE(reason, type) [[gnu::deprecated(reason)]] rSON_API type
