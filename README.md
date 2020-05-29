@@ -6,6 +6,7 @@ The project was conceived after surveying the C/C++ based JSON implementations f
 [![codecov](https://codecov.io/gh/DX-MON/rSON/branch/master/graph/badge.svg)](https://codecov.io/gh/DX-MON/rSON)
 [![Total alerts](https://img.shields.io/lgtm/alerts/g/DX-MON/rSON.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/DX-MON/rSON/alerts/)
 [![Coverity Status](https://scan.coverity.com/projects/20295/badge.svg)](https://scan.coverity.com/projects/dx-mon-rson)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FDX-MON%2FrSON.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2FDX-MON%2FrSON?ref=badge_shield)
 
 ## The Idea
 
@@ -78,6 +79,9 @@ This change is designed to greatly simplify more complex use-cases so the user p
 
 As stated in the code, I have licensed the library using LGPL v3+.
 Please report bugs to dx-mon@users.sourceforge.net
+
+
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FDX-MON%2FrSON.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2FDX-MON%2FrSON?ref=badge_large)
 
 ## Known Bugs
 
