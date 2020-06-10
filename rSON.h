@@ -23,6 +23,10 @@
 #include <string.h>
 #include <memory>
 #include <vector>
+#if __cplusplus >= 201703L
+#include <filesystem>
+#endif
+#include <fcntl.h>
 
 #ifdef _WINDOWS
 #	ifdef __rSON__
@@ -446,6 +450,20 @@ namespace rSON
 	// Utility templates to help with type checking (validation)
 	template<JSONAtomType type> bool typeIs(const JSONAtom &atom) rSON_NOEXCEPT { return atom.typeIs(type); }
 	template<JSONAtomType type> bool typeIsOrNull(const JSONAtom &atom) rSON_NOEXCEPT { return atom.typeIsOrNull(type); }
+
+#if __cplusplus >= 201703L
+#	if _WINDOWS
+	constexpr int32_t normalMode{O_RDONLY | O_BINARY};
+#	else
+	constexpr int32_t normalMode{O_RDONLY | O_NOCTTY};
+#	endif
+
+	[[nodiscard]] rSON_API JSONAtom *parseJSON(const std::filesystem::path &fileName)
+	{
+		fileStream_t stream{fileName.c_str(), normalMode};
+		return rSON::parseJSON(stream);
+	}
+#endif
 }
 
 #endif /*rSON__H*/
