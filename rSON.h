@@ -1,6 +1,6 @@
 /*
  * This file is part of rSON
- * Copyright © 2012-2018 Rachel Mant (dx-mon@users.sourceforge.net)
+ * Copyright © 2012-2020 Rachel Mant (dx-mon@users.sourceforge.net)
  *
  * rSON is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -463,7 +463,7 @@ namespace rSON
 	constexpr int32_t normalMode{O_RDONLY | O_NOCTTY};
 #	endif
 
-	[[nodiscard]] rSON_API JSONAtom *parseJSON(const std::filesystem::path &fileName)
+	[[nodiscard]] rSON_API inline JSONAtom *parseJSON(const std::filesystem::path &fileName)
 	{
 		fileStream_t stream{fileName.c_str(), normalMode};
 		return rSON::parseJSON(stream);
