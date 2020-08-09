@@ -500,6 +500,48 @@ void testParseJSONFile()
 		assertIntEqual(object.size(), 1);
 	);
 
+	[]()
+	{
+		fd_t file{"test.json", O_WRONLY | O_CREAT | O_NOCTTY, substrate::normalMode};
+		assertTrue(file.valid());
+		assertTrue(file.write("[  { \"foo\": \"bar\" }  ] "s));
+	}();
+
+	try
+	{
+		fileStream_t file{"test.json", O_RDONLY};
+		atom = parseJSON(file);
+		assertNotNull(atom);
+		assertIntEqual(atom->getType(), JSON_TYPE_ARRAY);
+		const JSONArray &array{*atom};
+		assertIntEqual(array.size(), 1);
+		assertIntEqual(array[0].getType(), JSON_TYPE_OBJECT);
+		const JSONObject &object{array[0]};
+		assertIntEqual(object.size(), 1);
+		delete atom;
+	}
+	catch (JSONParserError &err) { fail(err.error()); }
+	catch (JSONTypeError &err)
+	{
+		delete atom;
+		fail(err.error());
+	}
+
+	try
+	{
+		fileStream_t file{"../compile_commands.json", O_RDONLY};
+		atom = parseJSON(file);
+		assertNotNull(atom);
+		assertIntEqual(atom->getType(), JSON_TYPE_ARRAY);
+		delete atom;
+	}
+	catch (JSONParserError &err) { fail(err.error()); }
+	catch (JSONTypeError &err)
+	{
+		delete atom;
+		fail(err.error());
+	}
+
 	unlink("test.json");
 }
 
