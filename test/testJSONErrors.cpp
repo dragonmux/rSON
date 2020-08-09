@@ -20,11 +20,8 @@
 
 void tryParserErrorOk(const JSONParserErrorType error)
 {
-	[](const JSONParserErrorType error)
-	{
-		auto *const err{JSONParserError(error).error()};
-		assertNotNull(err);
-	}(error);
+	const JSONParserError err{error};
+	assertNotNull(err.error());
 }
 
 void testParserError()
@@ -34,9 +31,9 @@ void testParserError()
 	tryParserErrorOk(JSON_PARSER_BAD_JSON);
 	tryParserErrorOk(JSON_PARSER_BAD_FILE);
 
-	auto *const err{JSONParserError(static_cast<JSONParserErrorType>(-1)).what()};
-	assertNotNull(err);
-	assertStringEqual(err, "Invalid unknown error type for parser error");
+	const JSONParserError err{static_cast<JSONParserErrorType>(-1)};
+	assertNotNull(err.what());
+	assertStringEqual(err.what(), "Invalid unknown error type for parser error");
 }
 
 void tryTypeErrorOk(const JSONAtomType type)
