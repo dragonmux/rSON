@@ -67,17 +67,11 @@ const char *JSONTypeError::typeToString(JSONAtomType type) const noexcept
 	return "unknown";
 }
 
-JSONObjectError::JSONObjectError(JSONObjectErrorType errorType) : objectError(errorType) { }
-
-const char *JSONObjectError::error() const
+const char *JSONObjectError::error() const noexcept
 {
-	switch (objectError)
-	{
-		case JSON_OBJECT_BAD_KEY:
-			return "Object key does not exist";
-		default:
-			throw std::exception();
-	}
+	if (objectError == JSON_OBJECT_BAD_KEY)
+		return "Object key does not exist";
+	return "Invalid unknown error type for object error";
 }
 
 JSONArrayError::JSONArrayError(JSONArrayErrorType errorType) : arrayError(errorType) { }

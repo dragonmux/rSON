@@ -198,18 +198,19 @@ namespace rSON
 #if __cplusplus >= 201103L
 		rSON_CLS_API JSONTypeError(JSONTypeError &&error) rSON_NOEXCEPT : errorStr(std::move(error.errorStr)) { }
 #endif
-		rSON_CLS_API const char *error() const noexcept { return errorStr.get(); }
+		const char *error() const noexcept { return errorStr.get(); }
 		const char *what() const noexcept final { return error(); }
 	};
 
-	class rSON_DEFAULT_VISIBILITY JSONObjectError rSON_FINAL
+	class rSON_DEFAULT_VISIBILITY JSONObjectError rSON_FINAL : std::exception
 	{
 	private:
 		JSONObjectErrorType objectError;
 
 	public:
-		rSON_CLS_API JSONObjectError(JSONObjectErrorType errorType);
-		rSON_CLS_API const char *error() const;
+		JSONObjectError(JSONObjectErrorType errorType) : objectError(errorType) { }
+		rSON_CLS_API const char *error() const noexcept;
+		const char *what() const noexcept final { return error(); }
 	};
 
 	class rSON_DEFAULT_VISIBILITY JSONArrayError rSON_FINAL

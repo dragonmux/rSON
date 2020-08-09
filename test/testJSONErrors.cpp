@@ -60,20 +60,18 @@ void testTypeError()
 
 void testObjectError()
 {
-	try
+	[]()
 	{
-		const auto err = JSONObjectError(JSON_OBJECT_BAD_KEY).error();
-		assertNotNull(const_cast<char *const>(err));
-	}
-	catch (std::exception &)
-		{ fail("Caught exception which should not happen"); }
+		const JSONObjectError err{JSON_OBJECT_BAD_KEY};
+		assertNotNull(err.error());
+	}();
 
-	try
+	[]()
 	{
-		const auto err = JSONObjectError((JSONObjectErrorType)-1).error();
-		fail("The error handling failed to throw an exception on an invalid initialisation");
-	}
-	catch (std::exception &) { }
+		const JSONObjectError err{static_cast<JSONObjectErrorType>(-1)};
+		assertNotNull(err.what());
+		assertStringEqual(err.what(), "Invalid unknown error type for object error");
+	}();
 }
 
 void tryArrayErrorOk(const JSONArrayErrorType type)
