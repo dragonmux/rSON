@@ -27,7 +27,7 @@ testHelpers = static_library(
 	testSrcs,
 	pic: true,
 	dependencies: [libcrunchpp],
-	include_directories: include_directories('..'),
+	include_directories: [include_directories('..'), substrate],
 	install: false,
 	build_by_default: true
 )

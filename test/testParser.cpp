@@ -16,8 +16,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <string>
+#include <substrate/fd>
 #include "test.h"
 #include "../Parser.h"
+
+using namespace std::literals::string_literals;
+using substrate::fd_t;
 
 void testParserViability()
 {
@@ -417,6 +422,15 @@ void testParseJSON()
 		assertIntEqual((*array)[1].asInt(), 1)
 	);
 
+	TRY("[{\"foo\": \"bar\"}]",
+		assertNotNull(atom);
+		array = atom->asArray();
+		assertIntEqual(array->size(), 1);
+		assertNotNull(&(*array)[0]);
+		object = (*array)[0].asObject();
+		assertIntEqual(object->size(), 1);
+	);
+
 	TRY_SHOULD_FAIL("true");
 	TRY_SHOULD_FAIL("false");
 	TRY_SHOULD_FAIL("null");
@@ -463,8 +477,23 @@ void testParseJSONFile()
 	JSONAtom *atom;
 
 	TRY_SHOULD_FAIL("nonExistant.json");
-	fclose(fopen("test.json", "wb"));
+	[]()
+	{
+		fd_t file{"test.json", O_WRONLY | O_CREAT | O_NOCTTY, substrate::normalMode};
+		assertTrue(file.valid());
+	}();
 	TRY_SHOULD_FAIL("test.json");
+
+	[]()
+	{
+		fd_t file{"test.json", O_WRONLY | O_NOCTTY};
+		assertTrue(file.valid());
+		assertTrue(file.write("[{\"foo\": \"bar\"}]"s));
+	}();
+	TRY("test.json",
+		assertIntEqual(atom->getType(), JSON_TYPE_ARRAY);
+	);
+
 	unlink("test.json");
 }
 
