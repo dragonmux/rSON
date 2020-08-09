@@ -37,7 +37,7 @@ fileStream_t::fileStream_t(const char *const fileName, const int32_t _mode, cons
 	fd = open(fileName, mode, perms);
 	if (fd == -1 || fstat(fd, &fileStat) != 0)
 		throw std::system_error(errno, std::system_category());
-	length = fileStat.st_size + 1;
+	length = fileStat.st_size;
 }
 
 fileStream_t::~fileStream_t() noexcept { close(fd); }
@@ -54,8 +54,7 @@ bool fileStream_t::read(void *const value, const size_t valueLen, size_t &actual
 #endif
 	if (ret < 0)
 		throw std::system_error(errno, std::system_category());
-	// This call sets EOF for us.
-	seek(0, SEEK_CUR);
+	eof = ret == 0;
 	actualLen = size_t(ret);
 	return true;
 }
