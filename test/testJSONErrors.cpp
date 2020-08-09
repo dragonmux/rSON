@@ -41,13 +41,8 @@ void testParserError()
 
 void tryTypeErrorOk(const JSONAtomType type)
 {
-	try
-	{
-		const auto err = JSONTypeError(type, type).error();
-		assertNotNull(const_cast<char *const>(err));
-	}
-	catch (std::exception &)
-		{ fail("Caught exception which should not happen"); }
+	const JSONTypeError err{type, type};
+	assertNotNull(err.error());
 }
 
 void testTypeError()
@@ -60,12 +55,10 @@ void testTypeError()
 	tryTypeErrorOk(JSON_TYPE_OBJECT);
 	tryTypeErrorOk(JSON_TYPE_ARRAY);
 
-	try
-	{
-		const auto err = JSONTypeError((JSONAtomType)-1, (JSONAtomType)-1);
-		fail("The error handling failed to throw an exception on an invalid initialisation");
-	}
-	catch (std::exception &) { }
+	const auto badType{static_cast<JSONAtomType>(-1)};
+	const JSONTypeError err{badType, badType};
+	assertNotNull(err.what());
+	assertStringEqual(err.what(), "Expecting unknown, found unknown");
 }
 
 void testObjectError()

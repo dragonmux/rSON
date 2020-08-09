@@ -187,18 +187,19 @@ namespace rSON
 		const char *what() const noexcept final { return error(); }
 	};
 
-	class rSON_DEFAULT_VISIBILITY JSONTypeError rSON_FINAL
+	class rSON_DEFAULT_VISIBILITY JSONTypeError rSON_FINAL : std::exception
 	{
 	private:
-		std::unique_ptr<const char []> errorStr;
-		const char *typeToString(JSONAtomType type) const;
+		std::unique_ptr<const char []> errorStr{nullptr};
+		const char *typeToString(JSONAtomType type) const noexcept;
 
 	public:
 		rSON_CLS_API JSONTypeError(JSONAtomType actual, JSONAtomType expected);
 #if __cplusplus >= 201103L
 		rSON_CLS_API JSONTypeError(JSONTypeError &&error) rSON_NOEXCEPT : errorStr(std::move(error.errorStr)) { }
 #endif
-		rSON_CLS_API const char *error() const;
+		rSON_CLS_API const char *error() const noexcept { return errorStr.get(); }
+		const char *what() const noexcept final { return error(); }
 	};
 
 	class rSON_DEFAULT_VISIBILITY JSONObjectError rSON_FINAL

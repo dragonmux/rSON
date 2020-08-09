@@ -43,7 +43,7 @@ JSONTypeError::JSONTypeError(JSONAtomType actual, JSONAtomType expected)
 	errorStr = formatString("Expecting %s, found %s", typeToString(expected), typeToString(actual));
 }
 
-const char *JSONTypeError::typeToString(JSONAtomType type) const
+const char *JSONTypeError::typeToString(JSONAtomType type) const noexcept
 {
 	switch (type)
 	{
@@ -61,11 +61,12 @@ const char *JSONTypeError::typeToString(JSONAtomType type) const
 			return "object";
 		case JSON_TYPE_ARRAY:
 			return "array";
+		default:
+			break;
 	}
-	throw std::exception();
+	return "unknown";
 }
 
-const char *JSONTypeError::error() const { return errorStr.get(); }
 JSONObjectError::JSONObjectError(JSONObjectErrorType errorType) : objectError(errorType) { }
 
 const char *JSONObjectError::error() const
