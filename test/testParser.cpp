@@ -481,17 +481,23 @@ void testParseJSONFile()
 	{
 		fd_t file{"test.json", O_WRONLY | O_CREAT | O_NOCTTY, substrate::normalMode};
 		assertTrue(file.valid());
+		assertTrue(file.resize(0));
 	}();
 	TRY_SHOULD_FAIL("test.json");
 
 	[]()
 	{
-		fd_t file{"test.json", O_WRONLY | O_NOCTTY};
+		fd_t file{"test.json", O_WRONLY | O_CREAT | O_NOCTTY, substrate::normalMode};
 		assertTrue(file.valid());
 		assertTrue(file.write("[{\"foo\": \"bar\"}]"s));
 	}();
 	TRY("test.json",
 		assertIntEqual(atom->getType(), JSON_TYPE_ARRAY);
+		const JSONArray &array{*atom};
+		assertIntEqual(array.size(), 1);
+		assertIntEqual(array[0].getType(), JSON_TYPE_OBJECT);
+		const JSONObject &object{array[0]};
+		assertIntEqual(object.size(), 1);
 	);
 
 	unlink("test.json");
