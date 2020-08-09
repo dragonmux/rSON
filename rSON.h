@@ -23,6 +23,7 @@
 #include <string.h>
 #include <memory>
 #include <vector>
+#include <stdexcept>
 #if __cplusplus >= 201703L
 #include <filesystem>
 #endif
@@ -174,15 +175,16 @@ namespace rSON
 	} JSONArrayErrorType;
 
 	// Exception classes
-	class rSON_DEFAULT_VISIBILITY JSONParserError rSON_FINAL
+	class rSON_DEFAULT_VISIBILITY JSONParserError rSON_FINAL : std::exception
 	{
 	private:
 		JSONParserErrorType parserError;
 
 	public:
 		rSON_CLS_API JSONParserError(JSONParserErrorType errorType);
-		rSON_CLS_API JSONParserErrorType errorType() const;
-		rSON_CLS_API const char *error() const;
+		rSON_CLS_API JSONParserErrorType errorType() const noexcept { return parserError; }
+		rSON_CLS_API const char *error() const noexcept;
+		const char *what() const noexcept final { return error(); }
 	};
 
 	class rSON_DEFAULT_VISIBILITY JSONTypeError rSON_FINAL

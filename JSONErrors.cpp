@@ -23,9 +23,8 @@
 #include "String.hxx"
 
 JSONParserError::JSONParserError(JSONParserErrorType errorType) : parserError(errorType) { }
-JSONParserErrorType JSONParserError::errorType() const { return parserError; }
 
-const char *JSONParserError::error() const
+const char *JSONParserError::error() const noexcept
 {
 	switch (parserError)
 	{
@@ -36,8 +35,9 @@ const char *JSONParserError::error() const
 		case JSON_PARSER_BAD_FILE:
 			return "The JSON parser could not read the file it was asked to parse";
 		default:
-			throw std::exception();
+			break;
 	}
+	return "Invalid unknown error type for parser error";
 }
 
 JSONTypeError::JSONTypeError(JSONAtomType actual, JSONAtomType expected)

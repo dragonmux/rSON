@@ -20,13 +20,11 @@
 
 void tryParserErrorOk(const JSONParserErrorType error)
 {
-	try
+	[](const JSONParserErrorType error)
 	{
-		const auto err = JSONParserError(error).error();
-		assertNotNull(const_cast<char *const>(err));
-	}
-	catch (std::exception &)
-		{ fail("Caught exception which should not happen"); }
+		auto *const err{JSONParserError(error).error()};
+		assertNotNull(err);
+	}(error);
 }
 
 void testParserError()
@@ -36,12 +34,9 @@ void testParserError()
 	tryParserErrorOk(JSON_PARSER_BAD_JSON);
 	tryParserErrorOk(JSON_PARSER_BAD_FILE);
 
-	try
-	{
-		const auto err = JSONParserError((JSONParserErrorType)-1).error();
-		fail("The error handling failed to throw an exception on an invalid initialisation");
-	}
-	catch (std::exception &) { }
+	auto *const err{JSONParserError(static_cast<JSONParserErrorType>(-1)).what()};
+	assertNotNull(err);
+	assertStringEqual(err, "Invalid unknown error type for parser error");
 }
 
 void tryTypeErrorOk(const JSONAtomType type)
