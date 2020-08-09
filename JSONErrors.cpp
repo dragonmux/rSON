@@ -50,19 +50,19 @@ const char *JSONTypeError::typeToString(JSONAtomType type) const
 	switch (type)
 	{
 		case JSON_TYPE_NULL:
-			return "Null";
+			return "null";
 		case JSON_TYPE_BOOL:
-			return "Bool";
+			return "bool";
 		case JSON_TYPE_INT:
-			return "Int";
+			return "int";
 		case JSON_TYPE_FLOAT:
-			return "Float";
+			return "float";
 		case JSON_TYPE_STRING:
-			return "String";
+			return "string";
 		case JSON_TYPE_OBJECT:
-			return "Object";
+			return "object";
 		case JSON_TYPE_ARRAY:
-			return "Array";
+			return "array";
 	}
 	throw std::exception();
 }
