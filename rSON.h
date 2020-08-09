@@ -213,14 +213,15 @@ namespace rSON
 		const char *what() const noexcept final { return error(); }
 	};
 
-	class rSON_DEFAULT_VISIBILITY JSONArrayError rSON_FINAL
+	class rSON_DEFAULT_VISIBILITY JSONArrayError rSON_FINAL : std::exception
 	{
 	private:
 		JSONArrayErrorType arrayError;
 
 	public:
-		rSON_CLS_API JSONArrayError(JSONArrayErrorType errorType);
-		rSON_CLS_API const char *error() const;
+		JSONArrayError(JSONArrayErrorType errorType) : arrayError(errorType) { }
+		rSON_CLS_API const char *error() const noexcept;
+		const char *what() const noexcept final { return error(); }
 	};
 
 	// Impl types

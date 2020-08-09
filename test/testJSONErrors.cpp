@@ -76,13 +76,8 @@ void testObjectError()
 
 void tryArrayErrorOk(const JSONArrayErrorType type)
 {
-	try
-	{
-		const auto err = JSONArrayError(type).error();
-		assertNotNull(const_cast<char *const>(err));
-	}
-	catch (std::exception &)
-		{ fail("Caught exception which should not happen"); }
+	const JSONArrayError err{type};
+	assertNotNull(err.error());
 }
 
 void testArrayError()
@@ -90,12 +85,9 @@ void testArrayError()
 	tryArrayErrorOk(JSON_ARRAY_OOB);
 	tryArrayErrorOk(JSON_ARRAY_BAD_ATOM);
 
-	try
-	{
-		const auto err = JSONArrayError((JSONArrayErrorType)-1).error();
-		fail("The error handling failed to throw an exception on an invalid initialisation");
-	}
-	catch (std::exception &) { }
+	const JSONArrayError err{static_cast<JSONArrayErrorType>(-1)};
+	assertNotNull(err.what());
+	assertStringEqual(err.what(), "Invalid unknown error type for array error");
 }
 
 #ifdef __cplusplus

@@ -74,9 +74,7 @@ const char *JSONObjectError::error() const noexcept
 	return "Invalid unknown error type for object error";
 }
 
-JSONArrayError::JSONArrayError(JSONArrayErrorType errorType) : arrayError(errorType) { }
-
-const char *JSONArrayError::error() const
+const char *JSONArrayError::error() const noexcept
 {
 	switch (arrayError)
 	{
@@ -85,6 +83,7 @@ const char *JSONArrayError::error() const
 		case JSON_ARRAY_BAD_ATOM:
 			return "Array contains a bad item";
 		default:
-			throw std::exception();
+			break;
 	}
+	return "Invalid unknown error type for array error";
 }
