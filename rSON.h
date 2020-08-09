@@ -181,8 +181,8 @@ namespace rSON
 		JSONParserErrorType parserError;
 
 	public:
-		rSON_CLS_API JSONParserError(JSONParserErrorType errorType);
-		rSON_CLS_API JSONParserErrorType errorType() const noexcept { return parserError; }
+		JSONParserError(JSONParserErrorType errorType) : parserError(errorType) { }
+		JSONParserErrorType errorType() const noexcept { return parserError; }
 		rSON_CLS_API const char *error() const noexcept;
 		const char *what() const noexcept final { return error(); }
 	};

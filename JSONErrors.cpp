@@ -22,8 +22,6 @@
 #include "internal.h"
 #include "String.hxx"
 
-JSONParserError::JSONParserError(JSONParserErrorType errorType) : parserError(errorType) { }
-
 const char *JSONParserError::error() const noexcept
 {
 	switch (parserError)
