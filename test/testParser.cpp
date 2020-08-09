@@ -202,8 +202,6 @@ void tryStringFail(const char *const json)
 
 void testString()
 {
-	JSONParser *parser;
-
 	tryStringOk("\"test\" ", [](const char *const atom) { assertStringEqual(atom, "test"); });
 	tryStringOk("\"\\\\\" ", [](const char *const atom) { assertStringEqual(atom, "\\\\"); });
 	tryStringOk("\" \" ", [](const char *const atom) { assertStringEqual(atom, " "); });
@@ -253,10 +251,6 @@ void tryObjectFail(const char *const json)
 
 void testObject()
 {
-	JSONParser *parser;
-	JSONAtom *atom;
-	JSONObject *objectAtom;
-
 	tryObjectOk("{}", [](const JSONObject &objectAtom) { assertIntEqual(objectAtom.size(), 0); });
 
 	tryObjectOk("{\"testKey\": 0}", [](const JSONObject &objectAtom)
@@ -321,10 +315,6 @@ void tryArrayFail(const char *const json)
 
 void testArray()
 {
-	JSONParser *parser;
-	JSONAtom *atom;
-	JSONArray *arrayAtom;
-
 	tryArrayOk("[]", [](const JSONArray &arrayAtom) { assertIntEqual(arrayAtom.size(), 0); });
 
 	tryArrayOk("[0]", [](const JSONArray &arrayAtom)
@@ -402,7 +392,7 @@ void testParseJSON()
 		assertFalse((*array)[2].asBool())
 	);
 
-	TRY("[\n\t0,\n\t\[\n\t\tnull,\n\t\ttrue,\n\t\tfalse\n\t]\n]",
+	TRY("[\n\t0,\n\t[\n\t\tnull,\n\t\ttrue,\n\t\tfalse\n\t]\n]",
 		assertNotNull(atom);
 		array = atom->asArray();
 		assertIntEqual(array->size(), 2);
