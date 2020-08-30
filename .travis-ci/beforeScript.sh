@@ -1,5 +1,6 @@
 #!/bin/bash -e
 export PS4="$ "
+set -x
 
 codecov()
 {
@@ -9,7 +10,6 @@ codecov()
 		echo false
 	fi
 }
-set -x
 
 export PKG_CONFIG_PATH=$HOME/.local/lib/pkgconfig
 [ $COVERAGE -ne 0 ] && EXTRA_OPTS="--buildtype=debug" || EXTRA_OPTS=""

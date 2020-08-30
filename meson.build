@@ -11,6 +11,7 @@ project(
 )
 
 cxx = meson.get_compiler('cpp')
+sanitizer = get_option('b_sanitize')
 pkgconfig = import('pkgconfig')
 rSONSocketLibs = []
 
