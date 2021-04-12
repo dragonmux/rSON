@@ -6,7 +6,7 @@ project(
 		'warning_level=3',
 		'b_pch=false'
 	],
-	version: '0.4.0',
+	version: '0.4.1',
 	meson_version: '>=0.52'
 )
 
@@ -42,6 +42,7 @@ rSON = library(
 	'rSON',
 	rSONSrc,
 	include_directories: substrate,
+	gnu_symbol_visibility: 'inlineshidden',
 	version: meson.project_version(),
 	install: true
 )
@@ -52,26 +53,42 @@ rSONSocket = library(
 	link_with: [rSON],
 	include_directories: substrate,
 	dependencies: rSONSocketLibs,
+	gnu_symbol_visibility: 'inlineshidden',
 	version: meson.project_version(),
 	install: true
 )
 
-pkgconfig.generate(
-	rSON,
-	name: 'rSON',
-	filebase: 'rSON',
-	version: meson.project_version(),
-	description: 'A simple but effective JSON parser for C++'
-)
+if not meson.is_subproject()
+	pkgconfig.generate(
+		rSON,
+		name: 'rSON',
+		filebase: 'rSON',
+		version: meson.project_version(),
+		description: 'A simple but effective JSON parser for C++'
+	)
 
-pkgconfig.generate(
-	rSONSocket,
-	name: 'rSON Socket',
-	filebase: 'rSON_socket',
-	libraries: [rSON],
-	version: meson.project_version(),
-	description: 'Sockets handling for rSON, a simple but effective JSON parser for C++'
-)
+	pkgconfig.generate(
+		rSONSocket,
+		name: 'rSON Socket',
+		filebase: 'rSON_socket',
+		libraries: [rSON],
+		version: meson.project_version(),
+		description: 'Sockets handling for rSON, a simple but effective JSON parser for C++'
+	)
+else
+	rSON_dep = declare_dependency(
+		include_directories: include_directories('.'),
+		link_with: rSON,
+		version: meson.project_version()
+	)
+
+	rSONSocket_dep = declare_dependency(
+		dependencies: [rSON],
+		include_directories: include_directories('.'),
+		link_with: rSONSocket,
+		version: meson.project_version()
+	)
+endif
 
 install_headers(
 	'rSON.h', 'rSON_socket.h'
