@@ -83,7 +83,6 @@ else
 	)
 
 	rSONSocket_dep = declare_dependency(
-		dependencies: [rSON],
 		include_directories: include_directories('.'),
 		link_with: rSONSocket,
 		version: meson.project_version()
