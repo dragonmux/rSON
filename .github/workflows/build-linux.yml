@@ -25,40 +25,28 @@ jobs:
         include:
           - os: { id: ubuntu-18.04, name: bionic }
             compiler: 'clang-6.0'
-            cpp_std: 'c++11'
+            coverage: false
           - os: { id: ubuntu-18.04, name: bionic }
             compiler: 'clang-6.0'
-            cpp_std: 'c++14'
-          - os: { id: ubuntu-18.04, name: bionic }
-            compiler: 'clang-6.0'
-            cpp_std: 'c++17'
+            coverage: true
           - os: { id: ubuntu-18.04, name: bionic }
             compiler: 'clang-7'
-            cpp_std: 'c++11'
+            coverage: false
           - os: { id: ubuntu-18.04, name: bionic }
             compiler: 'clang-7'
-            cpp_std: 'c++14'
-          - os: { id: ubuntu-18.04, name: bionic }
-            compiler: 'clang-7'
-            cpp_std: 'c++17'
+            coverage: true
           - os: { id: ubuntu-18.04, name: bionic }
             compiler: 'clang-8'
-            cpp_std: 'c++11'
+            coverage: false
           - os: { id: ubuntu-18.04, name: bionic }
             compiler: 'clang-8'
-            cpp_std: 'c++14'
-          - os: { id: ubuntu-18.04, name: bionic }
-            compiler: 'clang-8'
-            cpp_std: 'c++17'
+            coverage: true
           - os: { id: ubuntu-18.04, name: bionic }
             compiler: 'gcc-6'
-            cpp_std: 'c++11'
+            coverage: false
           - os: { id: ubuntu-18.04, name: bionic }
             compiler: 'gcc-6'
-            cpp_std: 'c++14'
-          - os: { id: ubuntu-18.04, name: bionic }
-            compiler: 'gcc-6'
-            cpp_std: 'c++17'
+            coverage: false
         coverage: [false, true]
       fail-fast: false
     steps:
