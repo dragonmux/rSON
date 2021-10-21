@@ -10,7 +10,7 @@ on:
 
 jobs:
   build-linux:
-    name: 'build-linux (${{ matrix.os.id }}, ${{ matrix.os.name }}${{ ", +cov" if matrix.coverage }})'
+    name: 'build-linux (${{ matrix.os.id }}, ${{ matrix.os.name }}${{ '', +cov'' if matrix.coverage }})'
     runs-on: ${{ matrix.os.id }}
     strategy:
       matrix:
