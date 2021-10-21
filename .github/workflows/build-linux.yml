@@ -4,9 +4,13 @@ on:
   push:
     branches-ignore:
       - 'coverityScan'
+  pull_request:
+    branches:
+      - 'main'
 
 jobs:
   build-linux:
+    name: 'build-linux (${{ matrix.os.id }}, ${{ matrix.os.name }}${{ ", +cov" if matrix.coverage }})'
     runs-on: ${{ matrix.os.id }}
     strategy:
       matrix:
@@ -125,4 +129,4 @@ jobs:
         run: ninja -C build install
       - name: Codecov
         if: success() && matrix.coverage
-        run: bash <(curl -s https://codecov.io/bash) -x "$GCOV";
+        uses: codecov/codecov-action@v2
