@@ -17,7 +17,7 @@ rSONSocketLibs = []
 
 if target_machine.system() != 'windows' and target_machine.system() != 'darwin'
 	add_project_link_arguments('-z', 'defs', language: 'cpp')
-else
+elif target_machine.system() != 'darwin'
 	add_project_arguments('-DWIN32', '-D_WINDOWS', language: 'cpp')
 	add_project_arguments('-D_CRT_SECURE_NO_WARNINGS', language: 'cpp')
 	if cxx.get_id() == 'msvc'
