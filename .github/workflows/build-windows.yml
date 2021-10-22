@@ -10,7 +10,7 @@ on:
 
 jobs:
   build-windows:
-    name: 'build-windows (${{ matrix.os }}, msvc${{ '', +cov'' if matrix.coverage }})'
+    name: 'build-windows (${{ matrix.os }}, msvc, cov=${{ matrix.coverage }})'
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
