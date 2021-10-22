@@ -22,7 +22,7 @@
 
 uint8_t hex2int(char c)
 {
-	char x = toupper(c);
+	auto x{static_cast<char>(toupper(c))};
 	if ((x >= '0' && x <= '9') || (x >= 'A' && x <= 'F'))
 	{
 		x -= 0x30; // '0' == 0x30

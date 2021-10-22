@@ -21,9 +21,10 @@
 
 #include <rSON.h>
 
-#ifdef _MSC_VER
+#ifdef _WIN32
 #define WIN32_LEAN_AND_MEAN
 #include <ws2tcpip.h>
+#undef WIN32_LEAN_AND_MEAN
 #include <type_traits>
 
 using ssize_t = typename std::make_signed<size_t>::type;
@@ -34,9 +35,10 @@ struct sockaddr_storage;
 
 namespace rSON
 {
-#ifndef _MSC_VER
+#ifndef _WIN32
 	using socklen_t = unsigned int;
 	using sockType_t = int32_t;
+	constexpr static sockType_t INVALID_SOCKET{-1};
 #else
 	using sockType_t = SOCKET;
 #endif
@@ -50,7 +52,7 @@ namespace rSON
 		bool connect(const void *const addr, const size_t len) const noexcept;
 
 	public:
-		rSON_CLS_API constexpr socket_t() noexcept : socket(-1) { }
+		rSON_CLS_API constexpr socket_t() noexcept : socket(INVALID_SOCKET) { }
 		rSON_CLS_API constexpr socket_t(const int32_t s) noexcept : socket(s) { }
 		rSON_CLS_API socket_t(const int family, const int type, const int protocol = 0) noexcept;
 		socket_t(const socket_t &) = delete;
@@ -59,11 +61,11 @@ namespace rSON
 
 		socket_t &operator =(const socket_t &) = delete;
 		rSON_CLS_API void operator =(socket_t &&s) noexcept { swap(s); }
-		rSON_CLS_API operator int32_t() const noexcept { return socket; }
-		rSON_CLS_API bool operator ==(const int32_t s) const noexcept { return socket == s; }
-		rSON_CLS_API bool operator !=(const int32_t s) const noexcept { return socket != s; }
+		rSON_CLS_API operator sockType_t() const noexcept { return socket; }
+		rSON_CLS_API bool operator ==(const sockType_t s) const noexcept { return socket == s; }
+		rSON_CLS_API bool operator !=(const sockType_t s) const noexcept { return socket != s; }
 		rSON_CLS_API void swap(socket_t &s) noexcept { std::swap(socket, s.socket); }
-		rSON_CLS_API bool valid() const noexcept { return socket != -1; }
+		rSON_CLS_API bool valid() const noexcept { return socket != INVALID_SOCKET; }
 
 		template<typename T> bool bind(const T &addr) const noexcept
 			{ return bind(static_cast<const void *>(&addr), sizeof(T)); }

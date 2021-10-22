@@ -76,17 +76,17 @@ bool fileStream_t::write(const void *const value, const size_t valueLen)
 	return !eof;
 }
 
-off_t fileStream_t::seek(const off_t offset, const int whence) noexcept
+off_t fileStream_t::seek(const off_t offset, const int whence) rSON_NOEXCEPT
 {
 	off_t result = lseek(fd, offset, whence);
 	eof = length == size_t(result);
 	return result;
 }
 
-memoryStream_t::memoryStream_t(void *const stream, const size_t streamLength) noexcept :
+memoryStream_t::memoryStream_t(void *const stream, const size_t streamLength) rSON_NOEXCEPT :
 	memory(static_cast<char *>(stream)), length(streamLength), pos(0) { }
 
-bool memoryStream_t::read(void *const value, const size_t valueLen, size_t &actualLen) noexcept
+bool memoryStream_t::read(void *const value, const size_t valueLen, size_t &actualLen) rSON_NOEXCEPT
 {
 	// If at "end of file", or the requested read would cause position wrap around, return false.
 	if (atEOF() || (pos + valueLen) < pos)
@@ -98,7 +98,7 @@ bool memoryStream_t::read(void *const value, const size_t valueLen, size_t &actu
 	return true;
 }
 
-bool memoryStream_t::write(const void *const value, const size_t valueLen) noexcept
+bool memoryStream_t::write(const void *const value, const size_t valueLen) rSON_NOEXCEPT
 {
 	// If at "end of file", or the requested write would cause position wrap-around, return false.
 	if (atEOF() || (pos + valueLen) < pos)

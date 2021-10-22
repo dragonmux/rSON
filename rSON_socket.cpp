@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _MSC_VER
+#ifndef _WIN32
 #include <sys/socket.h>
 #include <netdb.h>
 #include <arpa/inet.h>
@@ -78,7 +78,7 @@ size_t sockaddrLen(const sockaddr_storage &addr) noexcept
 socket_t::socket_t(const int family, const int type, const int protocol) noexcept :
 	socket(::socket(family, type, protocol)) { }
 socket_t::~socket_t() noexcept
-	{ if (socket != -1) closesocket(socket); }
+	{ if (socket != INVALID_SOCKET) closesocket(socket); }
 bool socket_t::bind(const void *const addr, const size_t len) const noexcept
 	{ return ::bind(socket, static_cast<const sockaddr *>(addr), len) == 0; }
 bool socket_t::bind(const sockaddr_storage &addr) const noexcept
@@ -121,7 +121,7 @@ int typeToFamily(const socketType_t type) noexcept
 }
 
 rpcStream_t::rpcStream_t() noexcept : family(socketType_t::unknown), sock(), buffer(), pos(0), lastRead(0) { }
-bool rpcStream_t::valid() const noexcept { return family != socketType_t::unknown && sock != -1; }
+bool rpcStream_t::valid() const noexcept { return family != socketType_t::unknown && sock != INVALID_SOCKET; }
 void rpcStream_t::makeBuffer() noexcept { buffer = substrate::make_unique<char []>(bufferLen); }
 
 rpcStream_t::rpcStream_t(const socketType_t type) : family(type), sock(), buffer(),

@@ -21,7 +21,11 @@
 #include "internal.h"
 #include "String.hxx"
 
+#if !defined(_MSC_VER) || _MSC_VER >= 1928
 JSONObject::JSONObject() : JSONAtom{JSON_TYPE_OBJECT}, obj{makeOpaque<object_t>()} { }
+#else
+JSONObject::JSONObject() : JSONAtom{JSON_TYPE_OBJECT}, obj{} { }
+#endif
 
 JSONObject::JSONObject(JSONObject &object) : JSONObject{}
 	{ obj->clone(*object.obj); }

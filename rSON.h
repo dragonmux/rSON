@@ -23,20 +23,20 @@
 #include <string.h>
 #include <memory>
 #include <vector>
-#include <stdexcept>
+#include <exception>
 #if __cplusplus >= 201703L
 #include <filesystem>
 #endif
 #include <fcntl.h>
 
-#ifdef _WINDOWS
+#ifdef _WIN32
 #	ifdef __rSON__
-#		define rSON_API __declspec(dllexport)
+#		define rSON_CLS_API __declspec(dllexport)
 #	else
-#		define rSON_API __declspec(dllimport)
+#		define rSON_CLS_API __declspec(dllimport)
 #	endif
 #	define rSON_DEFAULT_VISIBILITY
-#	define rSON_CLS_API	rSON_API
+#	define rSON_API	extern rSON_CLS_API
 #else
 #	if __GNUC__ >= 4
 #		define rSON_DEFAULT_VISIBILITY __attribute__ ((visibility("default")))
@@ -70,7 +70,7 @@ namespace rSON
 	struct notImplemented_t : public std::exception { };
 
 	// Stream types for JSON IO
-	struct rSON_DEFAULT_VISIBILITY stream_t
+	struct rSON_CLS_API stream_t
 	{
 	public:
 		stream_t() = default;
@@ -90,7 +90,7 @@ namespace rSON
 		template<typename T, size_t N> bool write(const std::array<T, N> &value)
 			{ return write(value.data(), N); }
 
-		rSON_CLS_API bool read(void *const value, const size_t valueLen)
+		bool read(void *const value, const size_t valueLen)
 		{
 			size_t actualLen = 0;
 			if (!read(value, valueLen, actualLen))
@@ -105,7 +105,7 @@ namespace rSON
 		virtual void writeSync() rSON_NOEXCEPT { }
 	};
 
-	struct rSON_DEFAULT_VISIBILITY fileStream_t rSON_FINAL : public stream_t
+	struct rSON_CLS_API fileStream_t rSON_FINAL : public stream_t
 	{
 	private:
 		int fd;
@@ -114,19 +114,19 @@ namespace rSON
 		int32_t mode;
 
 	public:
-		rSON_CLS_API fileStream_t(const char *const fileName, const int32_t mode, const int32_t perms = 0);
+		fileStream_t(const char *const fileName, const int32_t mode, const int32_t perms = 0);
 		fileStream_t(const fileStream_t &) = delete;
-		rSON_CLS_API fileStream_t(fileStream_t &&) = default;
-		rSON_CLS_API ~fileStream_t() rSON_NOEXCEPT rSON_VFINAL;
+		fileStream_t(fileStream_t &&) = default;
+		~fileStream_t() rSON_NOEXCEPT rSON_VFINAL;
 		fileStream_t &operator =(const fileStream_t &) = delete;
-		rSON_CLS_API fileStream_t &operator =(fileStream_t &&) = default;
+		fileStream_t &operator =(fileStream_t &&) = default;
 
-		rSON_CLS_API bool read(void *const value, const size_t valueLen, size_t &actualLen) rSON_VFINAL;
-		rSON_CLS_API bool write(const void *const value, const size_t valueLen) rSON_VFINAL;
-		rSON_CLS_API bool atEOF() const rSON_NOEXCEPT rSON_VFINAL { return eof; }
-		rSON_CLS_API off_t seek(const off_t offset, const int whence) rSON_NOEXCEPT;
-		rSON_CLS_API size_t size() const rSON_NOEXCEPT { return length; }
-		rSON_CLS_API bool valid() const rSON_NOEXCEPT { return fd != -1; }
+		bool read(void *const value, const size_t valueLen, size_t &actualLen) rSON_VFINAL;
+		bool write(const void *const value, const size_t valueLen) rSON_VFINAL;
+		bool atEOF() const rSON_NOEXCEPT rSON_VFINAL { return eof; }
+		off_t seek(const off_t offset, const int whence) rSON_NOEXCEPT;
+		size_t size() const rSON_NOEXCEPT { return length; }
+		bool valid() const rSON_NOEXCEPT { return fd != -1; }
 	};
 
 	struct rSON_DEFAULT_VISIBILITY memoryStream_t rSON_FINAL : public stream_t
@@ -137,11 +137,11 @@ namespace rSON
 		size_t pos;
 
 	public:
-		rSON_CLS_API memoryStream_t(void *const stream, const size_t streamLength) rSON_NOEXCEPT;
+		memoryStream_t(void *const stream, const size_t streamLength) rSON_NOEXCEPT;
 
-		rSON_CLS_API bool read(void *const value, const size_t valueLen, size_t &actualLen) rSON_NOEXCEPT rSON_VFINAL;
-		rSON_CLS_API bool write(const void *const value, const size_t valueLen) rSON_NOEXCEPT rSON_VFINAL;
-		rSON_CLS_API bool atEOF() const rSON_NOEXCEPT rSON_VFINAL { return pos == length; }
+		bool read(void *const value, const size_t valueLen, size_t &actualLen) rSON_NOEXCEPT rSON_VFINAL;
+		bool write(const void *const value, const size_t valueLen) rSON_NOEXCEPT rSON_VFINAL;
+		bool atEOF() const rSON_NOEXCEPT rSON_VFINAL { return pos == length; }
 	};
 
 	// Enumerations
@@ -175,7 +175,7 @@ namespace rSON
 	} JSONArrayErrorType;
 
 	// Exception classes
-	class rSON_DEFAULT_VISIBILITY JSONParserError rSON_FINAL : std::exception
+	class rSON_DEFAULT_VISIBILITY JSONParserError rSON_FINAL : public std::exception
 	{
 	private:
 		JSONParserErrorType parserError;
@@ -183,44 +183,44 @@ namespace rSON
 	public:
 		JSONParserError(JSONParserErrorType errorType) : parserError(errorType) { }
 		JSONParserErrorType errorType() const noexcept { return parserError; }
-		rSON_CLS_API const char *error() const noexcept;
+		const char *error() const noexcept;
 		const char *what() const noexcept final { return error(); }
 	};
 
-	class rSON_DEFAULT_VISIBILITY JSONTypeError rSON_FINAL : std::exception
+	class rSON_DEFAULT_VISIBILITY JSONTypeError rSON_FINAL : public std::exception
 	{
 	private:
 		std::unique_ptr<const char []> errorStr{nullptr};
 		const char *typeToString(JSONAtomType type) const noexcept;
 
 	public:
-		rSON_CLS_API JSONTypeError(JSONAtomType actual, JSONAtomType expected);
+		JSONTypeError(JSONAtomType actual, JSONAtomType expected);
 #if __cplusplus >= 201103L
-		rSON_CLS_API JSONTypeError(JSONTypeError &&error) rSON_NOEXCEPT : errorStr(std::move(error.errorStr)) { }
+		JSONTypeError(JSONTypeError &&error) rSON_NOEXCEPT : errorStr(std::move(error.errorStr)) { }
 #endif
 		const char *error() const noexcept { return errorStr.get(); }
 		const char *what() const noexcept final { return error(); }
 	};
 
-	class rSON_DEFAULT_VISIBILITY JSONObjectError rSON_FINAL : std::exception
+	class rSON_DEFAULT_VISIBILITY JSONObjectError rSON_FINAL : public std::exception
 	{
 	private:
 		JSONObjectErrorType objectError;
 
 	public:
 		JSONObjectError(JSONObjectErrorType errorType) : objectError(errorType) { }
-		rSON_CLS_API const char *error() const noexcept;
+		const char *error() const noexcept;
 		const char *what() const noexcept final { return error(); }
 	};
 
-	class rSON_DEFAULT_VISIBILITY JSONArrayError rSON_FINAL : std::exception
+	class rSON_DEFAULT_VISIBILITY JSONArrayError rSON_FINAL : public std::exception
 	{
 	private:
 		JSONArrayErrorType arrayError;
 
 	public:
 		JSONArrayError(JSONArrayErrorType errorType) : arrayError(errorType) { }
-		rSON_CLS_API const char *error() const noexcept;
+		const char *error() const noexcept;
 		const char *what() const noexcept final { return error(); }
 	};
 
@@ -402,18 +402,18 @@ namespace rSON
 		opaquePtr_t<internal::object_t> obj;
 
 	public:
-		rSON_CLS_API JSONObject();
-		rSON_CLS_API JSONObject(JSONObject &object);
-		rSON_CLS_API void add(const char *const key, jsonAtomPtr_t &&value);
-		rSON_CLS_API void add(const char *const key, JSONAtom *value);
-		rSON_CLS_API void del(const char *const key);
-		rSON_CLS_API JSONAtom &operator [](const char *const key) const;
-		rSON_CLS_API const std::vector<const char *> &keys() const;
-		rSON_CLS_API bool exists(const char *const key) const;
-		rSON_CLS_API size_t size() const;
-		rSON_CLS_API size_t count() const { return size(); }
-		rSON_CLS_API size_t length() const rSON_VFINAL;
-		rSON_CLS_API void store(stream_t &stream) const rSON_VFINAL;
+		JSONObject();
+		JSONObject(JSONObject &object);
+		void add(const char *const key, jsonAtomPtr_t &&value);
+		void add(const char *const key, JSONAtom *value);
+		void del(const char *const key);
+		JSONAtom &operator [](const char *const key) const;
+		const std::vector<const char *> &keys() const;
+		bool exists(const char *const key) const;
+		size_t size() const;
+		size_t count() const { return size(); }
+		size_t length() const rSON_VFINAL;
+		void store(stream_t &stream) const rSON_VFINAL;
 	};
 	using jsonObject_t = JSONObject;
 
@@ -425,22 +425,22 @@ namespace rSON
 	public:
 		using iterator = const jsonAtomPtr_t *;
 
-		rSON_CLS_API JSONArray();
-		rSON_CLS_API JSONArray(JSONArray &array);
-		rSON_CLS_API void add(jsonAtomPtr_t &&value);
-		rSON_CLS_API void add(JSONAtom *value);
-		rSON_CLS_API void del(const size_t key);
-		rSON_CLS_API void del(const JSONAtom *value);
-		rSON_CLS_API void del(const JSONAtom &value);
-		rSON_CLS_API JSONAtom &operator [](const size_t key) const;
-		rSON_CLS_API size_t size() const;
-		rSON_CLS_API size_t count() const { return size(); }
-		rSON_CLS_API iterator begin() rSON_NOEXCEPT;
-		rSON_CLS_API iterator begin() const rSON_NOEXCEPT;
-		rSON_CLS_API iterator end() rSON_NOEXCEPT;
-		rSON_CLS_API iterator end() const rSON_NOEXCEPT;
-		rSON_CLS_API size_t length() const rSON_VFINAL;
-		rSON_CLS_API void store(stream_t &stream) const rSON_VFINAL;
+		JSONArray();
+		JSONArray(JSONArray &array);
+		void add(jsonAtomPtr_t &&value);
+		void add(JSONAtom *value);
+		void del(const size_t key);
+		void del(const JSONAtom *value);
+		void del(const JSONAtom &value);
+		JSONAtom &operator [](const size_t key) const;
+		size_t size() const;
+		size_t count() const { return size(); }
+		iterator begin() rSON_NOEXCEPT;
+		iterator begin() const rSON_NOEXCEPT;
+		iterator end() rSON_NOEXCEPT;
+		iterator end() const rSON_NOEXCEPT;
+		size_t length() const rSON_VFINAL;
+		void store(stream_t &stream) const rSON_VFINAL;
 	};
 	using jsonArray_t = JSONArray;
 

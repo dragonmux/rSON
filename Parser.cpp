@@ -28,7 +28,7 @@
 #if defined(_MSC_VER) || defined(__MACOS__) || defined(__MACOSX__) || defined(__APPLE__)
 #define pow10(x) pow(10.0, (int)x)
 #endif
-#ifndef _MSC_VER
+#ifndef _WIN32
 #include <unistd.h>
 #else
 #include <io.h>

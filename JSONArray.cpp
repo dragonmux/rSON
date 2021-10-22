@@ -21,7 +21,11 @@
 #include "internal.h"
 #include "String.hxx"
 
-JSONArray::JSONArray() : JSONAtom(JSON_TYPE_ARRAY), arr{makeOpaque<array_t>()} { }
+#if !defined(_MSC_VER) || _MSC_VER >= 1928
+JSONArray::JSONArray() : JSONAtom{JSON_TYPE_ARRAY}, arr{makeOpaque<array_t>()} { }
+#else
+JSONArray::JSONArray() : JSONAtom{JSON_TYPE_ARRAY}, arr{} {}
+#endif
 
 JSONArray::JSONArray(JSONArray &array) : JSONArray{}
 	{ arr->clone(*array.arr); }
@@ -91,7 +95,7 @@ void JSONArray::del(const JSONAtom *value) { arr->del(*value); }
 void JSONArray::del(const JSONAtom &value) { arr->del(value); }
 JSONAtom &JSONArray::operator [](const size_t key) const { return (*arr)[key]; }
 size_t JSONArray::size() const { return arr->size(); }
-JSONArray::iterator JSONArray::begin() noexcept { return &*arr->begin(); }
-JSONArray::iterator JSONArray::begin() const noexcept { return &*arr->begin(); }
-JSONArray::iterator JSONArray::end() noexcept { return &*arr->end(); }
-JSONArray::iterator JSONArray::end() const noexcept { return &*arr->end(); }
+JSONArray::iterator JSONArray::begin() rSON_NOEXCEPT { return &*arr->begin(); }
+JSONArray::iterator JSONArray::begin() const rSON_NOEXCEPT { return &*arr->begin(); }
+JSONArray::iterator JSONArray::end() rSON_NOEXCEPT { return &*arr->end(); }
+JSONArray::iterator JSONArray::end() const rSON_NOEXCEPT { return &*arr->end(); }

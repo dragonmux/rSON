@@ -107,11 +107,13 @@ namespace rSON
 		template<typename T> struct makeOpaque_<T []> { using arrayType = opaquePtr_t<T []>; };
 		template<typename T, size_t N> struct makeOpaque_<T [N]> { struct invalidType { }; };
 
+#if !defined(_MSC_VER) || _MSC_VER >= 1928
 		template<typename T, typename... Args> inline typename makeOpaque_<T>::uniqueType makeOpaque(Args &&...args)
 		{
 			using consT = typename std::remove_const<T>::type;
 			return opaquePtr_t<T>(new consT(std::forward<Args>(args)...), del<T>);
 		}
+#endif
 
 		template<typename T> inline typename makeOpaque_<T>::arrayType makeOpaque(const size_t num)
 		{
