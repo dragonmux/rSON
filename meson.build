@@ -15,7 +15,7 @@ sanitizer = get_option('b_sanitize')
 pkgconfig = import('pkgconfig')
 rSONSocketLibs = []
 
-if target_machine.system() != 'windows'
+if target_machine.system() != 'windows' && target_machine.system() != 'darwin'
 	add_project_link_arguments('-z', 'defs', language: 'cpp')
 else
 	add_project_arguments('-DWIN32', '-D_WINDOWS', language: 'cpp')
