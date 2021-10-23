@@ -30,7 +30,7 @@ jobs:
           echo "CXX=$CXX" >> $GITHUB_ENV
           echo "GCOV=${CC/#gcc/gcov}" >> $GITHUB_ENV
         env:
-          CC: gcc-11
+          CC: gcc-9
       - name: Checkout rSON
         uses: actions/checkout@v2
         with:
