@@ -100,11 +100,6 @@ jobs:
         env:
           CC: ${{ matrix.compiler }}
         working-directory: ${{ runner.temp }}
-      - name: Chekcout rSON
-        uses: actions/checkout@v2
-        with:
-          lfs: true
-          submodules: true
       - name: Setup Meson + Ninja
         shell: bash
         run: |
@@ -119,6 +114,28 @@ jobs:
           [ $COVERAGE -ne 0 ] && $GCOV --version || true
           meson --version
           ninja --version
+      - name: Checkout crunch
+        uses: actions/checkout@v2
+        with:
+          repository: DX-MON/crunch
+          path: crunch
+          lfs: true
+          submodules: true
+        env:
+          - GITHUB_WORKSPACE: ${{ runner.temp }}
+      - name: Build + Install crunch
+        run: |
+          meson build --prefix=$HOME/.local $BUILD_OPTS
+          ninja -C build
+          ninja -C build install
+          cd ..
+          rm -rf crunch
+        working-directory: ${{ runner.temp }}/crunch
+      - name: Checkout rSON
+        uses: actions/checkout@v2
+        with:
+          lfs: true
+          submodules: true
       - name: Configure
         run: meson build --prefix=$HOME/.local -Db_coverage=${{ matrix.coverage }} $BUILD_OPTS
       - name: Build
