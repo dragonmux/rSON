@@ -128,6 +128,7 @@ jobs:
           ninja -C build install
           cd ..
           rm -rf crunch
+          echo "PKG_CONFIG_PATH=$HOME/.local/lib/`uname -m`-linux-gnu/pkgconfig" >> $GITHUB_ENV
         working-directory: ${{ github.workspace }}/crunch
       - name: Checkout rSON
         uses: actions/checkout@v2
