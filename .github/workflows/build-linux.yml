@@ -121,8 +121,6 @@ jobs:
           path: crunch
           lfs: true
           submodules: true
-        env:
-          - GITHUB_WORKSPACE: ${{ runner.temp }}
       - name: Build + Install crunch
         run: |
           meson build --prefix=$HOME/.local $BUILD_OPTS
@@ -130,7 +128,7 @@ jobs:
           ninja -C build install
           cd ..
           rm -rf crunch
-        working-directory: ${{ runner.temp }}/crunch
+        working-directory: ${{ github.workspace }}/crunch
       - name: Checkout rSON
         uses: actions/checkout@v2
         with:
