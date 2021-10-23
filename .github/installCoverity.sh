@@ -9,7 +9,9 @@ if [ ! -z "`find $TOOL_BASE -type -d -name 'cov-analysis*'`" ]; then
 	exit 0
 fi
 
-echo -n | openssl s_client -connect scan.coverity.com:443 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | sudo tee -a /etc/ssl/certs/ca-
+echo -n | openssl s_client -connect scan.coverity.com:443 | \
+	sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | \
+	sudo tee -a /etc/ssl/certs/ca-
 
 pushd /tmp
 echo -e "\033[33;1mDownloading Coverity Scan Analysis Tool...\033[0m"
@@ -26,6 +28,8 @@ popd
 
 TOOL_BASE=/tmp/coverity-scan-analysis
 TOOL_DIR=`find $TOOL_BASE -type d -name 'cov-analysis*'`
-export PATH=$TOOL_DIR/bin:$PATH
+PATH=$TOOL_DIR/bin:$PATH
 
 cov-configure --template --comptype gcc --compiler gcc-9
+
+echo "PATH=$PATH" >> $GITHUB_ENV
