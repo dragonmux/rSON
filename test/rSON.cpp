@@ -21,6 +21,8 @@
 // wrappers for testing and must be compiled the same
 // as the library's own sources so it gets included in gcov.
 
+#include <array>
+
 #include "test.h"
 #include "testHeader.h"
 
