@@ -7,7 +7,7 @@ project(
 		'b_pch=false'
 	],
 	version: '0.4.1',
-	meson_version: '>=0.52',
+	meson_version: '>=0.58',
 	subproject_dir: 'deps'
 )
 
