@@ -142,6 +142,10 @@ void testIntNumber()
 	tryNumberOk("-0 ", [](const JSONAtom &atom) { assertIntEqual(atom.asInt(), -0); });
 	tryNumberOk("19e1 ", [](const JSONAtom &atom) { assertIntEqual(atom.asInt(), 190); });
 	tryNumberOk("190e-1 ", [](const JSONAtom &atom) { assertIntEqual(atom.asInt(), 19); });
+	tryNumberOk("0xFF ", [](const JSONAtom &atom) { assertIntEqual(atom.asInt(), 255); });
+	tryNumberOk("0o666 ", [](const JSONAtom &atom) { assertIntEqual(atom.asInt(), 438); });
+	tryNumberOk("0b111 ", [](const JSONAtom &atom) { assertIntEqual(atom.asInt(), 7); });
+
 
 	tryNumberFail("");
 	tryNumberFail("-");

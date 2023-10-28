@@ -126,6 +126,21 @@ inline bool isHex(const char x) noexcept
 		(x >= 'a' && x <= 'f');
 }
 
+inline bool isOct(const char x) noexcept
+{
+	return x >= '0' && x <= '7';
+}
+
+inline bool isBin(const char x) noexcept
+{
+	return x == '0' || x == '1';
+}
+
+inline bool isBasePrefix(const char x) noexcept
+{
+	return x == 'x' || x == 'b' || x == 'o';
+}
+
 JSONParser::JSONParser(stream_t &toParse) : json(toParse), next(0), lastWasComma(false)
 	{ nextChar(); }
 
@@ -268,6 +283,9 @@ char *JSONParser::string()
 // Parses a positive natural number
 size_t JSONParser::number(const bool zeroSpecial, size_t *const decDigits)
 {
+	uint8_t base{10};
+	bool (*isValidDigit)(const char) = isNumber;
+
 	const auto nextDigit = [=]()
 	{
 		if (decDigits)
@@ -281,16 +299,43 @@ size_t JSONParser::number(const bool zeroSpecial, size_t *const decDigits)
 	if (zeroSpecial && currentChar() == '0')
 	{
 		nextDigit();
-		if (isNumber(currentChar()))
-			throw JSONParserError(JSON_PARSER_BAD_JSON);
-		return 0;
+		if (!isBasePrefix(currentChar()))
+		{
+			if (isNumber(currentChar()))
+				throw JSONParserError(JSON_PARSER_BAD_JSON);
+			return 0;
+		}
+		else
+		{
+			if (currentChar() == 'x')
+			{
+				base = 16;
+				isValidDigit = isHex;
+			}
+			else if (currentChar() == 'o')
+			{
+				base = 8;
+				isValidDigit = isOct;
+			}
+			else if (currentChar() == 'b')
+			{
+				base = 2;
+				isValidDigit = isBin;
+			}
+
+			nextChar();
+		}
 	}
 
 	size_t num = 0;
-	while (isNumber(currentChar()))
+	while (isValidDigit(currentChar()))
 	{
-		num *= 10;
-		num += currentChar() - '0';
+		auto digit{static_cast<uint8_t>(currentChar()  - '0')};
+		if (digit > 9U)
+			digit -= 7U;
+
+		num *= base;
+		num += digit;
 		nextDigit();
 	}
 	return num;
