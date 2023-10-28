@@ -7,7 +7,8 @@ project(
 		'b_pch=false'
 	],
 	version: '0.4.1',
-	meson_version: '>=0.52'
+	meson_version: '>=0.52',
+	subproject_dir: 'deps'
 )
 
 cxx = meson.get_compiler('cpp')
@@ -27,7 +28,16 @@ elif target_machine.system() != 'darwin'
 endif
 
 add_project_arguments('-D__rSON__', language: 'cpp')
-substrate = include_directories('substrate')
+
+substrate = subproject(
+	'substrate',
+	default_options: [
+		'build_tests=false',
+		'cpp_std=@0@'.format(get_option('cpp_std')),
+	],
+).get_variable(
+	'substrate_dep'
+)
 
 rSONSrc = [
 	'JSONErrors.cpp', 'JSONAtom.cpp', 'JSONNull.cpp', 'JSONBool.cpp',
@@ -38,12 +48,11 @@ rSONSrc = [
 
 rSONSocketSrc = ['rSON_socket.cpp']
 rSONSrcDir = meson.current_source_dir()
-substrateDir = rSONSrcDir + '/substrate'
 
 rSON = library(
 	'rSON',
 	rSONSrc,
-	include_directories: substrate,
+	dependencies: [substrate],
 	gnu_symbol_visibility: 'inlineshidden',
 	version: meson.project_version(),
 	install: true
@@ -53,8 +62,7 @@ rSONSocket = library(
 	'rSON.socket',
 	rSONSocketSrc,
 	link_with: [rSON],
-	include_directories: substrate,
-	dependencies: rSONSocketLibs,
+	dependencies: [rSONSocketLibs, substrate],
 	gnu_symbol_visibility: 'inlineshidden',
 	version: meson.project_version(),
 	install: true
@@ -95,5 +103,7 @@ install_headers(
 	'rSON.h', 'rSON_socket.h'
 )
 
-crunchMake = find_program('crunchMake', required: false)
-subdir('test', if_found: crunchMake)
+if get_option('build_tests')
+	crunchMake = find_program('crunchMake', required: false)
+	subdir('test', if_found: crunchMake)
+endif

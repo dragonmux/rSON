@@ -7,7 +7,8 @@ commandExtra = [
 	'-std=c++14',
 	'-lcrunch',
 	'-I@0@'.format(rSONSrcDir),
-	'-I@0@'.format(substrateDir),
+	substrate.get_variable('compile_args'),
+	substrate.get_variable('link_args'),
 ]
 if get_option('b_coverage')
 	commandExtra += ['--coverage']
@@ -50,8 +51,8 @@ testHelpers = static_library(
 	'testHelpers',
 	testSrcs,
 	pic: true,
-	dependencies: [libcrunch],
-	include_directories: [include_directories('..'), substrate],
+	dependencies: [libcrunch, substrate],
+	include_directories: include_directories('..'),
 	install: false,
 	build_by_default: true
 )
