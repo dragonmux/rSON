@@ -9,7 +9,7 @@
 #include <condition_variable>
 
 #include "test.h"
-#include "../rSON_socket.h"
+#include "socket/rSON_socket.hxx"
 
 extern size_t sockaddrLen(const sockaddr_storage &addr) noexcept;
 extern sockaddr_storage prepare(const socketType_t family, const char *const where, const uint16_t port) noexcept;

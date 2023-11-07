@@ -16,12 +16,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "internal.h"
+#include "internal/types.hxx"
 
-JSONNull::JSONNull() : JSONAtom()
+JSONFloat::JSONFloat(double floatValue) : JSONAtom(JSON_TYPE_FLOAT), value(floatValue)
 {
 }
 
-JSONNull::~JSONNull()
+JSONFloat::~JSONFloat()
 {
+}
+
+JSONFloat::operator double() const
+{
+	return value;
 }

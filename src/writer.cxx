@@ -16,12 +16,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "internal.h"
-#include "String.hxx"
 #include <type_traits>
 #include <utility>
 #include <string.h>
 #include <math.h>
+#include "internal/types.hxx"
+#include "internal/string.hxx"
 
 #ifdef _MSC_VER
 #define snprintf _snprintf

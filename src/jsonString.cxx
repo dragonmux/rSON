@@ -16,9 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "internal.h"
 #include <stdio.h>
 #include <ctype.h>
+#include "internal/types.hxx"
 
 uint8_t hex2int(char c)
 {

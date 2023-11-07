@@ -24,8 +24,8 @@
 #endif
 
 #include <substrate/utility>
-#include "internal.h"
-#include "rSON_socket.h"
+#include "internal/types.hxx"
+#include "rSONSocket.hxx"
 
 #ifdef __GNUC__
 #if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__

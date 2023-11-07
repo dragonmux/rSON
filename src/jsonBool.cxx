@@ -16,17 +16,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "internal.h"
+#include "internal/types.hxx"
 
-JSONFloat::JSONFloat(double floatValue) : JSONAtom(JSON_TYPE_FLOAT), value(floatValue)
+JSONBool::JSONBool(bool boolValue) : JSONAtom(JSON_TYPE_BOOL), value(boolValue)
 {
 }
 
-JSONFloat::~JSONFloat()
+JSONBool::~JSONBool()
 {
 }
 
-JSONFloat::operator double() const
+JSONBool::operator bool() const
 {
 	return value;
+}
+
+void JSONBool::set(bool boolValue)
+{
+	value = boolValue;
 }

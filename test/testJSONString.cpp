@@ -17,7 +17,7 @@
  */
 
 #include "test.h"
-#include "../String.hxx"
+#include "internal/string.hxx"
 #include <string.h>
 
 JSONString *testString = NULL;

@@ -18,8 +18,8 @@
 
 #include <algorithm>
 #include <substrate/utility>
-#include "internal.h"
-#include "String.hxx"
+#include "internal/types.hxx"
+#include "internal/string.hxx"
 
 #if !defined(_MSC_VER) || _MSC_VER >= 1928
 JSONObject::JSONObject() : JSONAtom{JSON_TYPE_OBJECT}, obj{makeOpaque<object_t>()} { }

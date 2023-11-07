@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "internal.h"
+#include "internal/types.hxx"
 
 JSONInt::JSONInt(int64_t intValue) : JSONAtom(JSON_TYPE_INT), value(intValue)
 {

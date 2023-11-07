@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "internal.h"
+#include "internal/types.hxx"
 
 void *JSONAtom::asNull() const
 {

@@ -19,7 +19,7 @@
 #include <string>
 #include <substrate/fd>
 #include "test.h"
-#include "../Parser.h"
+#include "internal/parser.hxx"
 
 using namespace std::literals::string_literals;
 using substrate::fd_t;

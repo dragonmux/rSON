@@ -6,7 +6,7 @@ libcrunch = dependency('crunch')
 commandExtra = [
 	'-std=c++17',
 	'-lcrunch',
-	'-I@0@'.format(rSONSrcDir),
+	'-I@0@'.format(rSONIncludePath),
 	substrate.get_variable('compile_args'),
 	substrate.get_variable('link_args'),
 ]
@@ -38,9 +38,9 @@ rSONGeneralTests = [
 rSONTests = rSONReaderTests + rSONGeneralTests
 
 rSONObjs = rSON.extract_objects(
-	'JSONAtom.cpp', 'JSONErrors.cpp', 'String.cpp', 'Writer.cpp',
-	'Stream.cpp', 'JSONNull.cpp', 'JSONBool.cpp', 'JSONInt.cpp',
-	'JSONFloat.cpp', 'JSONString.cpp', 'JSONObject.cpp', 'JSONArray.cpp'
+	'jsonAtom.cxx', 'jsonErrors.cxx', 'string.cxx', 'writer.cxx',
+	'stream.cxx', 'jsonNull.cxx', 'jsonBool.cxx', 'jsonInt.cxx',
+	'jsonFloat.cxx', 'jsonString.cxx', 'jsonObject.cxx', 'jsonArray.cxx'
 )
 
 testSrcs = [
@@ -52,7 +52,7 @@ testHelpers = static_library(
 	testSrcs,
 	pic: true,
 	dependencies: [libcrunch, substrate],
-	include_directories: include_directories('..'),
+	include_directories: rSONIncludeDir,
 	install: false,
 	build_by_default: true
 )
@@ -60,7 +60,7 @@ testHelpers = static_library(
 foreach test : rSONReaderTests
 	objects = [rSONObjs]
 	if test == 'testParser'
-		objects += rSON.extract_objects('Parser.cpp')
+		objects += rSON.extract_objects('parser.cxx')
 	endif
 
 	custom_target(
@@ -75,7 +75,7 @@ endforeach
 custom_target(
 	'testJSONErrors',
 	command: [crunchMake, '-s', '@INPUT@', '-o', '@OUTPUT@'] + commandExtra,
-	input: ['testJSONErrors.cpp', rSON.extract_objects('JSONErrors.cpp')],
+	input: ['testJSONErrors.cpp', rSON.extract_objects('jsonErrors.cxx')],
 	output: 'testJSONErrors.so',
 	build_by_default: true
 )
@@ -85,7 +85,7 @@ custom_target(
 #	command: [crunchMake, '-s', '@INPUT@', '-o', '@OUTPUT@', rSON.full_path()] + commandExtra,
 	command: [crunchMake, '-s', '@INPUT@', '-o', '@OUTPUT@'] + commandExtra,
 #	input: ['testWriter.cpp'],
-	input: ['testWriter.cpp', rSONObjs, rSON.extract_objects('Parser.cpp')],
+	input: ['testWriter.cpp', rSONObjs, rSON.extract_objects('parser.cxx')],
 	output: 'testWriter.so',
 #	depends: rSON,
 	build_by_default: true
@@ -101,7 +101,7 @@ custom_target(
 
 custom_target(
 	'testStream',
-	command: [crunchMake, '-s', '-std=c++17', '@INPUT@', '-o', '@OUTPUT@', '-I' + rSONSrcDir],
+	command: [crunchMake, '-s', '-std=c++17', '@INPUT@', '-o', '@OUTPUT@', '-I@0@'.format(rSONIncludePath)],
 	input: ['testStream.cpp', objects, testHelpers.extract_objects('stream.cpp')],
 	output: 'testStream.so',
 	build_by_default: true

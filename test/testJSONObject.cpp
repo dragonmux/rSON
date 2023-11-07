@@ -18,7 +18,7 @@
 
 #include <substrate/utility>
 #include "test.h"
-#include <String.hxx>
+#include "internal/string.hxx"
 
 JSONObject *testObject = NULL;
 #define KEY(name) \

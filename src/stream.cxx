@@ -29,7 +29,7 @@ using ssize_t = typename std::make_signed<size_t>::type;
 #include <errno.h>
 #include <system_error>
 
-#include "internal.h"
+#include "internal/types.hxx"
 
 fileStream_t::fileStream_t(const char *const fileName, const int32_t _mode, const int32_t perms) : fd(-1), eof(false), mode(_mode)
 {

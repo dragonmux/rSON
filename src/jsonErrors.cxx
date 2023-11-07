@@ -18,8 +18,8 @@
 
 #include <exception>
 
-#include "internal.h"
-#include "String.hxx"
+#include "internal/types.hxx"
+#include "internal/string.hxx"
 
 const char *JSONParserError::error() const noexcept
 {

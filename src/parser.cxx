@@ -16,7 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "internal.h"
 //#include "String.hxx"
 #include <string.h>
 #include <math.h>
@@ -35,7 +34,8 @@
 #define O_NOCTTY O_BINARY
 #endif
 
-#include "Parser.h"
+#include "internal/types.hxx"
+#include "internal/parser.hxx"
 
 // Recognise lower-case letters
 inline bool isLowerAlpha(const char x) noexcept

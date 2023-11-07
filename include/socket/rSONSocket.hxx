@@ -19,7 +19,7 @@
 #ifndef rSON_RPC__HXX
 #define rSON_RPC__HXX
 
-#include <rSON.h>
+#include <rSON.hxx>
 
 #ifdef _WIN32
 #define WIN32_LEAN_AND_MEAN

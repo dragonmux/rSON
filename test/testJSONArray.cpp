@@ -18,7 +18,7 @@
 
 #include <array>
 #include "test.h"
-#include "../String.hxx"
+#include "internal/string.hxx"
 
 JSONArray *testArray = NULL;
 constexpr std::array<int32_t, 6> testValues

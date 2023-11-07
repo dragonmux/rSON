@@ -20,7 +20,7 @@
 #include <cstdarg>
 #include <cstdio>
 #include <substrate/utility>
-#include "String.hxx"
+#include "internal/string.hxx"
 
 std::unique_ptr<const char []> vaFormatString(const char *const format, va_list args) noexcept
 {

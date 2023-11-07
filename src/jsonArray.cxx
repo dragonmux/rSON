@@ -18,8 +18,8 @@
 
 #include <algorithm>
 #include <substrate/utility>
-#include "internal.h"
-#include "String.hxx"
+#include "internal/types.hxx"
+#include "internal/string.hxx"
 
 #if !defined(_MSC_VER) || _MSC_VER >= 1928
 JSONArray::JSONArray() : JSONAtom{JSON_TYPE_ARRAY}, arr{makeOpaque<array_t>()} { }

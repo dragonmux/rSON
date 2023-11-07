@@ -16,22 +16,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "internal.h"
+#include "internal/types.hxx"
 
-JSONBool::JSONBool(bool boolValue) : JSONAtom(JSON_TYPE_BOOL), value(boolValue)
+JSONNull::JSONNull() : JSONAtom()
 {
 }
 
-JSONBool::~JSONBool()
+JSONNull::~JSONNull()
 {
-}
-
-JSONBool::operator bool() const
-{
-	return value;
-}
-
-void JSONBool::set(bool boolValue)
-{
-	value = boolValue;
 }

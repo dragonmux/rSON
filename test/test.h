@@ -21,7 +21,7 @@
 #include <unistd.h>
 #endif
 
-#include "../rSON.h"
+#include "rSON.hxx"
 using namespace rSON;
 
 #define WANTED_TYPE(whatToDo) \
