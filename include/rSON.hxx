@@ -404,6 +404,7 @@ namespace rSON
 	public:
 		JSONObject();
 		JSONObject(JSONObject &object);
+		~JSONObject() override = default;
 		void add(const char *const key, jsonAtomPtr_t &&value);
 		void add(const char *const key, JSONAtom *value);
 		void del(const char *const key);
@@ -427,6 +428,7 @@ namespace rSON
 
 		JSONArray();
 		JSONArray(JSONArray &array);
+		~JSONArray() override = default;
 		void add(jsonAtomPtr_t &&value);
 		void add(JSONAtom *value);
 		void del(const size_t key);
