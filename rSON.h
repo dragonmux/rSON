@@ -446,11 +446,8 @@ namespace rSON
 
 	rSON_API JSONAtom *parseJSON(stream_t &json);
 	rSON_API JSONAtom *parseJSON(const char *json);
-	rSON_DEPRECATE("parseJSON(stream_t &) fully replaces this call", JSONAtom *) parseJSONFile(const char *file);
 
-	rSON_API void writeJSON(const JSONAtom *const atom, stream_t &stream);
-	rSON_DEPRECATE("writeJSON(const JSONAtom *const, stream_t &) fully replaces this call", char *) writeJSON(JSONAtom *atom);
-	rSON_DEPRECATE("If not using deprecated form of writeJSON(), this must not be called", void) freeString(char **str);
+	rSON_API bool writeJSON(const JSONAtom *const atom, stream_t &stream);
 
 	// Utility templates to help with type checking (validation)
 	template<JSONAtomType type> bool typeIs(const JSONAtom &atom) rSON_NOEXCEPT { return atom.typeIs(type); }

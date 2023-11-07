@@ -186,35 +186,11 @@ void JSONArray::store(stream_t &stream) const
 	stream.write(']');
 }
 
-void rSON::writeJSON(const JSONAtom *const atom, stream_t &stream)
+bool rSON::writeJSON(const JSONAtom *const atom, stream_t &stream)
 {
 	if (atom == nullptr)
-		return;
+		return false;
 	atom->store(stream);
 	stream.writeSync();
-}
-
-char *rSON::writeJSON(JSONAtom *atom)
-{
-	size_t strLength;
-	char *str;
-
-	if (atom == nullptr)
-		return nullptr;
-
-	strLength = atom->length();
-	str = new char[strLength + 1]();
-	memoryStream_t stream(str, strLength);
-	atom->store(stream);
-	str[strLength] = 0;
-
-	return str;
-}
-
-void rSON::freeString(char **str)
-{
-	if (str == nullptr)
-		return;
-	delete [] *str;
-	*str = nullptr;
+	return true;
 }

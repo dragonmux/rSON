@@ -16,12 +16,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <memory>
+#include <string_view>
 #include <fcntl.h>
 #include "test.h"
 
 #ifdef _MSVC
 #define O_NOCTTY O_BINARY
 #endif
+
+using namespace std::literals::string_view_literals;
 
 char *strnew(const char *str)
 {
@@ -30,22 +34,19 @@ char *strnew(const char *str)
 	return ret;
 }
 
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-void doTest(JSONAtom *atom, const char *result)
+void doTest(JSONAtom *atom, const std::string_view result)
 {
-	char *json = writeJSON(atom);
-	assertNotNull(json);
-	assertStringEqual(json, result);
-	freeString(&json);
-	assertNull(json);
+	const auto json{std::make_unique<char []>(result.length() + 1U)};
+	memoryStream_t stream{json.get(), result.length() + 1U};
+	assertTrue(writeJSON(atom, stream));
+	assertNotNull(json.get());
+	assertStringEqual(json.get(), result.data());
 }
-#pragma GCC diagnostic pop
 
 void testNull()
 {
 	JSONNull *null = new JSONNull();
-	doTest(null, "null");
+	doTest(null, "null"sv);
 	delete null;
 }
 
@@ -53,8 +54,8 @@ void testBool()
 {
 	JSONBool *bTrue = new JSONBool(true);
 	JSONBool *bFalse = new JSONBool(false);
-	doTest(bTrue, "true");
-	doTest(bFalse, "false");
+	doTest(bTrue, "true"sv);
+	doTest(bFalse, "false"sv);
 	delete bTrue;
 	delete bFalse;
 }
@@ -62,14 +63,14 @@ void testBool()
 void testInt()
 {
 	JSONInt *num = new JSONInt(8192);
-	doTest(num, "8192");
+	doTest(num, "8192"sv);
 	delete num;
 }
 
 void testFloat()
 {
 	JSONFloat *num = new JSONFloat(8192.016384);
-	doTest(num, "8192.0163840000004711");
+	doTest(num, "8192.0163840000004711"sv);
 	delete num;
 
 	try
@@ -85,48 +86,52 @@ void testObject()
 {
 	std::unique_ptr<char []> key{};
 	JSONObject obj{};
-	doTest(&obj, "{}");
+	doTest(&obj, "{}"sv);
 
 	key.reset(strnew("test"));
 	obj.add(key.get(), new JSONNull());
-	doTest(&obj, "{\"test\": null}");
+	doTest(&obj, "{\"test\": null}"sv);
 
 	key.reset(strnew("array"));
 	obj.add(key.get(), new JSONArray());
-	doTest(&obj, "{\"array\": [], \"test\": null}");
+	doTest(&obj, "{\"array\": [], \"test\": null}"sv);
 
 	key.reset(strnew("a"));
 	obj.add(key.get(), new JSONInt(55));
-	doTest(&obj, "{\"a\": 55, \"array\": [], \"test\": null}");
+	doTest(&obj, "{\"a\": 55, \"array\": [], \"test\": null}"sv);
 
 	key.reset(strnew("b"));
 	obj.add(key.get(), new JSONString(strnew("This is only a test")));
-	doTest(&obj, "{\"a\": 55, \"array\": [], \"b\": \"This is only a test\", \"test\": null}");
+	doTest(&obj, "{\"a\": 55, \"array\": [], \"b\": \"This is only a test\", \"test\": null}"sv);
 }
 
 void testArray()
 {
 	JSONArray *arr, *outerArr;
 	arr = new JSONArray();
-	doTest(arr, "[]");
+	doTest(arr, "[]"sv);
 	arr->add(new JSONNull());
-	doTest(arr, "[null]");
+	doTest(arr, "[null]"sv);
 	arr->add(new JSONBool(true));
-	doTest(arr, "[null, true]");
+	doTest(arr, "[null, true]"sv);
 	outerArr = new JSONArray();
 	outerArr->add(arr);
 	outerArr->add(new JSONNull());
-	doTest(outerArr, "[[null, true], null]");
+	doTest(outerArr, "[[null, true], null]"sv);
 	outerArr->add(new JSONInt(-15));
 	outerArr->add(new JSONFloat(0.75));
 	outerArr->add(new JSONString(strnew("This is only a test")));
-	doTest(outerArr, "[[null, true], null, -15, 0.7500000000000000, \"This is only a test\"]");
+	doTest(outerArr, "[[null, true], null, -15, 0.7500000000000000, \"This is only a test\"]"sv);
 	delete outerArr;
 }
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-void testBadWrite() { assertNull(writeJSON(nullptr)); }
+void testBadWrite()
+{
+	memoryStream_t stream{nullptr, 0U};
+	assertFalse(writeJSON(nullptr, stream));
+}
 #pragma GCC diagnostic pop
 
 void testFileWrite()

@@ -450,10 +450,16 @@ void testParseJSON()
 #define TRY(testFile, tests) \
 try \
 { \
-	atom = parseJSONFile(testFile); \
+	fileStream_t file{testFile, O_RDONLY | O_EXCL | O_NOCTTY}; \
+	assertTrue(file.valid()); \
+	atom = parseJSON(file); \
 	assertNotNull(atom); \
 	tests; \
 	delete atom; \
+} \
+catch (const std::system_error &err) \
+{ \
+	fail(err.what()); \
 } \
 catch (JSONParserError &err) \
 { \
@@ -468,11 +474,15 @@ catch (JSONTypeError &err) \
 #define TRY_SHOULD_FAIL(testFile) \
 try \
 { \
-	atom = parseJSONFile(testFile); \
+	fileStream_t file{testFile, O_RDONLY | O_EXCL | O_NOCTTY}; \
+	atom = parseJSON(file); \
 	delete atom; \
 	fail("The parser failed to throw an exception on invalid JSON"); \
 } \
-catch (JSONParserError &err) \
+catch (const std::system_error &) \
+{ \
+} \
+catch (const JSONParserError &) \
 { \
 }
 

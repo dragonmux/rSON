@@ -4,7 +4,7 @@ crunch = find_program('crunch')
 libcrunch = dependency('crunch')
 
 commandExtra = [
-	'-std=c++14',
+	'-std=c++17',
 	'-lcrunch',
 	'-I@0@'.format(rSONSrcDir),
 	substrate.get_variable('compile_args'),
@@ -101,7 +101,7 @@ custom_target(
 
 custom_target(
 	'testStream',
-	command: [crunchMake, '-s', '-std=c++14', '@INPUT@', '-o', '@OUTPUT@', '-I' + rSONSrcDir],
+	command: [crunchMake, '-s', '-std=c++17', '@INPUT@', '-o', '@OUTPUT@', '-I' + rSONSrcDir],
 	input: ['testStream.cpp', objects, testHelpers.extract_objects('stream.cpp')],
 	output: 'testStream.so',
 	build_by_default: true
