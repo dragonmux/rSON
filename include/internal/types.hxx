@@ -47,14 +47,14 @@ namespace rSON
 		private:
 			using holder_t = std::map<std::unique_ptr<char []>, jsonAtomPtr_t, stringLess_t>;
 			using list_t = std::vector<const char *>;
-			holder_t children;
-			list_t mapKeys;
+			holder_t children{};
+			list_t mapKeys{};
 
 		public:
 			using iter_t = holder_t::iterator;
 			using constIter_t = holder_t::const_iterator;
 
-			object_t() : children{}, mapKeys{} { }
+			object_t() = default;
 			void clone(const object_t &object);
 			void add(const char *const key, jsonAtomPtr_t &&value);
 			void del(const char *const key);
@@ -74,13 +74,13 @@ namespace rSON
 		{
 		private:
 			using holder_t = std::vector<jsonAtomPtr_t>;
-			holder_t children;
+			holder_t children{};
 
 		public:
 			using iter_t = holder_t::iterator;
 			using constIter_t = holder_t::const_iterator;
 
-			array_t() : children{} { }
+			array_t() = default;
 			void clone(const array_t &array);
 			void add(jsonAtomPtr_t &&value);
 			void del(const size_t key);
