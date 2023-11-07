@@ -63,7 +63,7 @@ void object_t::add(const char *const keyStr, std::unique_ptr<JSONAtom> &&value)
 {
 	if (children.find(keyStr) != children.end())
 		return;
-	string_t key = stringDup(keyStr);
+	auto key{stringDup(keyStr)};
 	mapKeys.push_back(key.get());
 	children[std::move(key)] = std::move(value);
 }

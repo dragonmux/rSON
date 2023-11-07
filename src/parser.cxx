@@ -348,7 +348,7 @@ JSONAtom *object(JSONParser &parser)
 	parser.match('{', true);
 	while (isObjectEnd(parser.currentChar()) == false)
 	{
-		std::unique_ptr<char []> key(parser.string());
+		const auto key{parser.string()};
 		parser.match(':', true);
 		JSONAtom *value = expression(parser);
 		object->add(key.release(), value);

@@ -31,11 +31,11 @@ namespace rSON
 
 		struct stringLess_t
 		{
-			inline bool operator()(const string_t &x, const string_t &y) const
+			inline bool operator()(const std::unique_ptr<char []> &x, const std::unique_ptr<char []> &y) const
 				{ return strcmp(x.get(), y.get()) < 0; }
-			inline bool operator()(const string_t &x, const char *const y) const
+			inline bool operator()(const std::unique_ptr<char []> &x, const char *const y) const
 				{ return strcmp(x.get(), y) < 0; }
-			inline bool operator()(const char *const x, const string_t &y) const
+			inline bool operator()(const char *const x, const std::unique_ptr<char []> &y) const
 				{ return strcmp(x, y.get()) < 0; }
 			inline bool operator()(const char *const x, const char *const y) const
 				{ return strcmp(x, y) < 0; }
@@ -45,7 +45,7 @@ namespace rSON
 		struct object_t final
 		{
 		private:
-			using holder_t = std::map<string_t, jsonAtomPtr_t, stringLess_t>;
+			using holder_t = std::map<std::unique_ptr<char []>, jsonAtomPtr_t, stringLess_t>;
 			using list_t = std::vector<const char *>;
 			holder_t children;
 			list_t mapKeys;
@@ -128,6 +128,6 @@ namespace rSON
 using namespace rSON;
 using namespace rSON::internal;
 
-inline size_t strlen(const string_t &str) noexcept { return strlen(str.get()); }
+inline size_t strlen(const std::unique_ptr<char []> &str) noexcept { return strlen(str.get()); }
 
 #endif /*INTERNAL__H*/
