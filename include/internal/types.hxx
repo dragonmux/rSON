@@ -19,6 +19,8 @@
 #ifndef INTERNAL__H
 #define INTERNAL__H
 
+#include <string>
+#include <string_view>
 #include <functional>
 #include <map>
 #include "rSON.hxx"
@@ -27,7 +29,42 @@ namespace rSON
 {
 	namespace internal
 	{
-		using string_t = std::unique_ptr<char []>;
+		struct string_t final
+		{
+		private:
+			std::string string{};
+
+		public:
+			string_t(std::string &&str) noexcept;
+			string_t(const std::string_view &str);
+			string_t &operator =(string_t &&str) noexcept;
+			const std::string &value() const noexcept { return string; }
+			const char *data() const noexcept { return string.data(); }
+			size_t size() const noexcept { return string.size(); }
+			size_t length() const noexcept { return string.length(); }
+			bool operator ==(const string_t &str) const noexcept { return str.value() == string; }
+			bool operator <(const string_t &str) const noexcept { return str.value() < string; }
+		};
+
+		inline bool operator ==(const string_t &a, const std::string_view &b) noexcept
+			{ return a.value() == b; }
+		inline bool operator ==(const std::string_view &a, const string_t &b) noexcept
+			{ return a == b.value(); }
+
+		inline bool operator <(const string_t &a, const std::string_view &b) noexcept
+			{ return a.value() < b; }
+		inline bool operator <(const std::string_view &a, const string_t &b) noexcept
+			{ return a < b.value(); }
+
+		inline bool operator ==(const string_t &a, const char *const b) noexcept
+			{ return a == std::string_view{b, strlen(b)}; }
+		inline bool operator ==(const char *const a, const string_t &b) noexcept
+			{ return std::string_view{a, strlen(a)} == b; }
+
+		inline bool operator <(const string_t &a, const char *const b) noexcept
+			{ return a < std::string_view{b, strlen(b)}; }
+		inline bool operator <(const char *const a, const string_t &b) noexcept
+			{ return std::string_view{a, strlen(a)} < b; }
 
 		struct stringLess_t
 		{
