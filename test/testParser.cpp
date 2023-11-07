@@ -183,9 +183,9 @@ void tryStringOk(const char *const json, void tests(const char *const))
 	{
 		memoryStream_t stream(const_cast<char *const>(json), length(json));
 		JSONParser parser(stream);
-		std::unique_ptr<char []> atom(parser.string());
-		assertNotNull(atom.get());
-		tests(atom.get());
+		auto atom{parser.string()};
+		assertNotNull(atom.data());
+		tests(atom.data());
 	}
 	catch (const JSONParserError &err)
 		{ fail(err.error()); }
@@ -201,7 +201,7 @@ void tryStringFail(const char *const json)
 	{
 		memoryStream_t stream(const_cast<char *const>(json), length(json));
 		JSONParser parser(stream);
-		std::unique_ptr<char []> atom(parser.string());
+		[[maybe_unused]] auto atom{parser.string()};
 		fail("The parser failed to throw an exception on invalid string");
 	}
 	catch (const JSONParserError &err) { }

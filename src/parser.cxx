@@ -230,7 +230,7 @@ void JSONParser::validateUnicodeSequence(std::queue<char> &result)
 }
 
 // Parses a string per the JSON string rules
-char *JSONParser::string()
+std::string JSONParser::string()
 {
 	match('"', false);
 	bool slash = false;
@@ -271,13 +271,13 @@ char *JSONParser::string()
 	}
 
 	match('"', true);
-	return [&](char *const string) noexcept -> char *
+	return [&]() noexcept
 	{
-		string[result.size()] = 0;
+		std::string string(result.size() + 1U, '\0');
 		for (size_t i = 0; !result.empty(); ++i)
 			string[i] = pop(result);
 		return string;
-	}(new char[result.size() + 1]);
+	}();
 }
 
 // Parses a positive natural number
@@ -351,7 +351,7 @@ JSONAtom *object(JSONParser &parser)
 		const auto key{parser.string()};
 		parser.match(':', true);
 		JSONAtom *value = expression(parser);
-		object->add(key.release(), value);
+		object->add(key.c_str(), value);
 	}
 	if (parser.lastTokenComma())
 		throw JSONParserError(JSON_PARSER_BAD_JSON);

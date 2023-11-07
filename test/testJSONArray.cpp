@@ -17,8 +17,11 @@
  */
 
 #include <array>
+#include <string_view>
 #include "test.h"
 #include "internal/string.hxx"
+
+using namespace std::literals::string_view_literals;
 
 JSONArray *testArray = NULL;
 constexpr std::array<int32_t, 6> testValues
@@ -124,7 +127,7 @@ void testDuplicate()
 	testArray->add(new JSONNull());
 	testArray->add(new JSONBool(true));
 	testArray->add(new JSONFloat(1.5));
-	testArray->add(new JSONString(strNewDup("This is only a test")));
+	testArray->add(new JSONString("This is only a test"sv));
 	testArray->add(new JSONArray());
 	testArray->add(new JSONObject());
 	assertIntEqual(testArray->size(), 8);

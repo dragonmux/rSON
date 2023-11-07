@@ -24,8 +24,10 @@
 #include <memory>
 #include <vector>
 #include <exception>
+#include <string>
 #if __cplusplus >= 201703L
 #include <filesystem>
+#include <string_view>
 #endif
 #include <fcntl.h>
 
@@ -229,6 +231,7 @@ namespace rSON
 	{
 		using delete_t = void (*)(void *const);
 
+		struct string_t;
 		struct object_t;
 		struct array_t;
 	}
@@ -358,22 +361,37 @@ namespace rSON
 		void store(stream_t &stream) const rSON_VFINAL;
 	};
 
-	class rSON_CLS_API JSONString : public JSONAtom
+	class rSON_DEFAULT_VISIBILITY JSONString : public JSONAtom
 	{
 	private:
-		char *value;
+		opaquePtr_t<internal::string_t> str;
 
 	public:
-		JSONString(char *strValue);
-		~JSONString();
+		JSONString(char *value, size_t length);
+		JSONString(const char *value, size_t length);
+		JSONString(const std::string &value);
+		JSONString(std::string &&value);
+#if __cplusplus >= 201703L
+		JSONString(const std::string_view &value);
+#endif
+		JSONString(const JSONString &value) : JSONString{value.get()} { }
+		~JSONString() override = default;
 		operator const char *() const;
-		void set(char *strValue);
-		const char *get() const rSON_NOEXCEPT { return value; }
-		size_t len() const;
+		operator const std::string &() const;
+		void set(char *value);
+		void set(const char *value);
+		void set(const std::string &value);
+		void set(std::string &&value);
+#if __cplusplus >= 201703L
+		void set(const std::string_view &value);
+#endif
+		const std::string &get() const rSON_NOEXCEPT { return *this; }
+		size_t len() const noexcept;
+		size_t size() const noexcept { return len(); }
 		size_t length() const rSON_VFINAL;
 		void store(stream_t &stream) const rSON_VFINAL;
 
-		bool isIn(const char *const _value) const rSON_NOEXCEPT { return strcmp(value, _value) == 0; }
+		bool isIn(const char *const _value) const rSON_NOEXCEPT;
 		template<typename... Values> bool isIn(const char *const _value, Values ...values) const rSON_NOEXCEPT
 		{
 			if (isIn(_value))

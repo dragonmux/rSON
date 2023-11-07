@@ -18,6 +18,7 @@
 
 #include <stdio.h>
 #include <ctype.h>
+#include <utility>
 #include "internal/types.hxx"
 
 uint8_t hex2int(char c)
@@ -80,10 +81,19 @@ void parseUnicode(const uint8_t *&readPos, uint8_t *&writePos)
 	}
 }
 
-JSONString::JSONString(char *strValue) : JSONAtom(JSON_TYPE_STRING), value(strValue)
+JSONString::JSONString(char *const value, const size_t length) : JSONString{std::string{value, length}} { }
+JSONString::JSONString(const char *const value, const size_t length) : JSONString{std::string_view{value, length}} { }
+JSONString::JSONString(const std::string &value) : JSONString{std::string_view{value}} { }
+
+JSONString::JSONString(std::string &&value) : JSONAtom{JSON_TYPE_STRING}, str{makeOpaque<string_t>(std::move(value))} { }
+JSONString::JSONString(const std::string_view &value) : JSONAtom{JSON_TYPE_STRING}, str{makeOpaque<string_t>(value)} { }
+
+string_t::string_t(const std::string_view &str) : string{str} { }
+
+string_t::string_t(std::string &&str) : string{std::move(str)}
 {
-	const uint8_t *readPos = (uint8_t *)strValue;
-	uint8_t *writePos = (uint8_t *)strValue;
+	const uint8_t *readPos = (uint8_t *)string.data();
+	uint8_t *writePos = (uint8_t *)string.data();
 	bool slash = false;
 
 	while (*readPos != 0)
@@ -137,28 +147,36 @@ JSONString::JSONString(char *strValue) : JSONAtom(JSON_TYPE_STRING), value(strVa
 		}
 	}
 	writePos[0] = 0;
+	// Properly truncate the string storage to the new length so the length is properly reported
+	string.erase(string.begin() + (writePos - (uint8_t *)string.data()), string.end());
 }
 
-JSONString::~JSONString()
+string_t &string_t::operator =(string_t &&str) noexcept
 {
-	delete [] value;
+	std::swap(string, str.string);
+	return *this;
 }
 
 JSONString::operator const char *() const
-{
-	return value;
-}
+	{ return str->value().c_str(); }
+JSONString::operator const std::string &() const
+	{ return str->value(); }
 
-void JSONString::set(char *strValue)
-{
-	delete [] value;
-	value = strValue;
-}
+void JSONString::set(char *value)
+	{ set(std::string{value}); }
+void JSONString::set(const char *value)
+	{ set(std::string_view{value}); }
+void JSONString::set(const std::string &value)
+	{ set(std::string_view{value}); }
+void JSONString::set(std::string &&value)
+	{ *str = string_t{std::move(value)}; }
+void JSONString::set(const std::string_view &value)
+	{ *str = string_t{value}; }
 
-size_t JSONString::len() const
+size_t JSONString::len() const noexcept
 {
 	// Note, this works specifically because we surrogate pair encode the NULL byte in the decoder.
 	// If the caller needs their string surrogate decoded, they should ask for the string raw value,
 	// this, and in a seperate buffer, decode the string fully.
-	return strlen(value);
+	return str->length();
 }

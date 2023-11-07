@@ -16,31 +16,35 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <string>
+#include <string_view>
 #include "test.h"
 #include "internal/string.hxx"
 #include <string.h>
 
+using namespace std::literals::string_literals;
+using namespace std::literals::string_view_literals;
+
 JSONString *testString = NULL;
-static const char *testValue = "testValue";
+static const auto testValue{"testValue"sv};
 
 void testConstruct()
 {
 	try
-		{ testString = new JSONString(strNewDup(testValue)); }
+		{ testString = new JSONString(testValue); }
 	catch (std::bad_alloc &badAlloc)
 		{ fail(badAlloc.what()); }
 	assertNotNull(testString);
-	assertIntEqual(testString->len(), strlen(testValue));
+	assertStringEqual(testString->get().data(), testValue.data());
+	assertIntEqual(testString->len(), testValue.length());
 }
 
 #define TRY(seq, tests) \
 try \
 { \
-	str = new char[sizeof(seq)]; \
-	strcpy(str, seq); \
-	string = new JSONString(str); \
+	string = new JSONString(seq); \
 	assertNotNull(string); \
-	str = (char *)string->operator const char *(); \
+	const char *str = *string; \
 	tests; \
 } \
 catch (JSONParserError &err) \
@@ -53,37 +57,33 @@ delete string
 #define TRY_SHOULD_FAIL(seq) \
 try \
 { \
-	str = new char[sizeof(seq)]; \
-	strcpy(str, seq); \
-	string = new JSONString(str); \
+	string = new JSONString(seq); \
 	delete string; \
 	fail("JSONString failed to throw an exception on invalid string"); \
 } \
 catch (JSONParserError &err) \
 { \
-} \
-delete [] str;
+}
 
 void testEscapes()
 {
 	JSONString *string;
-	char *str;
 
-	TRY("\\\"", assertStringEqual(str, "\""));
-	TRY("\\t\\r\\n", assertStringEqual(str, "\t\r\n"));
-	TRY("\\b", assertStringEqual(str, "\x08"));
-	TRY("\\f", assertStringEqual(str, "\x0C"));
-	TRY("\\/", assertStringEqual(str, "/"));
-	TRY("\\\\", assertStringEqual(str, "\\"));
-	TRY("\\u0050", assertStringEqual(str, "\x50"));
-	TRY("\\u0000", assertStringEqual(str, "\xC0\x80"));
-	TRY("\\u0155", assertStringEqual(str, "\xC5\x95"));
-	TRY("\\u5555", assertStringEqual(str, "\xE5\x95\x95"));
-	TRY("\\u5A5A", assertStringEqual(str, "\xE5\xA9\x9A"));
-	TRY_SHOULD_FAIL("\\u5A5Q");
-	TRY_SHOULD_FAIL("\\u%A5A");
-	TRY_SHOULD_FAIL("\\u5=5A");
-	TRY_SHOULD_FAIL("\\u5A^A");
+	TRY("\\\""s, assertStringEqual(str, "\""));
+	TRY("\\t\\r\\n"s, assertStringEqual(str, "\t\r\n"));
+	TRY("\\b"s, assertStringEqual(str, "\x08"));
+	TRY("\\f"s, assertStringEqual(str, "\x0C"));
+	TRY("\\/"s, assertStringEqual(str, "/"));
+	TRY("\\\\"s, assertStringEqual(str, "\\"));
+	TRY("\\u0050"s, assertStringEqual(str, "\x50"));
+	TRY("\\u0000"s, assertStringEqual(str, "\xC0\x80"));
+	TRY("\\u0155"s, assertStringEqual(str, "\xC5\x95"));
+	TRY("\\u5555"s, assertStringEqual(str, "\xE5\x95\x95"));
+	TRY("\\u5A5A"s, assertStringEqual(str, "\xE5\xA9\x9A"));
+	TRY_SHOULD_FAIL("\\u5A5Q"s);
+	TRY_SHOULD_FAIL("\\u%A5A"s);
+	TRY_SHOULD_FAIL("\\u5=5A"s);
+	TRY_SHOULD_FAIL("\\u5A^A"s);
 }
 
 #undef TRY_SHOULD_FAIL

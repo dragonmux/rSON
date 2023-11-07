@@ -110,12 +110,12 @@ void JSONFloat::store(stream_t &stream) const
 }
 
 size_t JSONString::length() const
-	{ return strlen(value) + 2; }
+	{ return str->length() + 2; }
 
 void JSONString::store(stream_t &stream) const
 {
 	stream.write('"');
-	stream.write(value, strlen(value));
+	stream.write(str->data(), str->length());
 	stream.write('"');
 }
 

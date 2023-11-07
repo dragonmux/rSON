@@ -16,9 +16,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <string_view>
 #include <substrate/utility>
 #include "test.h"
 #include "internal/string.hxx"
+
+using namespace std::literals::string_view_literals;
 
 JSONObject *testObject = NULL;
 #define KEY(name) \
@@ -123,7 +126,7 @@ void testDuplicate()
 	testObject->add(a, new JSONNull());
 	testObject->add(b, new JSONBool(true));
 	testObject->add(c, new JSONFloat(1.5));
-	testObject->add(d, new JSONString(strNewDup("This is only a test")));
+	testObject->add(d, new JSONString("This is only a test"sv));
 	testObject->add(e, new JSONArray());
 	testObject->add(f, new JSONObject());
 	assertIntEqual(testObject->size(), 8);

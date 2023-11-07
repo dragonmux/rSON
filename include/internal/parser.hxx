@@ -41,7 +41,7 @@ public:
 	void lastNoComma() noexcept;
 	char currentChar();
 	char *literal();
-	char *string();
+	std::string string();
 	size_t number(const bool zeroSpecial, size_t *const decDigits = nullptr);
 } JSONParser;
 

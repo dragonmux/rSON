@@ -47,7 +47,7 @@ void array_t::clone(const array_t &array)
 				case JSON_TYPE_FLOAT:
 					return substrate::make_unique<JSONFloat>(value);
 				case JSON_TYPE_STRING:
-					return substrate::make_unique<JSONString>(strNewDup(value));
+					return substrate::make_unique<JSONString>(value);
 				case JSON_TYPE_OBJECT:
 					return substrate::make_unique<JSONObject>(value);
 				case JSON_TYPE_ARRAY:

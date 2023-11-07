@@ -101,7 +101,7 @@ void testObject()
 	doTest(&obj, "{\"a\": 55, \"array\": [], \"test\": null}"sv);
 
 	key.reset(strnew("b"));
-	obj.add(key.get(), new JSONString(strnew("This is only a test")));
+	obj.add(key.get(), new JSONString("This is only a test"sv));
 	doTest(&obj, "{\"a\": 55, \"array\": [], \"b\": \"This is only a test\", \"test\": null}"sv);
 }
 
@@ -120,7 +120,7 @@ void testArray()
 	doTest(outerArr, "[[null, true], null]"sv);
 	outerArr->add(new JSONInt(-15));
 	outerArr->add(new JSONFloat(0.75));
-	outerArr->add(new JSONString(strnew("This is only a test")));
+	outerArr->add(new JSONString("This is only a test"sv));
 	doTest(outerArr, "[[null, true], null, -15, 0.7500000000000000, \"This is only a test\"]"sv);
 	delete outerArr;
 }

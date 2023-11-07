@@ -35,7 +35,7 @@ namespace rSON
 			std::string string{};
 
 		public:
-			string_t(std::string &&str) noexcept;
+			string_t(std::string &&str);
 			string_t(const std::string_view &str);
 			string_t &operator =(string_t &&str) noexcept;
 			const std::string &value() const noexcept { return string; }
