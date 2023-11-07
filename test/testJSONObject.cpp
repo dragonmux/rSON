@@ -33,7 +33,7 @@ class JSONBad final : public JSONAtom
 {
 public:
 	JSONBad() noexcept : JSONAtom(JSONAtomType(-1)) { }
-	void store(stream_t &stream) const final override { }
+	void store(stream_t &) const final override { }
 	size_t length() const final override { return 0; }
 };
 
