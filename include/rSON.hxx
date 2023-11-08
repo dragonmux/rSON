@@ -284,7 +284,8 @@ namespace rSON
 	public:
 		// TODO: Implement full move semantics, which solves the issue of having pointers not references for all JSONAtom's.. well, maybe.
 		// Move semantics would be good anyway as it makes handling a JSONAtom tree cheaper and easier.
-		// We already have a virtual distructor so can safely delete.. perhaps virtual assignment operators will work.. have to figure out how to make move construction work with this (or copy construction).
+		// We already have a virtual distructor so can safely delete.. perhaps virtual assignment operators
+		// will work.. have to figure out how to make move construction work with this (or copy construction).
 		virtual ~JSONAtom() { }
 		JSONAtomType getType() const rSON_NOEXCEPT { return type; }
 		virtual void store(stream_t &stream) const = 0;
@@ -295,7 +296,7 @@ namespace rSON
 		bool asBool() const { return *this; }
 		int64_t asInt() const { return *this; }
 		double asFloat() const { return *this; }
-		const char *asString() const { return *this; }
+		const std::string &asString() const { return *this; }
 		JSONString &asStringRef() const;
 		JSONObject *asObject() const;
 		JSONObject &asObjectRef() const { return *this; }
@@ -310,12 +311,14 @@ namespace rSON
 		operator double() const;
 		operator float() const { return float(asFloat()); }
 		operator const char *() const;
+		operator const std::string &() const;
 		operator JSONString &() const;
 		operator JSONObject &() const;
 		operator JSONArray &() const;
 
 		// Turns out that it is useful to allow this type to be indexed.
-		// These two operator index's automatically convert the JSONAtom as we can know if the index is for an array or object based on the index type.
+		// These two operator index's automatically convert the JSONAtom as we can know if the index is
+		// for an array or object based on the index type.
 		JSONAtom &operator [](const char *const key) const;
 		JSONAtom &operator [](const size_t key) const;
 

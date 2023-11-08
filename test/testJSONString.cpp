@@ -104,8 +104,8 @@ void testConversions()
 	UNWANTED_TYPE(testString, Int)
 	UNWANTED_TYPE(testString, Float)
 	WANTED_TYPE( \
-		assertNotNull(testString->asString()); \
-		assertStringEqual(testString->asString(), "testValue");
+		assertFalse(testString->asString().empty()); \
+		assertStringEqual(testString->asString().c_str(), "testValue");
 		JSONAtom &atom = *testString;
 		JSONString &str = atom;
 		assertPtrEqual(&str, testString)

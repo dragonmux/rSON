@@ -54,14 +54,11 @@ JSONString &JSONAtom::asStringRef() const
 }
 
 JSONAtom::operator JSONString &() const
-{
-	return asStringRef();
-}
-
+	{ return asStringRef(); }
 JSONAtom::operator const char *() const
-{
-	return asStringRef();
-}
+	{ return asStringRef(); }
+JSONAtom::operator const std::string &() const
+	{ return asStringRef(); }
 
 JSONObject *JSONAtom::asObject() const
 {
@@ -71,9 +68,7 @@ JSONObject *JSONAtom::asObject() const
 }
 
 JSONAtom::operator JSONObject &() const
-{
-	return *asObject();
-}
+	{ return *asObject(); }
 
 JSONArray *JSONAtom::asArray() const
 {
@@ -83,16 +78,8 @@ JSONArray *JSONAtom::asArray() const
 }
 
 JSONAtom::operator JSONArray &() const
-{
-	return *asArray();
-}
-
+	{ return *asArray(); }
 JSONAtom &JSONAtom::operator [](const char *const key) const
-{
-	return asObjectRef()[key];
-}
-
+	{ return asObjectRef()[key]; }
 JSONAtom &JSONAtom::operator [](const size_t key) const
-{
-	return asArrayRef()[key];
-}
+	{ return asArrayRef()[key]; }
