@@ -423,8 +423,18 @@ namespace rSON
 		JSONObject();
 		JSONObject(JSONObject &object);
 		~JSONObject() override = default;
+
 		void add(const char *const key, jsonAtomPtr_t &&value);
 		void add(const char *const key, JSONAtom *value);
+		bool add(const char *const key, std::nullptr_t);
+		bool add(const char *const key, bool value);
+		bool add(const char *const key, int64_t value);
+		bool add(const char *const key, double value);
+		bool add(const char *const key, const std::string &value);
+		bool add(const char *const key, std::string &&value);
+#if __cplusplus >= 201703L
+		bool add(const char *const key, const std::string_view &value);
+#endif
 		void del(const char *const key);
 		JSONAtom &operator [](const char *const key) const;
 		const std::vector<const char *> &keys() const;

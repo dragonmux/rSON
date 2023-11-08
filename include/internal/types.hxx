@@ -93,7 +93,7 @@ namespace rSON
 
 			object_t() = default;
 			void clone(const object_t &object);
-			void add(const char *const key, jsonAtomPtr_t &&value);
+			JSONAtom *add(const char *const key, jsonAtomPtr_t &&value);
 			void del(const char *const key);
 			JSONAtom &operator [](const char *const key) const;
 			const std::vector<const char *> &keys() const noexcept { return mapKeys; }
