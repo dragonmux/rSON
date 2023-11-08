@@ -66,23 +66,10 @@ namespace rSON
 		inline bool operator <(const char *const a, const string_t &b) noexcept
 			{ return std::string_view{a, strlen(a)} < b; }
 
-		struct stringLess_t
-		{
-			inline bool operator()(const std::unique_ptr<char []> &x, const std::unique_ptr<char []> &y) const
-				{ return strcmp(x.get(), y.get()) < 0; }
-			inline bool operator()(const std::unique_ptr<char []> &x, const char *const y) const
-				{ return strcmp(x.get(), y) < 0; }
-			inline bool operator()(const char *const x, const std::unique_ptr<char []> &y) const
-				{ return strcmp(x, y.get()) < 0; }
-			inline bool operator()(const char *const x, const char *const y) const
-				{ return strcmp(x, y) < 0; }
-			using is_transparent = typename std::less<>::is_transparent;
-		};
-
 		struct object_t final
 		{
 		private:
-			using holder_t = std::map<std::unique_ptr<char []>, jsonAtomPtr_t, stringLess_t>;
+			using holder_t = std::map<std::string, jsonAtomPtr_t, std::less<>>;
 			using list_t = std::vector<const char *>;
 			holder_t children{};
 			list_t mapKeys{};
@@ -93,10 +80,10 @@ namespace rSON
 
 			object_t() = default;
 			void clone(const object_t &object);
-			JSONAtom *add(const char *const key, jsonAtomPtr_t &&value);
+			JSONAtom *add(std::string &&key, jsonAtomPtr_t &&value);
 			void del(const char *const key);
 			JSONAtom &operator [](const char *const key) const;
-			const std::vector<const char *> &keys() const noexcept { return mapKeys; }
+			const list_t &keys() const noexcept { return mapKeys; }
 			bool exists(const char *const key) const noexcept;
 			size_t size() const noexcept { return children.size(); }
 			size_t count() const noexcept { return children.size(); }

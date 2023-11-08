@@ -34,7 +34,7 @@ void object_t::clone(const object_t &object)
 {
 	for (const auto &atom : object)
 	{
-		add(atom.first.get(), [](const JSONAtom &value) -> std::unique_ptr<JSONAtom>
+		add(atom.first.c_str(), [](const JSONAtom &value) -> std::unique_ptr<JSONAtom>
 		{
 			switch (value.getType())
 			{
@@ -59,15 +59,16 @@ void object_t::clone(const object_t &object)
 	}
 }
 
-JSONAtom *object_t::add(const char *const keyStr, std::unique_ptr<JSONAtom> &&value)
+JSONAtom *object_t::add(std::string &&key, std::unique_ptr<JSONAtom> &&value)
 {
-	if (children.find(keyStr) != children.end())
+	if (children.find(key) != children.end())
 		return nullptr;
-	auto key{stringDup(keyStr)};
-	mapKeys.push_back(key.get());
 	const auto result{children.emplace(std::move(key), std::move(value))};
 	if (result.second)
+	{
+		mapKeys.push_back(result.first->first.c_str());
 		return result.first->second.get();
+	}
 	return nullptr;
 }
 

@@ -135,7 +135,7 @@ size_t JSONObject::length() const
 	size_t nChildren, len = 2;
 	for (const auto &child : *obj)
 	{
-		len += strlen(child.first) + 2;
+		len += child.first.length() + 2;
 		len += child.second->length() + 2;
 	}
 	nChildren = size();
@@ -153,7 +153,7 @@ void JSONObject::store(stream_t &stream) const
 	for (const auto &child : *obj)
 	{
 		stream.write('"');
-		stream.write(child.first.get(), strlen(child.first));
+		stream.write(child.first.c_str(), child.first.length());
 		stream.write("\": ", 3);
 		child.second->store(stream);
 		if (++j < nodes)
