@@ -435,6 +435,19 @@ namespace rSON
 #if __cplusplus >= 201703L
 		bool add(const char *const key, const std::string_view &value);
 #endif
+
+		bool add(std::string &&key, jsonAtomPtr_t &&value);
+		bool add(std::string &&key, JSONAtom *value);
+		bool add(std::string &&key, std::nullptr_t);
+		bool add(std::string &&key, bool value);
+		bool add(std::string &&key, int64_t value);
+		bool add(std::string &&key, double value);
+		bool add(std::string &&key, const std::string &value);
+		bool add(std::string &&key, std::string &&value);
+#if __cplusplus >= 201703L
+		bool add(std::string &&key, const std::string_view &value);
+#endif
+
 		void del(const char *const key);
 		JSONAtom &operator [](const char *const key) const;
 		const std::vector<const char *> &keys() const;

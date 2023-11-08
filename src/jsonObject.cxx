@@ -34,7 +34,7 @@ void object_t::clone(const object_t &object)
 {
 	for (const auto &atom : object)
 	{
-		add(atom.first.c_str(), [](const JSONAtom &value) -> std::unique_ptr<JSONAtom>
+		add(std::string{atom.first}, [](const JSONAtom &value) -> std::unique_ptr<JSONAtom>
 		{
 			switch (value.getType())
 			{
@@ -121,3 +121,22 @@ bool JSONObject::add(const char *const key, std::string &&value)
 	{ return obj->add(key, std::make_unique<JSONString>(std::move(value))); }
 bool JSONObject::add(const char *const key, const std::string_view &value)
 	{ return obj->add(key, std::make_unique<JSONString>(value)); }
+
+bool JSONObject::add(std::string &&key, jsonAtomPtr_t &&value)
+	{ return obj->add(std::move(key), std::move(value)); }
+bool JSONObject::add(std::string &&key, JSONAtom *value)
+	{ return obj->add(std::move(key), jsonAtomPtr_t{value}); }
+bool JSONObject::add(std::string &&key, std::nullptr_t)
+	{ return obj->add(std::move(key), std::make_unique<JSONNull>()); }
+bool JSONObject::add(std::string &&key, const bool value)
+	{ return obj->add(std::move(key), std::make_unique<JSONBool>(value)); }
+bool JSONObject::add(std::string &&key, const int64_t value)
+	{ return obj->add(std::move(key), std::make_unique<JSONInt>(value)); }
+bool JSONObject::add(std::string &&key, const double value)
+	{ return obj->add(std::move(key), std::make_unique<JSONFloat>(value)); }
+bool JSONObject::add(std::string &&key, const std::string &value)
+	{ return obj->add(std::move(key), std::make_unique<JSONString>(value)); }
+bool JSONObject::add(std::string &&key, std::string &&value)
+	{ return obj->add(std::move(key), std::make_unique<JSONString>(std::move(value))); }
+bool JSONObject::add(std::string &&key, const std::string_view &value)
+	{ return obj->add(std::move(key), std::make_unique<JSONString>(value)); }

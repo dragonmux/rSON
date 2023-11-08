@@ -273,7 +273,7 @@ std::string JSONParser::string()
 	match('"', true);
 	return [&]() noexcept
 	{
-		std::string string(result.size() + 1U, '\0');
+		std::string string(result.size(), '\0');
 		for (size_t i = 0; !result.empty(); ++i)
 			string[i] = pop(result);
 		return string;
@@ -348,10 +348,9 @@ JSONAtom *object(JSONParser &parser)
 	parser.match('{', true);
 	while (isObjectEnd(parser.currentChar()) == false)
 	{
-		const auto key{parser.string()};
+		auto key{parser.string()};
 		parser.match(':', true);
-		JSONAtom *value = expression(parser);
-		object->add(key.c_str(), value);
+		object->add(std::move(key), expression(parser));
 	}
 	if (parser.lastTokenComma())
 		throw JSONParserError(JSON_PARSER_BAD_JSON);
