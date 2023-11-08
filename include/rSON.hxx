@@ -446,6 +446,16 @@ namespace rSON
 		bool add(std::string &&key, std::string &&value);
 #if __cplusplus >= 201703L
 		bool add(std::string &&key, const std::string_view &value);
+
+		bool add(const std::string_view &key, jsonAtomPtr_t &&value);
+		bool add(const std::string_view &key, JSONAtom *value);
+		bool add(const std::string_view &key, std::nullptr_t);
+		bool add(const std::string_view &key, bool value);
+		bool add(const std::string_view &key, int64_t value);
+		bool add(const std::string_view &key, double value);
+		bool add(const std::string_view &key, const std::string &value);
+		bool add(const std::string_view &key, std::string &&value);
+		bool add(const std::string_view &key, const std::string_view &value);
 #endif
 
 		void del(const char *const key);
