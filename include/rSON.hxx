@@ -449,6 +449,15 @@ namespace rSON
 		~JSONArray() override = default;
 		void add(jsonAtomPtr_t &&value);
 		void add(JSONAtom *value);
+		void add(std::nullptr_t);
+		void add(bool value);
+		void add(int64_t value);
+		void add(double value);
+		void add(const std::string &value);
+		void add(std::string &&value);
+#if __cplusplus >= 201703L
+		void add(const std::string_view &value);
+#endif
 		void del(const size_t key);
 		void del(const JSONAtom *value);
 		void del(const JSONAtom &value);

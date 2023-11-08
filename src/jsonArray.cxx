@@ -99,3 +99,18 @@ JSONArray::iterator JSONArray::begin() rSON_NOEXCEPT { return &*arr->begin(); }
 JSONArray::iterator JSONArray::begin() const rSON_NOEXCEPT { return &*arr->begin(); }
 JSONArray::iterator JSONArray::end() rSON_NOEXCEPT { return &*arr->end(); }
 JSONArray::iterator JSONArray::end() const rSON_NOEXCEPT { return &*arr->end(); }
+
+void JSONArray::add(std::nullptr_t)
+	{ arr->add(std::make_unique<JSONNull>()); }
+void JSONArray::add(const bool value)
+	{ arr->add(std::make_unique<JSONBool>(value)); }
+void JSONArray::add(const int64_t value)
+	{ arr->add(std::make_unique<JSONInt>(value)); }
+void JSONArray::add(const double value)
+	{ arr->add(std::make_unique<JSONFloat>(value)); }
+void JSONArray::add(const std::string &value)
+	{ arr->add(std::make_unique<JSONString>(value)); }
+void JSONArray::add(std::string &&value)
+	{ arr->add(std::make_unique<JSONString>(std::move(value))); }
+void JSONArray::add(const std::string_view &value)
+	{ arr->add(std::make_unique<JSONString>(value)); }
