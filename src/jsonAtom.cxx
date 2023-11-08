@@ -83,3 +83,18 @@ JSONAtom &JSONAtom::operator [](const char *const key) const
 	{ return asObjectRef()[key]; }
 JSONAtom &JSONAtom::operator [](const size_t key) const
 	{ return asArrayRef()[key]; }
+
+void JSONAtom::add(std::nullptr_t)
+	{ asArray()->add(nullptr); }
+void JSONAtom::add(const bool value)
+	{ asArray()->add(value); }
+void JSONAtom::add(const int64_t value)
+	{ asArray()->add(value); }
+void JSONAtom::add(const double value)
+	{ asArray()->add(value); }
+void JSONAtom::add(const std::string &value)
+	{ asArray()->add(value); }
+void JSONAtom::add(std::string &&value)
+	{ asArray()->add(std::move(value)); }
+void JSONAtom::add(const std::string_view &value)
+	{ asArray()->add(value); }

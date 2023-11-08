@@ -322,6 +322,20 @@ namespace rSON
 		JSONAtom &operator [](const char *const key) const;
 		JSONAtom &operator [](const size_t key) const;
 
+		// Similarly, it's helpful to be able to add items to it if it's an array or object without having
+		// to always do the type conversion explicitly.
+
+		// JSONArray helpers
+		void add(std::nullptr_t);
+		void add(bool value);
+		void add(int64_t value);
+		void add(double value);
+		void add(const std::string &value);
+		void add(std::string &&value);
+#if __cplusplus >= 201703L
+		void add(const std::string_view &value);
+#endif
+
 		// Utility functions to help with type checking (validation)
 		bool typeIs(const JSONAtomType atomType) const rSON_NOEXCEPT { return type == atomType; }
 		bool typeIsOrNull(const JSONAtomType atomType) const rSON_NOEXCEPT { return type == atomType || type == JSON_TYPE_NULL; }
