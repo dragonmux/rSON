@@ -84,6 +84,36 @@ JSONAtom &JSONAtom::operator [](const char *const key) const
 JSONAtom &JSONAtom::operator [](const size_t key) const
 	{ return asArrayRef()[key]; }
 
+bool JSONAtom::add(std::string &&key, std::nullptr_t)
+	{ return asObject()->add(std::move(key), nullptr); }
+bool JSONAtom::add(std::string &&key, const bool value)
+	{ return asObject()->add(std::move(key), value); }
+bool JSONAtom::add(std::string &&key, const int64_t value)
+	{ return asObject()->add(std::move(key), value); }
+bool JSONAtom::add(std::string &&key, const double value)
+	{ return asObject()->add(std::move(key), value); }
+bool JSONAtom::add(std::string &&key, const std::string &value)
+	{ return asObject()->add(std::move(key), value); }
+bool JSONAtom::add(std::string &&key, std::string &&value)
+	{ return asObject()->add(std::move(key), std::move(value)); }
+bool JSONAtom::add(std::string &&key, const std::string_view &value)
+	{ return asObject()->add(std::move(key), value); }
+
+bool JSONAtom::add(const std::string_view &key, std::nullptr_t)
+	{ return asObject()->add(key, nullptr); }
+bool JSONAtom::add(const std::string_view &key, const bool value)
+	{ return asObject()->add(key, value); }
+bool JSONAtom::add(const std::string_view &key, const int64_t value)
+	{ return asObject()->add(key, value); }
+bool JSONAtom::add(const std::string_view &key, const double value)
+	{ return asObject()->add(key, value); }
+bool JSONAtom::add(const std::string_view &key, const std::string &value)
+	{ return asObject()->add(key, value); }
+bool JSONAtom::add(const std::string_view &key, std::string &&value)
+	{ return asObject()->add(key, std::move(value)); }
+bool JSONAtom::add(const std::string_view &key, const std::string_view &value)
+	{ return asObject()->add(key, value); }
+
 void JSONAtom::add(std::nullptr_t)
 	{ asArray()->add(nullptr); }
 void JSONAtom::add(const bool value)
