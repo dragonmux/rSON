@@ -459,8 +459,8 @@ namespace rSON
 		JSONObject(JSONObject &object);
 		~JSONObject() override = default;
 
-		void add(const char *const key, jsonAtomPtr_t &&value);
-		void add(const char *const key, JSONAtom *value);
+		bool add(const char *const key, jsonAtomPtr_t &&value);
+		bool add(const char *const key, JSONAtom *value);
 		bool add(const char *const key, std::nullptr_t);
 		bool add(const char *const key, bool value);
 		bool add(const char *const key, int64_t value);

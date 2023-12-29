@@ -97,10 +97,10 @@ JSONAtom &object_t::operator [](const char *const key) const
 bool object_t::exists(const char *const key) const noexcept
 	{ return children.find(key) != children.end(); }
 
-void JSONObject::add(const char *const key, jsonAtomPtr_t &&value)
-	{ obj->add(key, std::move(value)); }
-void JSONObject::add(const char *const key, JSONAtom *value)
-	{ obj->add(key, jsonAtomPtr_t{value}); }
+bool JSONObject::add(const char *const key, jsonAtomPtr_t &&value)
+	{ return obj->add(key, std::move(value)); }
+bool JSONObject::add(const char *const key, JSONAtom *value)
+	{ return obj->add(key, jsonAtomPtr_t{value}); }
 void JSONObject::del(const char *const key) { obj->del(key); }
 JSONAtom &JSONObject::operator [](const char *const key) const { return (*obj)[key]; }
 const std::vector<const char *> &JSONObject::keys() const { return obj->keys(); }
