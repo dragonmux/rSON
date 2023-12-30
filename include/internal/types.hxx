@@ -106,7 +106,7 @@ namespace rSON
 
 			array_t() = default;
 			void clone(const array_t &array);
-			void add(jsonAtomPtr_t &&value);
+			JSONAtom &add(jsonAtomPtr_t &&value);
 			void del(const size_t key);
 			void del(const JSONAtom &value);
 			JSONAtom &operator [](const size_t key) const;

@@ -59,8 +59,8 @@ void array_t::clone(const array_t &array)
 	}
 }
 
-void array_t::add(jsonAtomPtr_t &&value)
-	{ children.emplace_back(std::move(value)); }
+JSONAtom &array_t::add(jsonAtomPtr_t &&value)
+	{ return *children.emplace_back(std::move(value)); }
 
 void array_t::del(const size_t key)
 {
@@ -114,3 +114,15 @@ void JSONArray::add(std::string &&value)
 	{ arr->add(std::make_unique<JSONString>(std::move(value))); }
 void JSONArray::add(const std::string_view &value)
 	{ arr->add(std::make_unique<JSONString>(value)); }
+
+JSONArray &JSONArray::addArray()
+{
+	auto &result{arr->add(std::make_unique<JSONArray>())};
+	return static_cast<JSONArray &>(result);
+}
+
+JSONObject &JSONArray::addObject()
+{
+	auto &result{arr->add(std::make_unique<JSONObject>())};
+	return static_cast<JSONObject &>(result);
+}

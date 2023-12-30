@@ -128,3 +128,7 @@ void JSONAtom::add(std::string &&value)
 	{ asArray()->add(std::move(value)); }
 void JSONAtom::add(const std::string_view &value)
 	{ asArray()->add(value); }
+JSONArray &JSONAtom::addArray()
+	{ return asArray()-> addArray(); }
+JSONObject &JSONAtom::addObject()
+	{ return asArray()-> addObject(); }

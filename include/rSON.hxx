@@ -353,6 +353,8 @@ namespace rSON
 #if __cplusplus >= 201703L
 		void add(const std::string_view &value);
 #endif
+		JSONArray &addArray();
+		JSONObject &addObject();
 
 		// Utility functions to help with type checking (validation)
 		bool typeIs(const JSONAtomType atomType) const rSON_NOEXCEPT { return type == atomType; }
@@ -515,6 +517,7 @@ namespace rSON
 		JSONArray();
 		JSONArray(JSONArray &array);
 		~JSONArray() override = default;
+
 		void add(jsonAtomPtr_t &&value);
 		void add(JSONAtom *value);
 		void add(std::nullptr_t);
@@ -526,6 +529,9 @@ namespace rSON
 #if __cplusplus >= 201703L
 		void add(const std::string_view &value);
 #endif
+		JSONArray &addArray();
+		JSONObject &addObject();
+
 		void del(const size_t key);
 		void del(const JSONAtom *value);
 		void del(const JSONAtom &value);
