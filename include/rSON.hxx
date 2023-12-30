@@ -514,6 +514,10 @@ namespace rSON
 #endif
 
 		void del(const char *const key);
+		void del(const std::string &key);
+#if __cplusplus >= 201703L
+		void del(std::string_view key);
+#endif
 		JSONAtom &operator [](const char *const key) const;
 		JSONAtom &operator [](const std::string &key) const;
 #if __cplusplus >= 201703L

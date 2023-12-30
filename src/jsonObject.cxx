@@ -72,15 +72,15 @@ JSONAtom *object_t::add(std::string &&key, std::unique_ptr<JSONAtom> &&value)
 	return nullptr;
 }
 
-void object_t::del(const char *const key)
+void object_t::del(const std::string_view &key)
 {
-	if (!key)
+	if (key.empty())
 		return;
 	const auto &atom = children.find(key);
 	if (atom != children.end())
 	{
 		const auto &atomKey = std::find_if(mapKeys.begin(), mapKeys.end(),
-			[&](const char *const atom) -> bool { return strcmp(key, atom) == 0; });
+			[&](const std::string_view atom) -> bool { return key == atom; });
 		mapKeys.erase(atomKey);
 		children.erase(atom);
 	}
@@ -101,7 +101,18 @@ bool JSONObject::add(const char *const key, jsonAtomPtr_t &&value)
 	{ return obj->add(key, std::move(value)); }
 bool JSONObject::add(const char *const key, JSONAtom *value)
 	{ return obj->add(key, jsonAtomPtr_t{value}); }
-void JSONObject::del(const char *const key) { obj->del(key); }
+
+void JSONObject::del(const char *const key)
+{
+	/* Make sure the key is not nullptr before delegating into the normal delete logic */
+	if (key)
+		obj->del(key);
+}
+
+void JSONObject::del(const std::string &key)
+	{ obj->del(key); }
+void JSONObject::del(const std::string_view key)
+	{ obj->del(key); }
 
 JSONAtom &JSONObject::operator [](const char *const key) const
 {
