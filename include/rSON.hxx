@@ -333,7 +333,11 @@ namespace rSON
 		bool add(std::string &&key, std::string &&value);
 #if __cplusplus >= 201703L
 		bool add(std::string &&key, const std::string_view &value);
+#endif
+		JSONArray *addArray(std::string &&key);
+		JSONObject *addObject(std::string &&key);
 
+#if __cplusplus >= 201703L
 		bool add(const std::string_view &key, std::nullptr_t);
 		bool add(const std::string_view &key, bool value);
 		bool add(const std::string_view &key, int64_t value);
@@ -341,6 +345,8 @@ namespace rSON
 		bool add(const std::string_view &key, const std::string &value);
 		bool add(const std::string_view &key, std::string &&value);
 		bool add(const std::string_view &key, const std::string_view &value);
+		JSONArray *addArray(const std::string_view &key);
+		JSONObject *addObject(const std::string_view &key);
 #endif
 
 		// JSONArray helpers
@@ -472,6 +478,8 @@ namespace rSON
 #if __cplusplus >= 201703L
 		bool add(const char *const key, const std::string_view &value);
 #endif
+		JSONArray *addArray(const char *const key);
+		JSONObject *addObject(const char *const key);
 
 		bool add(std::string &&key, jsonAtomPtr_t &&value);
 		bool add(std::string &&key, JSONAtom *value);
@@ -483,7 +491,11 @@ namespace rSON
 		bool add(std::string &&key, std::string &&value);
 #if __cplusplus >= 201703L
 		bool add(std::string &&key, const std::string_view &value);
+#endif
+		JSONArray *addArray(std::string &&key);
+		JSONObject *addObject(std::string &&key);
 
+#if __cplusplus >= 201703L
 		bool add(const std::string_view &key, jsonAtomPtr_t &&value);
 		bool add(const std::string_view &key, JSONAtom *value);
 		bool add(const std::string_view &key, std::nullptr_t);
@@ -493,6 +505,8 @@ namespace rSON
 		bool add(const std::string_view &key, const std::string &value);
 		bool add(const std::string_view &key, std::string &&value);
 		bool add(const std::string_view &key, const std::string_view &value);
+		JSONArray *addArray(const std::string_view &key);
+		JSONObject *addObject(const std::string_view &key);
 #endif
 
 		void del(const char *const key);

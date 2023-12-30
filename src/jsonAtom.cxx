@@ -98,6 +98,10 @@ bool JSONAtom::add(std::string &&key, std::string &&value)
 	{ return asObject()->add(std::move(key), std::move(value)); }
 bool JSONAtom::add(std::string &&key, const std::string_view &value)
 	{ return asObject()->add(std::move(key), value); }
+JSONArray *JSONAtom::addArray(std::string &&key)
+	{ return asObject()->addArray(std::move(key)); }
+JSONObject *JSONAtom::addObject(std::string &&key)
+	{ return asObject()->addObject(std::move(key)); }
 
 bool JSONAtom::add(const std::string_view &key, std::nullptr_t)
 	{ return asObject()->add(key, nullptr); }
@@ -113,6 +117,10 @@ bool JSONAtom::add(const std::string_view &key, std::string &&value)
 	{ return asObject()->add(key, std::move(value)); }
 bool JSONAtom::add(const std::string_view &key, const std::string_view &value)
 	{ return asObject()->add(key, value); }
+JSONArray *JSONAtom::addArray(const std::string_view &key)
+	{ return asObject()->addArray(key); }
+JSONObject *JSONAtom::addObject(const std::string_view &key)
+	{ return asObject()->addObject(key); }
 
 void JSONAtom::add(std::nullptr_t)
 	{ asArray()->add(nullptr); }

@@ -122,6 +122,18 @@ bool JSONObject::add(const char *const key, std::string &&value)
 bool JSONObject::add(const char *const key, const std::string_view &value)
 	{ return obj->add(key, std::make_unique<JSONString>(value)); }
 
+JSONArray *JSONObject::addArray(const char *const key)
+{
+	const auto result{obj->add(key, std::make_unique<JSONArray>())};
+	return static_cast<JSONArray *>(result);
+}
+
+JSONObject *JSONObject::addObject(const char *const key)
+{
+	const auto result{obj->add(key, std::make_unique<JSONObject>())};
+	return static_cast<JSONObject *>(result);
+}
+
 bool JSONObject::add(std::string &&key, jsonAtomPtr_t &&value)
 	{ return obj->add(std::move(key), std::move(value)); }
 bool JSONObject::add(std::string &&key, JSONAtom *value)
@@ -141,6 +153,18 @@ bool JSONObject::add(std::string &&key, std::string &&value)
 bool JSONObject::add(std::string &&key, const std::string_view &value)
 	{ return obj->add(std::move(key), std::make_unique<JSONString>(value)); }
 
+JSONArray *JSONObject::addArray(std::string &&key)
+{
+	auto *const result{obj->add(std::move(key), std::make_unique<JSONArray>())};
+	return static_cast<JSONArray *>(result);
+}
+
+JSONObject *JSONObject::addObject(std::string &&key)
+{
+	auto *const result{obj->add(std::move(key), std::make_unique<JSONObject>())};
+	return static_cast<JSONObject *>(result);
+}
+
 bool JSONObject::add(const std::string_view &key, jsonAtomPtr_t &&value)
 	{ return obj->add(std::string{key}, std::move(value)); }
 bool JSONObject::add(const std::string_view &key, JSONAtom *value)
@@ -159,3 +183,15 @@ bool JSONObject::add(const std::string_view &key, std::string &&value)
 	{ return obj->add(std::string{key}, std::make_unique<JSONString>(std::move(value))); }
 bool JSONObject::add(const std::string_view &key, const std::string_view &value)
 	{ return obj->add(std::string{key}, std::make_unique<JSONString>(value)); }
+
+JSONArray *JSONObject::addArray(const std::string_view &key)
+{
+	auto *const result{obj->add(std::string{key}, std::make_unique<JSONArray>())};
+	return static_cast<JSONArray *>(result);
+}
+
+JSONObject *JSONObject::addObject(const std::string_view &key)
+{
+	auto *const result{obj->add(std::string{key}, std::make_unique<JSONObject>())};
+	return static_cast<JSONObject *>(result);
+}
