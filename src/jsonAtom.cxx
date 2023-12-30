@@ -80,6 +80,10 @@ JSONArray *JSONAtom::asArray() const
 JSONAtom::operator JSONArray &() const
 	{ return *asArray(); }
 JSONAtom &JSONAtom::operator [](const char *const key) const
+	{ return asObjectRef()[std::string_view{key}]; }
+JSONAtom &JSONAtom::operator [](const std::string &key) const
+	{ return asObjectRef()[std::string_view{key}]; }
+JSONAtom &JSONAtom::operator [](const std::string_view key) const
 	{ return asObjectRef()[key]; }
 JSONAtom &JSONAtom::operator [](const size_t key) const
 	{ return asArrayRef()[key]; }

@@ -117,6 +117,12 @@ void testLookup()
 		fail("Object failed to throw exception for bad key");
 	}
 	catch (JSONObjectError &) { }
+	try
+	{
+		child = &obj[nullptr];
+		fail("Object failed to throw exception for bad key");
+	}
+	catch (JSONObjectError &) { }
 }
 
 void testDuplicate()

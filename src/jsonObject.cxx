@@ -86,7 +86,7 @@ void object_t::del(const char *const key)
 	}
 }
 
-JSONAtom &object_t::operator [](const char *const key) const
+JSONAtom &object_t::operator [](const std::string_view &key) const
 {
 	const auto &node = children.find(key);
 	if (node == children.end())
@@ -102,7 +102,19 @@ bool JSONObject::add(const char *const key, jsonAtomPtr_t &&value)
 bool JSONObject::add(const char *const key, JSONAtom *value)
 	{ return obj->add(key, jsonAtomPtr_t{value}); }
 void JSONObject::del(const char *const key) { obj->del(key); }
-JSONAtom &JSONObject::operator [](const char *const key) const { return (*obj)[key]; }
+
+JSONAtom &JSONObject::operator [](const char *const key) const
+{
+	/* Make sure the key is not nullptr before delegating into the normal lookup logic */
+	if (key)
+		return (*obj)[key];
+	throw JSONObjectError(JSON_OBJECT_BAD_KEY);
+}
+
+JSONAtom &JSONObject::operator [](const std::string &key) const
+	{ return (*obj)[key]; }
+JSONAtom &JSONObject::operator [](const std::string_view key) const
+	{ return (*obj)[key]; }
 const std::vector<const char *> &JSONObject::keys() const { return obj->keys(); }
 bool JSONObject::exists(const char *const key) const { return obj->exists(key); }
 size_t JSONObject::size() const { return obj->size(); }

@@ -82,7 +82,7 @@ namespace rSON
 			void clone(const object_t &object);
 			JSONAtom *add(std::string &&key, jsonAtomPtr_t &&value);
 			void del(const char *const key);
-			JSONAtom &operator [](const char *const key) const;
+			JSONAtom &operator [](const std::string_view &key) const;
 			const list_t &keys() const noexcept { return mapKeys; }
 			bool exists(const char *const key) const noexcept;
 			size_t size() const noexcept { return children.size(); }

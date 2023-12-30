@@ -320,6 +320,10 @@ namespace rSON
 		// These two operator index's automatically convert the JSONAtom as we can know if the index is
 		// for an array or object based on the index type.
 		JSONAtom &operator [](const char *const key) const;
+		JSONAtom &operator [](const std::string &key) const;
+#if __cplusplus >= 201703L
+		JSONAtom &operator [](std::string_view key) const;
+#endif
 		JSONAtom &operator [](const size_t key) const;
 
 		// Similarly, it's helpful to be able to add items to it if it's an array or object without having
@@ -511,6 +515,10 @@ namespace rSON
 
 		void del(const char *const key);
 		JSONAtom &operator [](const char *const key) const;
+		JSONAtom &operator [](const std::string &key) const;
+#if __cplusplus >= 201703L
+		JSONAtom &operator [](std::string_view key) const;
+#endif
 		const std::vector<const char *> &keys() const;
 		bool exists(const char *const key) const;
 		size_t size() const;
