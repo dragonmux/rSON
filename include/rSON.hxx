@@ -600,6 +600,15 @@ namespace rSON
 		JSONArray &addArray();
 		JSONObject &addObject();
 
+		// Convert arbitrary integers to int64_t's to invoke the JSONInt handler properly
+		template<typename T> typename std::enable_if<std::is_integral<T>::value && !internal::isBoolean<T>::value &&
+			!std::is_enum<T>::value && !std::is_same<T, int64_t>::value>::type add(const T value)
+				{ add(static_cast<int64_t>(value)); }
+
+		// Convert enums to their underlying integer type to feed into the JSONInt handling
+		template<typename T> typename std::enable_if<std::is_enum<T>::value>::type add(const T value)
+			{ add(static_cast<typename std::underlying_type<T>::type>(value)); }
+
 		void del(const size_t key);
 		void del(const JSONAtom *value);
 		void del(const JSONAtom &value);
