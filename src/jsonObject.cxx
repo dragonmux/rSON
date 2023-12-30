@@ -94,7 +94,7 @@ JSONAtom &object_t::operator [](const std::string_view &key) const
 	return *node->second;
 }
 
-bool object_t::exists(const char *const key) const noexcept
+bool object_t::exists(const std::string_view &key) const noexcept
 	{ return children.find(key) != children.end(); }
 
 bool JSONObject::add(const char *const key, jsonAtomPtr_t &&value)
@@ -116,7 +116,19 @@ JSONAtom &JSONObject::operator [](const std::string &key) const
 JSONAtom &JSONObject::operator [](const std::string_view key) const
 	{ return (*obj)[key]; }
 const std::vector<const char *> &JSONObject::keys() const { return obj->keys(); }
-bool JSONObject::exists(const char *const key) const { return obj->exists(key); }
+
+bool JSONObject::exists(const char *const key) const
+{
+	/* Make sure the key is not nullptr before delegating into the normal existance logic */
+	if (key)
+		return obj->exists(key);
+	return false;
+}
+
+bool JSONObject::exists(const std::string &key) const
+	{ return obj->exists(key); }
+bool JSONObject::exists(const std::string_view key) const
+	{ return obj->exists(key); }
 size_t JSONObject::size() const { return obj->size(); }
 
 bool JSONObject::add(const char *const key, std::nullptr_t)

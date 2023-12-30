@@ -521,6 +521,10 @@ namespace rSON
 #endif
 		const std::vector<const char *> &keys() const;
 		bool exists(const char *const key) const;
+		bool exists(const std::string &key) const;
+#if __cplusplus >= 201703L
+		bool exists(std::string_view key) const;
+#endif
 		size_t size() const;
 		size_t count() const { return size(); }
 		size_t length() const rSON_VFINAL;

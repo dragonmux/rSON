@@ -84,7 +84,7 @@ namespace rSON
 			void del(const char *const key);
 			JSONAtom &operator [](const std::string_view &key) const;
 			const list_t &keys() const noexcept { return mapKeys; }
-			bool exists(const char *const key) const noexcept;
+			bool exists(const std::string_view &key) const noexcept;
 			size_t size() const noexcept { return children.size(); }
 			size_t count() const noexcept { return children.size(); }
 
