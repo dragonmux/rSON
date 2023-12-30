@@ -347,6 +347,17 @@ namespace rSON
 		JSONArray *addArray(std::string &&key);
 		JSONObject *addObject(std::string &&key);
 
+		// Convert arbitrary integers to int64_t's to invoke the JSONInt handler properly
+		template<typename T> typename std::enable_if<std::is_integral<T>::value && !internal::isBoolean<T>::value &&
+			!std::is_enum<T>::value && !std::is_same<T, int64_t>::value>::type
+				add(std::string &&key, const T value)
+			{ add(std::move(key), static_cast<int64_t>(value)); }
+
+		// Convert enums to their underlying integer type to feed into the JSONInt handling
+		template<typename T> typename std::enable_if<std::is_enum<T>::value>::type
+			add(std::string &&key, const T value)
+				{ add(std::move(key), static_cast<typename std::underlying_type<T>::type>(value)); }
+
 #if __cplusplus >= 201703L
 		bool add(const std::string_view &key, std::nullptr_t);
 		bool add(const std::string_view &key, bool value);
@@ -357,6 +368,17 @@ namespace rSON
 		bool add(const std::string_view &key, const std::string_view &value);
 		JSONArray *addArray(const std::string_view &key);
 		JSONObject *addObject(const std::string_view &key);
+
+		// Convert arbitrary integers to int64_t's to invoke the JSONInt handler properly
+		template<typename T> typename std::enable_if<std::is_integral<T>::value && !internal::isBoolean<T>::value &&
+			!std::is_enum<T>::value && !std::is_same<T, int64_t>::value>::type
+				add(const std::string_view &key, const T value)
+			{ add(key, static_cast<int64_t>(value)); }
+
+		// Convert enums to their underlying integer type to feed into the JSONInt handling
+		template<typename T> typename std::enable_if<std::is_enum<T>::value>::type
+			add(const std::string_view &key, const T value)
+				{ add(key, static_cast<typename std::underlying_type<T>::type>(value)); }
 #endif
 
 		// JSONArray helpers
