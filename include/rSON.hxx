@@ -293,7 +293,7 @@ namespace rSON
 
 		bool isNull() const rSON_NOEXCEPT { return typeIs(JSON_TYPE_NULL); }
 		void *asNull() const;
-		bool asBool() const { return *this; }
+		bool asBool() const;
 		int64_t asInt() const { return *this; }
 		double asFloat() const { return *this; }
 		const std::string &asString() const { return *this; }
@@ -303,7 +303,7 @@ namespace rSON
 		JSONArray *asArray() const;
 		JSONArray &asArrayRef() const { return *this; }
 
-		operator bool() const;
+		explicit operator bool() const { return asBool(); }
 		operator int8_t() const { return int8_t(asInt()); }
 		operator int16_t() const { return int16_t(asInt()); }
 		operator int32_t() const { return int32_t(asInt()); }

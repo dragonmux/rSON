@@ -41,7 +41,7 @@ void object_t::clone(const object_t &object)
 				case JSON_TYPE_NULL:
 					return substrate::make_unique<JSONNull>();
 				case JSON_TYPE_BOOL:
-					return substrate::make_unique<JSONBool>(value);
+					return substrate::make_unique<JSONBool>(value.asBool());
 				case JSON_TYPE_INT:
 					return substrate::make_unique<JSONInt>(value);
 				case JSON_TYPE_FLOAT:

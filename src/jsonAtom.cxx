@@ -25,7 +25,7 @@ void *JSONAtom::asNull() const
 	return nullptr;
 }
 
-JSONAtom::operator bool() const
+bool JSONAtom::asBool() const
 {
 	if (!typeIs(JSON_TYPE_BOOL))
 		throw JSONTypeError(type, JSON_TYPE_BOOL);
