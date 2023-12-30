@@ -27,11 +27,6 @@
 #define snprintf _snprintf
 #endif
 
-template<typename> struct isBoolean_ : public std::false_type { };
-template<> struct isBoolean_<bool> : public std::true_type { };
-template<typename T> struct isBoolean : public std::integral_constant<bool,
-	isBoolean_<typename std::remove_cv<T>::type>::value> { };
-
 // Type aliases for some type_traits utilities to make them easier to type and read below
 template<bool B, typename T = void> using enableIf = typename std::enable_if<B, T>::type;
 template<typename A, typename B> using isSame = std::is_same<A, B>;

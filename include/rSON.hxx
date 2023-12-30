@@ -29,6 +29,7 @@
 #include <filesystem>
 #include <string_view>
 #endif
+#include <type_traits>
 #include <fcntl.h>
 
 #ifdef _WIN32
@@ -234,6 +235,11 @@ namespace rSON
 		struct string_t;
 		struct object_t;
 		struct array_t;
+
+		template<typename> struct isBoolean_ : std::false_type { };
+		template<> struct isBoolean_<bool> : std::true_type { };
+
+		template<typename T> struct isBoolean : isBoolean_<typename std::remove_cv<T>::type> { };
 	}
 
 	template<typename T> struct opaquePtr_t final
@@ -366,9 +372,15 @@ namespace rSON
 		JSONArray &addArray();
 		JSONObject &addObject();
 
+		// Convert arbitrary integers to int64_t's to invoke the JSONInt handler properly
+		template<typename T> typename std::enable_if<std::is_integral<T>::value && !internal::isBoolean<T>::value &&
+			!std::is_enum<T>::value && !std::is_same<T, int64_t>::value>::type add(const T value)
+				{ add(static_cast<int64_t>(value)); }
+
 		// Utility functions to help with type checking (validation)
 		bool typeIs(const JSONAtomType atomType) const rSON_NOEXCEPT { return type == atomType; }
-		bool typeIsOrNull(const JSONAtomType atomType) const rSON_NOEXCEPT { return type == atomType || type == JSON_TYPE_NULL; }
+		bool typeIsOrNull(const JSONAtomType atomType) const rSON_NOEXCEPT
+			{ return type == atomType || type == JSON_TYPE_NULL; }
 	};
 	using jsonAtom_t = JSONAtom;
 	using jsonAtomPtr_t = std::unique_ptr<JSONAtom>;
