@@ -377,6 +377,10 @@ namespace rSON
 			!std::is_enum<T>::value && !std::is_same<T, int64_t>::value>::type add(const T value)
 				{ add(static_cast<int64_t>(value)); }
 
+		// Convert enums to their underlying integer type to feed into the JSONInt handling
+		template<typename T> typename std::enable_if<std::is_enum<T>::value>::type add(const T value)
+			{ add(static_cast<typename std::underlying_type<T>::type>(value)); }
+
 		// Utility functions to help with type checking (validation)
 		bool typeIs(const JSONAtomType atomType) const rSON_NOEXCEPT { return type == atomType; }
 		bool typeIsOrNull(const JSONAtomType atomType) const rSON_NOEXCEPT
