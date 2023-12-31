@@ -1,5 +1,5 @@
-#ifndef TEST_HEADER__H
-#define TEST_HEADER__H
+#ifndef TEST_HEADER_H
+#define TEST_HEADER_H
 
 struct streamTest_t final
 {
@@ -19,4 +19,4 @@ void readStream();
 void badReadStream();
 void writeArray();
 
-#endif /*TEST_HEADER__H*/
+#endif /*TEST_HEADER_H*/

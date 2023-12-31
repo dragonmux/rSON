@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __STRING_H__
-#define __STRING_H__
+#ifndef INTERNAL_STRING_HXX
+#define INTERNAL_STRING_HXX
 
 #include <stdlib.h>
 #include <memory>
@@ -27,4 +27,4 @@ extern size_t formatLen(const char *const format, ...);
 extern char *strNewDup(const char *const str);
 extern std::unique_ptr<char []> stringDup(const char *const str);
 
-#endif /*__STRING_H__*/
+#endif /*INTERNAL_STRING_HXX*/

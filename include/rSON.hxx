@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef rSON__H
-#define rSON__H
+#ifndef rSON_HXX
+#define rSON_HXX
 
 #include <stdint.h>
 #include <string.h>
@@ -33,7 +33,7 @@
 #include <fcntl.h>
 
 #ifdef _WIN32
-#	ifdef __rSON__
+#	ifdef rSON_EXPORT_API
 #		define rSON_CLS_API __declspec(dllexport)
 #	else
 #		define rSON_CLS_API __declspec(dllimport)
@@ -670,4 +670,4 @@ namespace rSON
 #endif
 }
 
-#endif /*rSON__H*/
+#endif /*rSON_HXX*/

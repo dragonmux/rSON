@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef INTERNAL__H
-#define INTERNAL__H
+#ifndef INTERNAL_TYPES_HXX
+#define INTERNAL_TYPES_HXX
 
 #include <string>
 #include <string_view>
@@ -154,4 +154,4 @@ using namespace rSON::internal;
 
 inline size_t strlen(const std::unique_ptr<char []> &str) noexcept { return strlen(str.get()); }
 
-#endif /*INTERNAL__H*/
+#endif /*INTERNAL_TYPES_HXX*/

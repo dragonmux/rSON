@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef PARSER__H
-#define PARSER__H
+#ifndef INTERNAL_PARSER_HXX
+#define INTERNAL_PARSER_HXX
 
 #include <memory>
 #include <queue>
@@ -54,4 +54,4 @@ JSONAtom *array(JSONParser &parser);
 JSONAtom *number(JSONParser &parser);
 JSONAtom *literal(JSONParser &parser);
 
-#endif /*PARSER__H*/
+#endif /*INTERNAL_PARSER_HXX*/

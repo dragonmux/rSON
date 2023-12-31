@@ -12,7 +12,7 @@ substrate = subproject(
 	'substrate_dep'
 )
 
-add_project_arguments('-D__rSON__', language: 'cpp')
+add_project_arguments('-DrSON_EXPORT_API', language: 'cpp')
 
 rSONSrc = [
 	'jsonErrors.cxx', 'jsonAtom.cxx', 'jsonNull.cxx', 'jsonBool.cxx',

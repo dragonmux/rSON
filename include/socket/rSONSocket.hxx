@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef rSON_RPC__HXX
-#define rSON_RPC__HXX
+#ifndef rSON_SOCKET_HXX
+#define rSON_SOCKET_HXX
 
 #include <rSON.hxx>
 
@@ -130,4 +130,4 @@ namespace rSON
 	};
 }
 
-#endif /*rSON_RPC__HXX*/
+#endif /*rSON_SOCKET_HXX*/
