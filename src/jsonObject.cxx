@@ -31,9 +31,9 @@ JSONObject::JSONObject(JSONObject &object) : JSONObject{}
 
 void object_t::clone(const object_t &object)
 {
-	for (const auto &atom : object)
+	for (const auto &[key, atom] : object)
 	{
-		add(std::string{atom.first}, [](const JSONAtom &value) -> std::unique_ptr<JSONAtom>
+		add(std::string{key}, [](const JSONAtom &value) -> std::unique_ptr<JSONAtom>
 		{
 			switch (value.getType())
 			{
@@ -54,7 +54,7 @@ void object_t::clone(const object_t &object)
 				default:
 					throw JSONObjectError(JSON_OBJECT_BAD_KEY);
 			}
-		}(*atom.second));
+		}(*atom));
 	}
 }
 
