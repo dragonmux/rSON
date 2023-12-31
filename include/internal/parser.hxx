@@ -46,13 +46,13 @@ public:
 	size_t number(const bool zeroSpecial, size_t *const decDigits = nullptr);
 } JSONParser;
 
-JSONAtom *expression(JSONParser &parser, const bool matchComma = true);
+std::unique_ptr<JSONAtom> expression(JSONParser &parser, const bool matchComma = true);
 inline size_t length(const char *const str) noexcept { return strlen(str) + 1; }
 
 size_t power10(size_t power);
-JSONAtom *object(JSONParser &parser);
-JSONAtom *array(JSONParser &parser);
-JSONAtom *number(JSONParser &parser);
-JSONAtom *literal(JSONParser &parser);
+std::unique_ptr<JSONAtom> object(JSONParser &parser);
+std::unique_ptr<JSONAtom> array(JSONParser &parser);
+std::unique_ptr<JSONAtom> number(JSONParser &parser);
+std::unique_ptr<JSONAtom> literal(JSONParser &parser);
 
 #endif /*INTERNAL_PARSER_HXX*/

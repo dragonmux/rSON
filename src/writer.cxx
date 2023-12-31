@@ -181,9 +181,9 @@ void JSONArray::store(stream_t &stream) const
 	stream.write(']');
 }
 
-bool rSON::writeJSON(const JSONAtom *const atom, stream_t &stream)
+bool rSON::writeJSON(const JSONAtomContainer atom, stream_t &stream)
 {
-	if (atom == nullptr)
+	if (!atom.hasValue())
 		return false;
 	atom->store(stream);
 	stream.writeSync();

@@ -342,9 +342,9 @@ size_t JSONParser::number(const bool zeroSpecial, size_t *const decDigits)
 }
 
 // Parses an object
-JSONAtom *object(JSONParser &parser)
+std::unique_ptr<JSONAtom> object(JSONParser &parser)
 {
-	std::unique_ptr<JSONObject> object(new JSONObject());
+	auto object{std::make_unique<JSONObject>()};
 	parser.match('{', true);
 	while (isObjectEnd(parser.currentChar()) == false)
 	{
@@ -355,20 +355,20 @@ JSONAtom *object(JSONParser &parser)
 	if (parser.lastTokenComma())
 		throw JSONParserError(JSON_PARSER_BAD_JSON);
 	parser.match('}', true);
-	return object.release();
+	return object;
 }
 
 // Parses an array
-JSONAtom *array(JSONParser &parser)
+std::unique_ptr<JSONAtom> array(JSONParser &parser)
 {
-	std::unique_ptr<JSONArray> array(new JSONArray());
+	auto array{std::make_unique<JSONArray>()};
 	parser.match('[', true);
 	while (!isArrayEnd(parser.currentChar()))
 		array->add(expression(parser));
 	if (parser.lastTokenComma())
 		throw JSONParserError(JSON_PARSER_BAD_JSON);
 	parser.match(']', true);
-	return array.release();
+	return array;
 }
 
 // Raise 10 to the power of power.
@@ -382,7 +382,7 @@ size_t power10(size_t power)
 }
 
 // Parses a JSON number, using the positive natural parser.
-JSONAtom *number(JSONParser &parser)
+std::unique_ptr<JSONAtom> number(JSONParser &parser)
 {
 	bool sign = false, mulSign = false;
 	int64_t integer = 0;
@@ -423,8 +423,8 @@ JSONAtom *number(JSONParser &parser)
 		else
 			integer *= mul;
 		if (sign)
-			return new JSONInt(-integer);
-		return new JSONInt(integer);
+			return std::make_unique<JSONInt>(-integer);
+		return std::make_unique<JSONInt>(integer);
 	}
 	else
 	{
@@ -436,28 +436,28 @@ JSONAtom *number(JSONParser &parser)
 		else
 			num *= mul;
 		if (sign)
-			return new JSONFloat(-num);
-		return new JSONFloat(num);
+			return std::make_unique<JSONFloat>(-num);
+		return std::make_unique<JSONFloat>(num);
 	}
 }
 
 // Parses the literals "true", "false" and "null"
-JSONAtom *literal(JSONParser &parser)
+std::unique_ptr<JSONAtom> literal(JSONParser &parser)
 {
 	std::unique_ptr<char []> lit(parser.literal());
 	if (strcmp(lit.get(), "true") == 0)
-		return new JSONBool(true);
+		return std::make_unique<JSONBool>(true);
 	else if (strcmp(lit.get(), "false") == 0)
-		return new JSONBool(false);
+		return std::make_unique<JSONBool>(false);
 	else if (strcmp(lit.get(), "null") == 0)
-		return new JSONNull();
+		return std::make_unique<JSONNull>();
 	throw JSONParserError(JSON_PARSER_BAD_JSON);
 }
 
 // Parses an expression of some sort
-JSONAtom *expression(JSONParser &parser, const bool matchComma)
+std::unique_ptr<JSONAtom> expression(JSONParser &parser, const bool matchComma)
 {
-	JSONAtom *atom = nullptr;
+	std::unique_ptr<JSONAtom> atom{};
 	switch (parser.currentChar())
 	{
 		case '{':
@@ -467,7 +467,7 @@ JSONAtom *expression(JSONParser &parser, const bool matchComma)
 			atom = array(parser);
 			break;
 		case '"':
-			atom = new JSONString(parser.string());
+			atom = std::make_unique<JSONString>(parser.string());
 			break;
 	}
 
@@ -491,7 +491,7 @@ JSONAtom *expression(JSONParser &parser, const bool matchComma)
 // It then performs a try-catch in which expression() is invoked. if an exception is thrown or needs to be thrown,
 // the parser object this temporarily creates is cleaned up before the exception is (re)thrown.
 // If everything went OK, this then cleans up the parser object and returns the resulting JSONAtom tree.
-JSONAtom *rSON::parseJSON(stream_t &json) try
+std::unique_ptr<JSONAtom> rSON::parseJSON(stream_t &json) try
 {
 	JSONParser parser(json);
 	if (isObjectBegin(parser.currentChar()) || isArrayBegin(parser.currentChar()))
@@ -505,8 +505,17 @@ JSONAtom *rSON::parseJSON(stream_t &json) try
 }
 catch (JSONParserError &) { json.readSync(); throw; }
 
-JSONAtom *rSON::parseJSON(const char *json)
+std::unique_ptr<JSONAtom> rSON::parseJSON(const std::string_view json)
 {
-	memoryStream_t stream(const_cast<char *>(json), length(json));
+	memoryStream_t stream{const_cast<char *>(json.data()), json.length()};
+	return rSON::parseJSON(stream);
+}
+
+std::unique_ptr<JSONAtom> rSON::parseJSON(const std::string &json)
+	{ return parseJSON(std::string_view{json}); }
+
+std::unique_ptr<JSONAtom> rSON::parseJSON(const char *json)
+{
+	memoryStream_t stream{const_cast<char *>(json), length(json)};
 	return rSON::parseJSON(stream);
 }

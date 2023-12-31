@@ -352,10 +352,9 @@ void testArray()
 #define TRY(testString, tests) \
 try \
 { \
-	atom = parseJSON(testString); \
-	assertNotNull(atom); \
+	auto atom = parseJSON(testString); \
+	assertNotNull(atom.get()); \
 	tests; \
-	delete atom; \
 } \
 catch (JSONParserError &err) \
 { \
@@ -363,15 +362,13 @@ catch (JSONParserError &err) \
 } \
 catch (JSONTypeError &err) \
 { \
-	delete atom; \
 	fail(err.error()); \
 }
 
 #define TRY_SHOULD_FAIL(testString) \
 try \
 { \
-	atom = parseJSON(testString); \
-	delete atom; \
+	auto atom = parseJSON(testString); \
 	fail("The parser failed to throw an exception on invalid JSON"); \
 } \
 catch (JSONParserError &err) \
@@ -380,12 +377,10 @@ catch (JSONParserError &err) \
 
 void testParseJSON()
 {
-	JSONAtom *atom;
 	JSONObject *object;
 	JSONArray *array, *innerArray;
 
 	TRY("{\n\t\"testInt\": 0,\n\t\"testArray\": [\n\t\tnull,\n\t\ttrue,\n\t\tfalse\n\t]\n}",
-		assertNotNull(atom);
 		object = atom->asObject();
 		assertIntEqual(object->size(), 2);
 		assertTrue(object->exists("testInt"));
@@ -402,7 +397,6 @@ void testParseJSON()
 	);
 
 	TRY("[\n\t0,\n\t[\n\t\tnull,\n\t\ttrue,\n\t\tfalse\n\t]\n]",
-		assertNotNull(atom);
 		array = atom->asArray();
 		assertIntEqual(array->size(), 2);
 		assertNotNull(&(*array)[0]);
@@ -419,7 +413,6 @@ void testParseJSON()
 	);
 
 	TRY("[\n\t0,\n\t1\n]",
-		assertNotNull(atom);
 		array = atom->asArray();
 		assertIntEqual(array->size(), 2);
 		assertIntEqual((*array)[0].asInt(), 0);
@@ -427,7 +420,6 @@ void testParseJSON()
 	);
 
 	TRY("[{\"foo\": \"bar\"}]",
-		assertNotNull(atom);
 		array = atom->asArray();
 		assertIntEqual(array->size(), 1);
 		assertNotNull(&(*array)[0]);
@@ -452,10 +444,9 @@ try \
 { \
 	fileStream_t file{testFile, O_RDONLY | O_EXCL | O_NOCTTY}; \
 	assertTrue(file.valid()); \
-	atom = parseJSON(file); \
-	assertNotNull(atom); \
+	auto atom = parseJSON(file); \
+	assertNotNull(atom.get()); \
 	tests; \
-	delete atom; \
 } \
 catch (const std::system_error &err) \
 { \
@@ -467,7 +458,6 @@ catch (JSONParserError &err) \
 } \
 catch (JSONTypeError &err) \
 { \
-	delete atom; \
 	fail(err.error()); \
 }
 
@@ -475,8 +465,7 @@ catch (JSONTypeError &err) \
 try \
 { \
 	fileStream_t file{testFile, O_RDONLY | O_EXCL | O_NOCTTY}; \
-	atom = parseJSON(file); \
-	delete atom; \
+	auto atom = parseJSON(file); \
 	fail("The parser failed to throw an exception on invalid JSON"); \
 } \
 catch (const std::system_error &) \
@@ -488,8 +477,6 @@ catch (const JSONParserError &) \
 
 void testParseJSONFile()
 {
-	JSONAtom *atom;
-
 	TRY_SHOULD_FAIL("nonExistant.json");
 	[]()
 	{
@@ -524,37 +511,27 @@ void testParseJSONFile()
 	try
 	{
 		fileStream_t file{"test.json", O_RDONLY};
-		atom = parseJSON(file);
-		assertNotNull(atom);
+		auto atom = parseJSON(file);
+		assertNotNull(atom.get());
 		assertIntEqual(atom->getType(), JSON_TYPE_ARRAY);
 		const JSONArray &array{*atom};
 		assertIntEqual(array.size(), 1);
 		assertIntEqual(array[0].getType(), JSON_TYPE_OBJECT);
 		const JSONObject &object{array[0]};
 		assertIntEqual(object.size(), 1);
-		delete atom;
 	}
 	catch (JSONParserError &err) { fail(err.error()); }
-	catch (JSONTypeError &err)
-	{
-		delete atom;
-		fail(err.error());
-	}
+	catch (JSONTypeError &err) { fail(err.error()); }
 
 	try
 	{
 		fileStream_t file{"../compile_commands.json", O_RDONLY};
-		atom = parseJSON(file);
-		assertNotNull(atom);
+		auto atom = parseJSON(file);
+		assertNotNull(atom.get());
 		assertIntEqual(atom->getType(), JSON_TYPE_ARRAY);
-		delete atom;
 	}
 	catch (JSONParserError &err) { fail(err.error()); }
-	catch (JSONTypeError &err)
-	{
-		delete atom;
-		fail(err.error());
-	}
+	catch (JSONTypeError &err) { fail(err.error()); }
 
 	unlink("test.json");
 }

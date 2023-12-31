@@ -147,8 +147,8 @@ void testFileWrite()
 		"\"title\": \"Sample Konfabulator Widget\", \"width\": 500}}}";
 	// Create the tree to write from the above blob
 	memoryStream_t sourceStream(const_cast<char *const>(refData), strlen(refData) + 1);
-	JSONAtom *json = parseJSON(sourceStream);
-	assertNotNull(json);
+	auto json = parseJSON(sourceStream);
+	assertNotNull(json.get());
 
 	// Write it using the stream writer engine, and using writeJSON for code coverage
 	fileStream_t destStream("test.json", O_RDWR | O_CREAT | O_TRUNC | O_NOCTTY, S_IRUSR | S_IWUSR);

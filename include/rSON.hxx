@@ -702,10 +702,14 @@ namespace rSON
 	};
 	using jsonArray_t = JSONArray;
 
-	rSON_API JSONAtom *parseJSON(stream_t &json);
-	rSON_API JSONAtom *parseJSON(const char *json);
+	rSON_API std::unique_ptr<JSONAtom> parseJSON(stream_t &json);
+	rSON_API std::unique_ptr<JSONAtom> parseJSON(const char *json);
+	rSON_API std::unique_ptr<JSONAtom> parseJSON(const std::string &json);
+#if __cplusplus >= 201703L
+	rSON_API std::unique_ptr<JSONAtom> parseJSON(std::string_view json);
+#endif
 
-	rSON_API bool writeJSON(const JSONAtom *const atom, stream_t &stream);
+	rSON_API bool writeJSON(JSONAtomContainer atom, stream_t &stream);
 
 	// Utility templates to help with type checking (validation)
 	template<JSONAtomType type> bool typeIs(const JSONAtom &atom) noexcept { return atom.typeIs(type); }
@@ -718,7 +722,7 @@ namespace rSON
 	constexpr int32_t normalMode{O_RDONLY | O_NOCTTY};
 #	endif
 
-	[[nodiscard]] rSON_API inline JSONAtom *parseJSON(const std::filesystem::path &fileName)
+	[[nodiscard]] rSON_API inline std::unique_ptr<JSONAtom> parseJSON(const std::filesystem::path &fileName)
 	{
 		fileStream_t stream{fileName.c_str(), normalMode};
 		return rSON::parseJSON(stream);

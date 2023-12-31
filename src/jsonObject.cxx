@@ -17,7 +17,6 @@
  */
 
 #include <algorithm>
-#include <substrate/utility>
 #include "internal/types.hxx"
 #include "internal/string.hxx"
 
@@ -39,19 +38,19 @@ void object_t::clone(const object_t &object)
 			switch (value.getType())
 			{
 				case JSON_TYPE_NULL:
-					return substrate::make_unique<JSONNull>();
+					return std::make_unique<JSONNull>();
 				case JSON_TYPE_BOOL:
-					return substrate::make_unique<JSONBool>(value.asBool());
+					return std::make_unique<JSONBool>(value.asBool());
 				case JSON_TYPE_INT:
-					return substrate::make_unique<JSONInt>(value);
+					return std::make_unique<JSONInt>(value);
 				case JSON_TYPE_FLOAT:
-					return substrate::make_unique<JSONFloat>(value);
+					return std::make_unique<JSONFloat>(value);
 				case JSON_TYPE_STRING:
-					return substrate::make_unique<JSONString>(value.asString());
+					return std::make_unique<JSONString>(value.asString());
 				case JSON_TYPE_OBJECT:
-					return substrate::make_unique<JSONObject>(value);
+					return std::make_unique<JSONObject>(value);
 				case JSON_TYPE_ARRAY:
-					return substrate::make_unique<JSONArray>(value);
+					return std::make_unique<JSONArray>(value);
 				default:
 					throw JSONObjectError(JSON_OBJECT_BAD_KEY);
 			}
