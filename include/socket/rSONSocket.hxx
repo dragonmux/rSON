@@ -122,11 +122,11 @@ namespace rSON
 		rSON_CLS_API bool listen(const char *const where, uint16_t port) noexcept;
 		rSON_CLS_API rpcStream_t accept() const noexcept;
 
-		rSON_CLS_API bool read(void *const value, const size_t valueLen, size_t &actualLen) final override;
-		rSON_CLS_API bool write(const void *const value, const size_t valueLen) final override;
-		rSON_CLS_API bool atEOF() const noexcept final override;
-		rSON_CLS_API void readSync() noexcept final override;
-		rSON_CLS_API void writeSync() noexcept final override;
+		rSON_CLS_API bool read(void *const value, const size_t valueLen, size_t &actualLen) final;
+		rSON_CLS_API bool write(const void *const value, const size_t valueLen) final;
+		rSON_CLS_API bool atEOF() const noexcept final;
+		rSON_CLS_API void readSync() noexcept final;
+		rSON_CLS_API void writeSync() noexcept final;
 	};
 }
 

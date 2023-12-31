@@ -31,7 +31,8 @@ using ssize_t = typename std::make_signed<size_t>::type;
 
 #include "internal/types.hxx"
 
-fileStream_t::fileStream_t(const char *const fileName, const int32_t _mode, const int32_t perms) : fd(-1), eof(false), mode(_mode)
+fileStream_t::fileStream_t(const char *const fileName, const int32_t _mode, const int32_t perms) :
+	fd(-1), eof(false), mode(_mode)
 {
 	struct stat fileStat;
 	fd = open(fileName, mode, perms);
@@ -76,17 +77,17 @@ bool fileStream_t::write(const void *const value, const size_t valueLen)
 	return !eof;
 }
 
-off_t fileStream_t::seek(const off_t offset, const int whence) rSON_NOEXCEPT
+off_t fileStream_t::seek(const off_t offset, const int whence) noexcept
 {
 	off_t result = lseek(fd, offset, whence);
 	eof = length == size_t(result);
 	return result;
 }
 
-memoryStream_t::memoryStream_t(void *const stream, const size_t streamLength) rSON_NOEXCEPT :
+memoryStream_t::memoryStream_t(void *const stream, const size_t streamLength) noexcept :
 	memory(static_cast<char *>(stream)), length(streamLength), pos(0) { }
 
-bool memoryStream_t::read(void *const value, const size_t valueLen, size_t &actualLen) rSON_NOEXCEPT
+bool memoryStream_t::read(void *const value, const size_t valueLen, size_t &actualLen) noexcept
 {
 	// If at "end of file", or the requested read would cause position wrap around, return false.
 	if (atEOF() || (pos + valueLen) < pos)
@@ -98,7 +99,7 @@ bool memoryStream_t::read(void *const value, const size_t valueLen, size_t &actu
 	return true;
 }
 
-bool memoryStream_t::write(const void *const value, const size_t valueLen) rSON_NOEXCEPT
+bool memoryStream_t::write(const void *const value, const size_t valueLen) noexcept
 {
 	// If at "end of file", or the requested write would cause position wrap-around, return false.
 	if (atEOF() || (pos + valueLen) < pos)
