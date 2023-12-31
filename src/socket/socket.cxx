@@ -23,20 +23,10 @@
 #include <netinet/in.h>
 #endif
 
+#include <array>
 #include <substrate/utility>
 #include "internal/types.hxx"
 #include "rSONSocket.hxx"
-
-#ifdef __GNUC__
-#if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
-#define SWAP 1
-#else
-#define SWAP 0
-#endif
-#elif defined(_MSC_VER)
-// This is wrong.. but it's better than nothing for MSVC.
-#define SWAP 1
-#endif
 
 #ifndef _MSC_VER
 #include <unistd.h>
@@ -45,23 +35,18 @@ inline int closesocket(const int s) { return close(s); }
 #include <Winsock2.h>
 #endif
 
-inline uint16_t swapBytes(const uint16_t val) noexcept
+static inline uint16_t asIntBE(const uint16_t value) noexcept
 {
-#if SWAP
-	return ((val >> 8) & 0xFF) | ((val & 0xFF) << 8);
-#endif
+	const std::array<uint8_t, 2> data
+	{{
+		uint8_t(value >> 8U),
+		uint8_t(value)
+	}};
+	uint16_t result{};
+	static_assert(sizeof(result) == data.size());
+	memcpy(&result, data.data(), data.size());
+	return result;
 }
-
-inline uint32_t swapBytes(const uint32_t val) noexcept
-{
-#if SWAP
-	return ((val >> 24) & 0xFF) | ((val >> 8) & 0xFF00) |
-		((val & 0xFF00) << 8) | ((val & 0xFF) << 24);
-#endif
-}
-
-template<typename T> inline void swapBytes(T &val) noexcept
-	{ val = swapBytes(val); }
 
 size_t sockaddrLen(const sockaddr_storage &addr) noexcept
 {
@@ -151,12 +136,12 @@ sockaddr_storage prepare(const socketType_t family, const char *const where, con
 	if (service.ss_family == AF_INET)
 	{
 		auto &addr = reinterpret_cast<sockaddr_in &>(service); // NOLINT(cppcoreguidelines-pro-type-reinterpret-cast) lgtm[cpp/reinterpret-cast]
-		addr.sin_port = swapBytes(port);
+		addr.sin_port = asIntBE(port);
 	}
 	else if (service.ss_family == AF_INET6)
 	{
 		auto &addr = reinterpret_cast<sockaddr_in6 &>(service); // NOLINT(cppcoreguidelines-pro-type-reinterpret-cast) lgtm[cpp/reinterpret-cast]
-		addr.sin6_port = swapBytes(port);
+		addr.sin6_port = asIntBE(port);
 	}
 	else
 		return {AF_UNSPEC};
