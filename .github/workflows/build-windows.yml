@@ -8,17 +8,19 @@ on:
     branches:
       - 'main'
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.job }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build-windows:
-    name: 'build-windows (${{ matrix.os }}, msvc, cov=${{ matrix.coverage }})'
+    name: '${{ matrix.os }} (msvc)'
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os:
-          - windows-2016
           - windows-2019
           - windows-2022
-        coverage: [false, true]
       fail-fast: false
     env:
       CC: cl.exe
@@ -26,56 +28,71 @@ jobs:
       LD: link.exe
     steps:
       - name: Runtime environment
-        shell: bash
         env:
           WORKSPACE: ${{ github.workspace }}
         run: |
-          echo "$HOME/.local/bin" >> $GITHUB_PATH
-          echo "GITHUB_WORKSPACE=`pwd`" >> $GITHUB_ENV
+          echo "$HOME\\.local\\bin" >> $GITHUB_PATH
+          echo "GITHUB_WORKSPACE=$(pwd)" >> $GITHUB_ENV
       - name: Setup compiler
         uses: ilammy/msvc-dev-cmd@v1
         with:
           arch: x86_64
-      - name: Setup OpenCppCoverage
-        if: matrix.coverage
-        shell: bash
-        run: |
-          curl -L1O https://github.com/OpenCppCoverage/OpenCppCoverage/releases/download/release-0.9.9.0/OpenCppCoverageSetup-x64-0.9.9.0.exe
-          MSYS2_ARG_CONV_EXCL=/dir=\;/verysilent ./OpenCppCoverageSetup-x64-0.9.9.0 \
-            /dir="C:\Program Files\OpenCppCoverage" /verysilent
-          rm OpenCppCoverageSetup-x64-0.9.9.0.exe
-      - name: Checkout rSON
-        uses: actions/checkout@v2
+      - name: Install OpenCppCoverage
+        if: github.repository == 'dragonmux/rSON'
+        uses: crazy-max/ghaction-chocolatey@v2.1.0
         with:
-          lfs: true
-          submodules: true
+          args: install OpenCppCoverage
+      - name: Setup OpenCppCoverage
+        if: github.repository == 'dragonmux/rSON'
+        run: |
+          echo "C:/Program Files/OpenCppCoverage" >> $env:GITHUB_PATH
       - name: Setup Meson + Ninja
-        shell: bash
         run: |
           python3 -m pip install --upgrade pip setuptools wheel
           python3 -m pip install meson ninja
         working-directory: ${{ runner.temp }}
       - name: Version tools
-        shell: bash
         run: |
-          $CC  || true
-          $LD  || true
+          cl /Bv
+          link
           meson --version
           ninja --version
+      - name: Checkout rSON
+        uses: actions/checkout@v3
+        with:
+          lfs: true
+          submodules: true
       - name: Configure
-        run: meson build --prefix=$HOME/.local -Db_coverage=${{ matrix.coverage }} $BUILD_OPTS
+        run: meson build --prefix=$HOME/.local $BUILD_OPTS
       - name: Build
-        run: ninja -C build
+        run: meson compile -C build
       - name: Test
-        #continue-on-error: ${{ startsWith(matrix.os, 'windows-2016') }}
-        run: ninja -C build test
+        run: meson test -C build
+      - name: Run coverage build
+        if: github.repository == 'dragonmux/rSON'
+        run: |
+          meson cov-build --prefix=$HOME/.local --buildtype=debug -Db_coverage=true
+          meson compile -C cov-build
+          meson test -C cov-build
       - name: Install
-        run: ninja -C build install
+        run: meson install -C build
+      - name: Upload failure logs
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: logs-${{ matrix.os }}-msvc
+          path: |
+            ${{ github.workspace }}/build/meson-logs/*
+            ${{ github.workspace }}/cov-build/meson-logs/*
+          retention-days: 5
       - name: Codecov
-        if: success() && matrix.coverage
-        uses: codecov/codecov-action@v2
+        if: success() && github.repository == 'dragonmux/rSON'
+        uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+
   build-mingw:
-    name: 'build-mingw (${{ matrix.os }}, ${{ matrix.sys.abi }}, cov=${{ matrix.coverage }})'
+    name: '${{ matrix.os }} (${{ matrix.sys }})'
     runs-on: ${{ matrix.os }}
     defaults:
       run:
@@ -84,81 +101,86 @@ jobs:
       matrix:
         os:
           - windows-2019
+          - windows-2022
         sys:
-          - { abi: mingw64, env: x86_64,       compiler: gcc }
-          - { abi: ucrt64,  env: ucrt-x86_64,  compiler: gcc }
-          - { abi: clang64, env: clang-x86_64, compiler: clang } # Experimental!
-        coverage: [false, true]
+          - mingw64
+          - ucrt64
+          - clang64
       fail-fast: false
     steps:
       - name: Use MinGW from MSYS
         uses: msys2/setup-msys2@v2
         with:
-          msystem: ${{matrix.sys.abi}}
+          msystem: ${{ matrix.sys }}
           update: true
           path-type: inherit
-          install: >-
-            mingw-w64-${{matrix.sys.env}}-toolchain
+          pacboy: >-
+            toolchain:p
+            lcov:p
+            meson:p
+            python-pip:p
+            python-lxml:p
       - name: Runtime environment
         env:
           WORKSPACE: ${{ github.workspace }}
         run: |
           echo "$HOME/.local/bin" >> $GITHUB_PATH
           echo "GITHUB_WORKSPACE=`pwd`" >> $GITHUB_ENV
-      - name: Coverage environment
-        env:
-          COVERAGE: ${{ matrix.coverage }}
-        run: |
-          echo "Coverage enabled for build? ${{ matrix.coverage }}"
-          echo -n "COVERAGE=" >> $GITHUB_ENV
-          ([ $COVERAGE == "true" ] && echo 1 || echo 0) >> $GITHUB_ENV
-          echo -n "BUILD_OPTS=" >> $GITHUB_ENV
-          ([ $COVERAGE == "true" ] && echo "--buildtype=debug" || echo "") >> $GITHUB_ENV
       - name: Setup compiler
-        if: startsWith(matrix.sys.abi, 'mingw64') || startsWith(matrix.sys.abi, 'ucrt64')
+        if: startsWith(matrix.sys, 'mingw') || startsWith(matrix.sys, 'ucrt64')
         run: |
-          CXX=${CC/#gcc/g++}
-          echo "CC=$CC" >> $GITHUB_ENV
-          echo "CXX=$CXX" >> $GITHUB_ENV
-          [ $COVERAGE -ne 0 ] && echo "GCOV=${CC/#gcc/gcov}" >> $GITHUB_ENV || true
-        env:
-          CC: ${{ matrix.sys.compiler }}
+          echo "GCOV=gcov" >> $GITHUB_ENV
       - name: Setup compiler
-        if: startsWith(matrix.sys.abi, 'clang64')
+        if: startsWith(matrix.sys, 'clang')
         run: |
-          CXX=${CC/#clang/clang++}
-          echo "CC=$CC" >> $GITHUB_ENV
-          echo "CXX=$CXX" >> $GITHUB_ENV
-          [ $COVERAGE -ne 0 ] && echo "GCOV=/usr/lib/${CC/#clang/llvm}/bin/llvm-cov gcov" >> $GITHUB_ENV || true
-        env:
-          CC: ${{ matrix.sys.compiler }}
-      - name: Chekcout rSON
-        uses: actions/checkout@v2
+          echo "GCOV=llvm-cov gcov" >> $GITHUB_ENV
+      - name: Setup gcovr
+        run: |
+          python3 -m pip install --upgrade pip setuptools wheel
+          python3 -m pip install gcovr
+        working-directory: ${{ runner.temp }}
+      - name: Version tools
+        run: |
+          cc --version
+          c++ --version
+          $GCOV --version
+          meson --version
+          ninja --version
+          gcovr --version
+      - name: Checkout rSON
+        uses: actions/checkout@v3
         with:
           lfs: true
           submodules: true
-      - name: Setup Meson + Ninja
-        shell: bash
-        run: |
-          python3 -m pip install --upgrade pip setuptools wheel
-          python3 -m pip install meson ninja
-        working-directory: ${{ runner.temp }}
-      - name: Version tools
-        shell: bash
-        run: |
-          $CC --version
-          $CXX --version
-          [ $COVERAGE -ne 0 ] && $GCOV --version || true
-          meson --version
-          ninja --version
       - name: Configure
-        run: meson build --prefix=$HOME/.local -Db_coverage=${{ matrix.coverage }} $BUILD_OPTS
+        run: meson setup build --prefix=$HOME/.local $BUILD_OPTS
       - name: Build
-        run: ninja -C build
+        run: meson compile -C build
       - name: Test
-        run: ninja -C build test
+        run: meson test -C build
+      - name: Run coverage build
+        if: github.repository == 'dragonmux/rSON'
+        # Codecov no longer parses gcov files automatically
+        run: |
+          meson setup cov-build --prefix=$HOME/.local --buildtype=debug -Db_coverage=true
+          meson compile -C cov-build
+          meson test -C cov-build
+          ninja -C cov-build coverage-xml
       - name: Install
-        run: ninja -C build install
+        run: meson install -C build
+      - name: Upload failure logs
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: logs-${{ matrix.os }}-${{ matrix.sys }}
+          path: |
+            ${{ github.workspace }}/build/meson-logs/*
+            ${{ github.workspace }}/cov-build/meson-logs/*
+          retention-days: 5
       - name: Codecov
-        if: success() && matrix.coverage
-        uses: codecov/codecov-action@v2
+        if: success() && github.repository == 'dragonmux/rSON'
+        uses: codecov/codecov-action@v3
+        with:
+          directory: ./cov-build/meson-logs
+          files: coverage.xml
+          token: ${{ secrets.CODECOV_TOKEN }}
