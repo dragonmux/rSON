@@ -188,7 +188,7 @@ template<typename T> void checkArray(T &array)
 	size_t i = 0;
 	for (const auto &valuePtr : array)
 	{
-		assertNotNull(valuePtr.get());
+		assertTrue(valuePtr.hasValue());
 		auto &valueAtom = *valuePtr;
 		assertIntEqual(valueAtom.getType(), JSON_TYPE_INT);
 		int32_t value = valueAtom;

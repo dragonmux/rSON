@@ -649,13 +649,47 @@ namespace rSON
 		void store(stream_t &stream) const final;
 	};
 
+	// Iterator type for the contents of a JSONArray, with nice semantics for accessing the objects within
+	class rSON_CLS_API JSONArrayIterator final
+	{
+	private:
+		const std::unique_ptr<JSONAtom> *item_;
+
+	public:
+		constexpr JSONArrayIterator(const std::unique_ptr<JSONAtom> *item) noexcept : item_{item} { }
+
+		JSONAtomContainer operator *() const noexcept
+		{
+			if (item_)
+				return *item_;
+			return {};
+		}
+
+		constexpr JSONArrayIterator &operator ++() noexcept
+		{
+			++item_;
+			return *this;
+		}
+
+		constexpr JSONArrayIterator &operator --() noexcept
+		{
+			--item_;
+			return *this;
+		}
+
+		constexpr bool operator ==(const JSONArrayIterator &other) const noexcept
+			{ return item_ == other.item_; }
+		constexpr bool operator !=(const JSONArrayIterator &other) const noexcept
+			{ return item_ != other.item_; }
+	};
+
 	class rSON_DEFAULT_VISIBILITY JSONArray : public JSONAtom
 	{
 	private:
 		OpaquePtr<internal::array_t> arr;
 
 	public:
-		using iterator = const std::unique_ptr<JSONAtom> *;
+		using iterator = JSONArrayIterator;
 
 		JSONArray();
 		JSONArray(JSONArray &array);

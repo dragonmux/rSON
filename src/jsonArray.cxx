@@ -94,10 +94,58 @@ void JSONArray::del(const JSONAtom *value) { arr->del(*value); }
 void JSONArray::del(const JSONAtom &value) { arr->del(value); }
 JSONAtom &JSONArray::operator [](const size_t key) const { return (*arr)[key]; }
 size_t JSONArray::size() const { return arr->size(); }
-JSONArray::iterator JSONArray::begin() noexcept { return &*arr->begin(); }
-JSONArray::iterator JSONArray::begin() const noexcept { return &*arr->begin(); }
-JSONArray::iterator JSONArray::end() noexcept { return &*arr->end(); }
-JSONArray::iterator JSONArray::end() const noexcept { return &*arr->end(); }
+
+JSONArray::iterator JSONArray::begin() noexcept
+{
+	// This must be a lambda otherwise constexpr evaluation of the pointer check fails
+	return [&]()
+	{
+		auto iter{arr->begin()};
+		if constexpr (std::is_pointer_v<decltype(iter)>)
+			return iter;
+		else
+			return iter.operator ->();
+	}();
+}
+
+JSONArray::iterator JSONArray::begin() const noexcept
+{
+	// This must be a lambda otherwise constexpr evaluation of the pointer check fails
+	return [&]()
+	{
+		const auto iter{arr->begin()};
+		if constexpr (std::is_pointer_v<decltype(iter)>)
+			return iter;
+		else
+			return iter.operator ->();
+	}();
+}
+
+JSONArray::iterator JSONArray::end() noexcept
+{
+	// This must be a lambda otherwise constexpr evaluation of the pointer check fails
+	return [&]()
+	{
+		auto iter{arr->end()};
+		if constexpr (std::is_pointer_v<decltype(iter)>)
+			return iter;
+		else
+			return iter.operator ->();
+	}();
+}
+
+JSONArray::iterator JSONArray::end() const noexcept
+{
+	// This must be a lambda otherwise constexpr evaluation of the pointer check fails
+	return [&]()
+	{
+		const auto iter{arr->end()};
+		if constexpr (std::is_pointer_v<decltype(iter)>)
+			return iter;
+		else
+			return iter.operator ->();
+	}();
+}
 
 void JSONArray::add(std::nullptr_t)
 	{ arr->add(std::make_unique<JSONNull>()); }
