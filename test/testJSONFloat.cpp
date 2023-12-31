@@ -58,18 +58,12 @@ void testDistruct()
 	testFloat = NULL;
 }
 
-#ifdef __cplusplus
 extern "C"
 {
-#endif
-
 BEGIN_REGISTER_TESTS()
 	TEST(testConstruct)
 	TEST(testOperatorDouble)
 	TEST(testConversions)
 	TEST(testDistruct)
 END_REGISTER_TESTS()
-
-#ifdef __cplusplus
 }
-#endif

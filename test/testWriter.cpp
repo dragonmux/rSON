@@ -169,11 +169,8 @@ void testFileWrite()
 	assertStringEqual(resultData, refData);
 }
 
-#ifdef __cplusplus
 extern "C"
 {
-#endif
-
 BEGIN_REGISTER_TESTS()
 	TEST(testNull)
 	TEST(testBool)
@@ -184,7 +181,4 @@ BEGIN_REGISTER_TESTS()
 	TEST(testBadWrite)
 	TEST(testFileWrite)
 END_REGISTER_TESTS()
-
-#ifdef __cplusplus
 }
-#endif

@@ -563,11 +563,8 @@ void testParseJSONFile()
 #undef TRY_SHOULD_FAIL
 #undef TRY
 
-#ifdef __cplusplus
 extern "C"
 {
-#endif
-
 BEGIN_REGISTER_TESTS()
 	TEST(testParserViability)
 	TEST(testStreamViability)
@@ -581,7 +578,4 @@ BEGIN_REGISTER_TESTS()
 	TEST(testParseJSON)
 	TEST(testParseJSONFile)
 END_REGISTER_TESTS()
-
-#ifdef __cplusplus
 }
-#endif

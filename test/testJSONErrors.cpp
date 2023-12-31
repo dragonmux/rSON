@@ -90,18 +90,12 @@ void testArrayError()
 	assertStringEqual(err.what(), "Invalid unknown error type for array error");
 }
 
-#ifdef __cplusplus
 extern "C"
 {
-#endif
-
 BEGIN_REGISTER_TESTS()
 	TEST(testParserError)
 	TEST(testTypeError)
 	TEST(testObjectError)
 	TEST(testArrayError)
 END_REGISTER_TESTS()
-
-#ifdef __cplusplus
 }
-#endif

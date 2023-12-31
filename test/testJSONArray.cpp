@@ -216,11 +216,8 @@ void testIterate()
 	checkArray<const JSONArray>(array);
 }
 
-#ifdef __cplusplus
 extern "C"
 {
-#endif
-
 BEGIN_REGISTER_TESTS()
 	TEST(testConstruct)
 	TEST(testConversions)
@@ -232,7 +229,4 @@ BEGIN_REGISTER_TESTS()
 	TEST(testDistruct)
 	TEST(testIterate)
 END_REGISTER_TESTS()
-
-#ifdef __cplusplus
 }
-#endif

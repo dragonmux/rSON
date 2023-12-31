@@ -47,16 +47,10 @@ void testStreamNOPs()
 	streamDelete(stream.release());
 }
 
-#ifdef __cplusplus
 extern "C"
 {
-#endif
-
 BEGIN_REGISTER_TESTS()
 	TEST(testStreamThrows)
 	TEST(testStreamNOPs)
 END_REGISTER_TESTS()
-
-#ifdef __cplusplus
 }
-#endif

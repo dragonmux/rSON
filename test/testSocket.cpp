@@ -173,15 +173,9 @@ void testPrepare()
 //	assertIntEqual(unspecStream_t().prepare("", 0).ss_family, AF_UNSPEC);
 }
 
-#ifdef __cplusplus
 extern "C"
 {
-#endif
-
 BEGIN_REGISTER_TESTS()
 	TEST(testPrepare)
 END_REGISTER_TESTS()
-
-#ifdef __cplusplus
 }
-#endif

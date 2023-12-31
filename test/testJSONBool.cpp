@@ -86,11 +86,8 @@ void testSet()
 	assertFalse(bool(*testBool));
 }
 
-#ifdef __cplusplus
 extern "C"
 {
-#endif
-
 BEGIN_REGISTER_TESTS()
 	TEST(testConstructTrue)
 	TEST(testOperatorBoolTrue)
@@ -101,7 +98,4 @@ BEGIN_REGISTER_TESTS()
 	TEST(testSet)
 	TEST(testDistruct)
 END_REGISTER_TESTS()
-
-#ifdef __cplusplus
 }
-#endif
