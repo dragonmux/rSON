@@ -239,18 +239,18 @@ namespace rSON
 		template<typename T> struct isBoolean : isBoolean_<typename std::remove_cv<T>::type> { };
 	}
 
-	template<typename T> struct opaquePtr_t final
+	template<typename T> struct OpaquePtr final
 	{
 	private:
 		T *ptr;
 		internal::delete_t deleteFunc;
 
 	public:
-		constexpr opaquePtr_t() noexcept : ptr{nullptr}, deleteFunc{nullptr} { }
-		opaquePtr_t(T *p, internal::delete_t &&del) noexcept : ptr{p}, deleteFunc{del} { }
-		opaquePtr_t(opaquePtr_t &&p) noexcept : opaquePtr_t{} { swap(p); }
-		~opaquePtr_t() noexcept { if (deleteFunc) deleteFunc(ptr); }
-		opaquePtr_t &operator =(opaquePtr_t &&p) noexcept { swap(p); return *this; }
+		constexpr OpaquePtr() noexcept : ptr{nullptr}, deleteFunc{nullptr} { }
+		OpaquePtr(T *p, internal::delete_t &&del) noexcept : ptr{p}, deleteFunc{del} { }
+		OpaquePtr(OpaquePtr &&p) noexcept : OpaquePtr{} { swap(p); }
+		~OpaquePtr() noexcept { if (deleteFunc) deleteFunc(ptr); }
+		OpaquePtr &operator =(OpaquePtr &&p) noexcept { swap(p); return *this; }
 
 		operator T &() const noexcept { return *ptr; }
 		explicit operator T &&() const = delete;
@@ -260,14 +260,14 @@ namespace rSON
 		const T *operator ->() const noexcept { return ptr; }
 		explicit operator bool() const noexcept { return ptr; }
 
-		void swap(opaquePtr_t &p) noexcept
+		void swap(OpaquePtr &p) noexcept
 		{
 			std::swap(ptr, p.ptr);
 			std::swap(deleteFunc, p.deleteFunc);
 		}
 
-		opaquePtr_t(const opaquePtr_t &) = delete;
-		opaquePtr_t &operator =(const opaquePtr_t &) = delete;
+		OpaquePtr(const OpaquePtr &) = delete;
+		OpaquePtr &operator =(const OpaquePtr &) = delete;
 	};
 
 	// Hierachy types
@@ -505,7 +505,7 @@ namespace rSON
 	class rSON_DEFAULT_VISIBILITY JSONString : public JSONAtom
 	{
 	private:
-		opaquePtr_t<internal::string_t> str;
+		OpaquePtr<internal::string_t> str;
 
 	public:
 		JSONString(char *value, size_t length);
@@ -558,7 +558,7 @@ namespace rSON
 	class rSON_DEFAULT_VISIBILITY JSONObject : public JSONAtom
 	{
 	private:
-		opaquePtr_t<internal::object_t> obj;
+		OpaquePtr<internal::object_t> obj;
 
 	public:
 		JSONObject();
@@ -655,7 +655,7 @@ namespace rSON
 	class rSON_DEFAULT_VISIBILITY JSONArray : public JSONAtom
 	{
 	private:
-		opaquePtr_t<internal::array_t> arr;
+		OpaquePtr<internal::array_t> arr;
 
 	public:
 		using iterator = const jsonAtomPtr_t *;

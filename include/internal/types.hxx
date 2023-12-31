@@ -127,22 +127,22 @@ namespace rSON
 			operator delete(object);
 		}
 
-		template<typename T> struct makeOpaque_ { using uniqueType = opaquePtr_t<T>; };
-		template<typename T> struct makeOpaque_<T []> { using arrayType = opaquePtr_t<T []>; };
+		template<typename T> struct makeOpaque_ { using uniqueType = OpaquePtr<T>; };
+		template<typename T> struct makeOpaque_<T []> { using arrayType = OpaquePtr<T []>; };
 		template<typename T, size_t N> struct makeOpaque_<T [N]> { struct invalidType { }; };
 
 #if !defined(_MSC_VER) || _MSC_VER >= 1928
 		template<typename T, typename... Args> inline typename makeOpaque_<T>::uniqueType makeOpaque(Args &&...args)
 		{
 			using consT = typename std::remove_const<T>::type;
-			return opaquePtr_t<T>(new consT(std::forward<Args>(args)...), del<T>);
+			return OpaquePtr<T>(new consT(std::forward<Args>(args)...), del<T>);
 		}
 #endif
 
 		template<typename T> inline typename makeOpaque_<T>::arrayType makeOpaque(const size_t num)
 		{
 			using consT = typename std::remove_const<typename std::remove_extent<T>::type>::type;
-			return opaquePtr_t<T>(new consT[num](), del<T []>);
+			return OpaquePtr<T>(new consT[num](), del<T []>);
 		}
 
 		template<typename T, typename... Args> inline typename makeOpaque_<T>::invalidType makeOpaque(Args &&...) noexcept = delete;
