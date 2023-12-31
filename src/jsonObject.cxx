@@ -96,10 +96,10 @@ JSONAtom &object_t::operator [](const std::string_view &key) const
 bool object_t::exists(const std::string_view &key) const noexcept
 	{ return children.find(key) != children.end(); }
 
-bool JSONObject::add(const char *const key, jsonAtomPtr_t &&value)
+bool JSONObject::add(const char *const key, std::unique_ptr<JSONAtom> &&value)
 	{ return obj->add(key, std::move(value)); }
 bool JSONObject::add(const char *const key, JSONAtom *value)
-	{ return obj->add(key, jsonAtomPtr_t{value}); }
+	{ return obj->add(key, std::unique_ptr<JSONAtom>{value}); }
 
 void JSONObject::del(const char *const key)
 {
@@ -168,10 +168,10 @@ JSONObject *JSONObject::addObject(const char *const key)
 	return static_cast<JSONObject *>(result);
 }
 
-bool JSONObject::add(std::string &&key, jsonAtomPtr_t &&value)
+bool JSONObject::add(std::string &&key, std::unique_ptr<JSONAtom> &&value)
 	{ return obj->add(std::move(key), std::move(value)); }
 bool JSONObject::add(std::string &&key, JSONAtom *value)
-	{ return obj->add(std::move(key), jsonAtomPtr_t{value}); }
+	{ return obj->add(std::move(key), std::unique_ptr<JSONAtom>{value}); }
 bool JSONObject::add(std::string &&key, std::nullptr_t)
 	{ return obj->add(std::move(key), std::make_unique<JSONNull>()); }
 bool JSONObject::add(std::string &&key, const bool value)
@@ -199,10 +199,10 @@ JSONObject *JSONObject::addObject(std::string &&key)
 	return static_cast<JSONObject *>(result);
 }
 
-bool JSONObject::add(const std::string_view &key, jsonAtomPtr_t &&value)
+bool JSONObject::add(const std::string_view &key, std::unique_ptr<JSONAtom> &&value)
 	{ return obj->add(std::string{key}, std::move(value)); }
 bool JSONObject::add(const std::string_view &key, JSONAtom *value)
-	{ return obj->add(std::string{key}, jsonAtomPtr_t{value}); }
+	{ return obj->add(std::string{key}, std::unique_ptr<JSONAtom>{value}); }
 bool JSONObject::add(const std::string_view &key, std::nullptr_t)
 	{ return obj->add(std::string{key}, std::make_unique<JSONNull>()); }
 bool JSONObject::add(const std::string_view &key, const bool value)

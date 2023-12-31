@@ -69,7 +69,7 @@ namespace rSON
 		struct object_t final
 		{
 		private:
-			using holder_t = std::map<std::string, jsonAtomPtr_t, std::less<>>;
+			using holder_t = std::map<std::string, std::unique_ptr<JSONAtom>, std::less<>>;
 			using list_t = std::vector<const char *>;
 			holder_t children{};
 			list_t mapKeys{};
@@ -80,7 +80,7 @@ namespace rSON
 
 			object_t() = default;
 			void clone(const object_t &object);
-			JSONAtom *add(std::string &&key, jsonAtomPtr_t &&value);
+			JSONAtom *add(std::string &&key, std::unique_ptr<JSONAtom> &&value);
 			void del(const std::string_view &key);
 			JSONAtom &operator [](const std::string_view &key) const;
 			const list_t &keys() const noexcept { return mapKeys; }
@@ -97,7 +97,7 @@ namespace rSON
 		struct array_t final
 		{
 		private:
-			using holder_t = std::vector<jsonAtomPtr_t>;
+			using holder_t = std::vector<std::unique_ptr<JSONAtom>>;
 			holder_t children{};
 
 		public:
@@ -106,7 +106,7 @@ namespace rSON
 
 			array_t() = default;
 			void clone(const array_t &array);
-			JSONAtom &add(jsonAtomPtr_t &&value);
+			JSONAtom &add(std::unique_ptr<JSONAtom> &&value);
 			void del(const size_t key);
 			void del(const JSONAtom &value);
 			JSONAtom &operator [](const size_t key) const;

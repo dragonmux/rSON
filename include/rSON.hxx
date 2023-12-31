@@ -405,8 +405,6 @@ namespace rSON
 		bool typeIsOrNull(const JSONAtomType atomType) const noexcept
 			{ return type == atomType || type == JSON_TYPE_NULL; }
 	};
-	using jsonAtom_t = JSONAtom;
-	using jsonAtomPtr_t = std::unique_ptr<JSONAtom>;
 
 	// A copyable, moveable, container that behaves like a `std::optional<JSONAtom &>` logically
 	// would if allowed, making correct usage of the library easier
@@ -565,7 +563,7 @@ namespace rSON
 		JSONObject(JSONObject &object);
 		~JSONObject() override = default;
 
-		bool add(const char *const key, jsonAtomPtr_t &&value);
+		bool add(const char *const key, std::unique_ptr<JSONAtom> &&value);
 		bool add(const char *const key, JSONAtom *value);
 		bool add(const char *const key, std::nullptr_t);
 		bool add(const char *const key, bool value);
@@ -579,7 +577,7 @@ namespace rSON
 		JSONArray *addArray(const char *const key);
 		JSONObject *addObject(const char *const key);
 
-		bool add(std::string &&key, jsonAtomPtr_t &&value);
+		bool add(std::string &&key, std::unique_ptr<JSONAtom> &&value);
 		bool add(std::string &&key, JSONAtom *value);
 		bool add(std::string &&key, std::nullptr_t);
 		bool add(std::string &&key, bool value);
@@ -605,7 +603,7 @@ namespace rSON
 				{ add(std::move(key), static_cast<typename std::underlying_type<T>::type>(value)); }
 
 #if __cplusplus >= 201703L
-		bool add(const std::string_view &key, jsonAtomPtr_t &&value);
+		bool add(const std::string_view &key, std::unique_ptr<JSONAtom> &&value);
 		bool add(const std::string_view &key, JSONAtom *value);
 		bool add(const std::string_view &key, std::nullptr_t);
 		bool add(const std::string_view &key, bool value);
@@ -650,7 +648,6 @@ namespace rSON
 		size_t length() const final;
 		void store(stream_t &stream) const final;
 	};
-	using jsonObject_t = JSONObject;
 
 	class rSON_DEFAULT_VISIBILITY JSONArray : public JSONAtom
 	{
@@ -658,13 +655,13 @@ namespace rSON
 		OpaquePtr<internal::array_t> arr;
 
 	public:
-		using iterator = const jsonAtomPtr_t *;
+		using iterator = const std::unique_ptr<JSONAtom> *;
 
 		JSONArray();
 		JSONArray(JSONArray &array);
 		~JSONArray() override = default;
 
-		void add(jsonAtomPtr_t &&value);
+		void add(std::unique_ptr<JSONAtom> &&value);
 		void add(JSONAtom *value);
 		void add(std::nullptr_t);
 		void add(bool value);
@@ -700,7 +697,6 @@ namespace rSON
 		size_t length() const final;
 		void store(stream_t &stream) const final;
 	};
-	using jsonArray_t = JSONArray;
 
 	rSON_API std::unique_ptr<JSONAtom> parseJSON(stream_t &json);
 	rSON_API std::unique_ptr<JSONAtom> parseJSON(const char *json);

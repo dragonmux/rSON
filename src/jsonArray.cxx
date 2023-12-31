@@ -58,7 +58,7 @@ void array_t::clone(const array_t &array)
 	}
 }
 
-JSONAtom &array_t::add(jsonAtomPtr_t &&value)
+JSONAtom &array_t::add(std::unique_ptr<JSONAtom> &&value)
 	{ return *children.emplace_back(std::move(value)); }
 
 void array_t::del(const size_t key)
@@ -71,7 +71,7 @@ void array_t::del(const size_t key)
 void array_t::del(const JSONAtom &value)
 {
 	const auto &atom = std::find_if(children.begin(), children.end(),
-		[&](const jsonAtomPtr_t &atom) -> bool { return atom.get() == &value; });
+		[&](const std::unique_ptr<JSONAtom> &atom) -> bool { return atom.get() == &value; });
 	children.erase(atom);
 }
 
@@ -85,10 +85,10 @@ JSONAtom &array_t::operator [](const size_t key) const
 const JSONAtom *array_t::last() const noexcept
 	{ return children.empty() ? nullptr : children.back().get(); }
 
-void JSONArray::add(jsonAtomPtr_t &&value)
+void JSONArray::add(std::unique_ptr<JSONAtom> &&value)
 	{ arr->add(std::move(value)); }
 void JSONArray::add(JSONAtom *value)
-	{ arr->add(jsonAtomPtr_t{value}); }
+	{ arr->add(std::unique_ptr<JSONAtom>{value}); }
 void JSONArray::del(const size_t key) { arr->del(key); }
 void JSONArray::del(const JSONAtom *value) { arr->del(*value); }
 void JSONArray::del(const JSONAtom &value) { arr->del(value); }
