@@ -29,12 +29,14 @@
 #include <memory>
 #include <vector>
 #include <exception>
+#include <stdexcept>
 #include <string>
 #if __cplusplus >= 201703L
 #include <filesystem>
 #include <string_view>
 #endif
 #include <type_traits>
+#include <utility>
 #include <fcntl.h>
 
 #ifdef _WIN32
@@ -405,6 +407,65 @@ namespace rSON
 	};
 	using jsonAtom_t = JSONAtom;
 	using jsonAtomPtr_t = std::unique_ptr<JSONAtom>;
+
+	// A copyable, moveable, container that behaves like a `std::optional<JSONAtom &>` logically
+	// would if allowed, making correct usage of the library easier
+	class rSON_DEFAULT_VISIBILITY JSONAtomContainer final
+	{
+	private:
+		JSONAtom *atom{nullptr};
+
+	public:
+		constexpr JSONAtomContainer() noexcept = default;
+		JSONAtomContainer(const std::unique_ptr<JSONAtom> &ptr) noexcept : atom{ptr.get()} { }
+		constexpr JSONAtomContainer(JSONAtom *ptr) noexcept : atom{ptr} { }
+		constexpr JSONAtomContainer(const JSONAtomContainer &) noexcept = default;
+		constexpr JSONAtomContainer(JSONAtomContainer &&) noexcept = default;
+		~JSONAtomContainer() noexcept = default;
+		constexpr JSONAtomContainer &operator =(const JSONAtomContainer &) noexcept = default;
+		constexpr JSONAtomContainer &operator =(JSONAtomContainer &&) noexcept = default;
+
+		// Value validity checking helpers
+		constexpr explicit operator bool() const noexcept { return hasValue(); }
+		constexpr bool hasValue() const noexcept { return atom; }
+
+		// Value retrival helpers (these throw std::logic_error if you try to ask for an invalid reference)
+		constexpr JSONAtom &value() &
+		{
+			if (!hasValue())
+				throw std::logic_error{"JSONAtomContainer does not contain a valid atom"};
+			return *atom;
+		}
+
+		constexpr JSONAtom &value() const &
+		{
+			if (!hasValue())
+				throw std::logic_error{"JSONAtomContainer does not contain a valid atom"};
+			return *atom;
+		}
+
+		constexpr const JSONAtom *operator ->() const noexcept
+			{ return atom; }
+		constexpr JSONAtom *operator ->() noexcept
+			{ return atom; }
+
+		constexpr const JSONAtom &operator *() const noexcept
+			{ return *atom; }
+		constexpr JSONAtom &operator *() noexcept
+			{ return *atom; }
+
+		// Held value modifiers
+		void swap(JSONAtomContainer &other) noexcept
+			{ std::swap(atom, other.atom); }
+		constexpr void reset() noexcept
+			{ atom = nullptr; }
+
+		// Comparison interface
+		constexpr bool operator ==(const JSONAtomContainer &other) noexcept
+			{ return atom == other.atom; }
+		constexpr bool operator !=(const JSONAtomContainer &other) noexcept
+			{ return atom != other.atom; }
+	};
 
 	class rSON_CLS_API JSONNull final : public JSONAtom
 	{
