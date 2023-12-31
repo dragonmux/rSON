@@ -22,6 +22,7 @@
 #include <memory>
 #include <queue>
 #include <system_error>
+#include "rSON.hxx"
 
 typedef struct JSONParser
 {

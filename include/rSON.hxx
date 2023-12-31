@@ -19,8 +19,8 @@
 #ifndef rSON_HXX
 #define rSON_HXX
 
-#include <stdint.h>
-#include <string.h>
+#include <cstdint>
+#include <cstring>
 #include <memory>
 #include <vector>
 #include <exception>
