@@ -140,6 +140,10 @@ bool JSONObject::exists(const std::string &key) const
 bool JSONObject::exists(const std::string_view key) const
 	{ return obj->exists(key); }
 size_t JSONObject::size() const { return obj->size(); }
+JSONObject::iterator JSONObject::begin() noexcept { return obj->begin(); }
+JSONObject::iterator JSONObject::begin() const noexcept { return obj->begin(); }
+JSONObject::iterator JSONObject::end() noexcept { return obj->end(); }
+JSONObject::iterator JSONObject::end() const noexcept { return obj->end(); }
 
 bool JSONObject::add(const char *const key, std::nullptr_t)
 	{ return obj->add(key, std::make_unique<JSONNull>()); }

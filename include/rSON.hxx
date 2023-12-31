@@ -28,6 +28,7 @@
 #include <cstring>
 #include <memory>
 #include <vector>
+#include <map>
 #include <exception>
 #include <stdexcept>
 #include <string>
@@ -553,12 +554,46 @@ namespace rSON
 		void store(stream_t &stream) const final;
 	};
 
+	// Iterator type for the contents of a JSONObject, with nice semantics for accessing the objects within
+	class rSON_DEFAULT_VISIBILITY JSONObjectIterator final
+	{
+	private:
+		using objectMap_t = std::map<std::string, std::unique_ptr<JSONAtom>, std::less<>>;
+		using iterator_t = objectMap_t::iterator;
+		using constIterator_t = objectMap_t::const_iterator;
+		constIterator_t item_;
+
+	public:
+		JSONObjectIterator(iterator_t item) noexcept : item_{item} { }
+		JSONObjectIterator(constIterator_t item) noexcept : item_{item} { }
+		std::pair<const std::string &, JSONAtomContainer> operator *() const noexcept { return *item_; }
+
+		JSONObjectIterator &operator ++() noexcept
+		{
+			++item_;
+			return *this;
+		}
+
+		JSONObjectIterator &operator --() noexcept
+		{
+			--item_;
+			return *this;
+		}
+
+		bool operator ==(const JSONObjectIterator &other) const noexcept
+			{ return item_ == other.item_; }
+		bool operator !=(const JSONObjectIterator &other) const noexcept
+			{ return item_ != other.item_; }
+	};
+
 	class rSON_DEFAULT_VISIBILITY JSONObject : public JSONAtom
 	{
 	private:
 		OpaquePtr<internal::object_t> obj;
 
 	public:
+		using iterator = JSONObjectIterator;
+
 		JSONObject();
 		JSONObject(JSONObject &object);
 		~JSONObject() override = default;
@@ -645,6 +680,10 @@ namespace rSON
 #endif
 		size_t size() const;
 		size_t count() const { return size(); }
+		iterator begin() noexcept;
+		iterator begin() const noexcept;
+		iterator end() noexcept;
+		iterator end() const noexcept;
 		size_t length() const final;
 		void store(stream_t &stream) const final;
 	};
