@@ -109,13 +109,16 @@ namespace rSON
 	struct rSON_CLS_API fileStream_t final : public stream_t
 	{
 	private:
-		int fd;
+		int fd{-1};
 		size_t length;
-		bool eof;
+		bool eof{false};
 		int32_t mode;
 
 	public:
 		fileStream_t(const char *const fileName, const int32_t mode, const int32_t perms = 0);
+#ifdef _WIN32
+		fileStream_t(const wchar_t *const fileName, const int32_t mode, const int32_t perms = 0);
+#endif
 		fileStream_t(const fileStream_t &) = delete;
 		fileStream_t(fileStream_t &&) = default;
 		~fileStream_t() noexcept final;

@@ -31,15 +31,25 @@ using ssize_t = typename std::make_signed<size_t>::type;
 
 #include "internal/types.hxx"
 
-fileStream_t::fileStream_t(const char *const fileName, const int32_t _mode, const int32_t perms) :
-	fd(-1), eof(false), mode(_mode)
+fileStream_t::fileStream_t(const char *const fileName, const int32_t _mode, const int32_t perms) : mode{_mode}
 {
 	struct stat fileStat;
 	fd = open(fileName, mode, perms);
 	if (fd == -1 || fstat(fd, &fileStat) != 0)
-		throw std::system_error(errno, std::system_category());
+		throw std::system_error{errno, std::system_category()};
 	length = fileStat.st_size;
 }
+
+#ifdef _WIN32
+fileStream_t::fileStream_t(const wchar_t *const fileName, const int32_t _mode, const int32_t perms) : mode{_mode}
+{
+	struct stat fileStat;
+	fd = _wopen(fileName, mode, perms);
+	if (fd == -1 || fstat(fd, &fileStat) != 0)
+		throw std::system_error{errno, std::system_category()};
+	length = fileStat.st_size;
+}
+#endif
 
 fileStream_t::~fileStream_t() noexcept { close(fd); }
 
