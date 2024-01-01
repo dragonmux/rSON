@@ -8,6 +8,10 @@ on:
     branches:
       - 'main'
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.job }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build-macos:
     runs-on: ${{ matrix.os }}
@@ -15,8 +19,12 @@ jobs:
       matrix:
         os:
           - macos-11
-          - macos-10.15
-        coverage: [false, true]
+          - macos-12
+        build_opts:
+          - ''
+        include:
+          - os: macos-latest
+            build_opts: '-Db_lto=true -Ddefault_library=static'
       fail-fast: false
     steps:
       - name: Runtime environment
@@ -25,60 +33,81 @@ jobs:
           WORKSPACE: ${{ github.workspace }}
         run: |
           echo "GITHUB_WORKSPACE=`pwd`" >> $GITHUB_ENV
-      - name: Coverage environment
-        env:
-          COVERAGE: ${{ matrix.coverage }}
-        run: |
-          echo "Coverage enabled for build? ${{ matrix.coverage }}"
-          echo -n "COVERAGE=" >> $GITHUB_ENV
-          ([ $COVERAGE == "true" ] && echo 1 || echo 0) >> $GITHUB_ENV
-          echo -n "BUILD_OPTS=" >> $GITHUB_ENV
-          ([ $COVERAGE == "true" ] && echo "--buildtype=debug" || echo "") >> $GITHUB_ENV
-      - name: Checkout rSON
-        uses: actions/checkout@v2
-        with:
-          lfs: true
-          submodules: true
-      - name: Setup Meson + Ninja
+      - name: Setup Meson + Ninja + gcovr
         shell: bash
         run: |
-          brew install meson ninja
+          brew install meson ninja gcovr
         working-directory: ${{ runner.temp }}
       - name: Version tools
         shell: bash
         run: |
           cc --version || true
           ld --version || true
+          gcov --version || true
           meson --version
           ninja --version
+      - name: Checkout rSON
+        uses: actions/checkout@v3
+        with:
+          lfs: true
+          submodules: true
       - name: Configure
-        run: meson build --prefix=$HOME/.local -Db_coverage=${{ matrix.coverage }} $BUILD_OPTS
+        run: meson setup build --prefix=$HOME/.local ${{ matrix.build_opts }}
       - name: Build
-        run: ninja -C build
+        run: meson compile -C build
       - name: Test
-        run: ninja -C build test
+        run: meson test -C build
+      - name: Run coverage build
+        if: github.repository == 'dragonmux/rSON'
+        # Codecov no longer parses gcov files automatically
+        run: |
+          meson setup cov-build --prefix=$HOME/.local -Db_coverage=true --buildtype=debug
+          meson compile -C cov-build
+          meson test -C cov-build
+          ninja -C cov-build coverage-xml
       - name: Install
-        run: ninja -C build install
+        run: meson install -C build
+      - name: Upload failure logs
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: logs-${{ matrix.os }}-appleclang
+          path: |
+            ${{ github.workspace }}/build/meson-logs/*
+            ${{ github.workspace }}/cov-build/meson-logs/*
+          retention-days: 5
       - name: Codecov
-        if: success() && matrix.coverage
-        uses: codecov/codecov-action@v2
+        if: success() && github.repository == 'dragonmux/rSON'
+        uses: codecov/codecov-action@v3
+        with:
+          directory: ./cov-build/meson-logs
+          files: coverage.xml
+          token: ${{ secrets.CODECOV_TOKEN }}
+
   build-macos-homebrew:
-    # Do not use Big Sur here, GCC < 9 is known to crash
-    # on exception unwind
-    # https://gcc.gnu.org/bugzilla/show_bug.cgi?id=98805
-    runs-on: macos-10.15
+    # Apple LLD is unable to link GCC < 11 generated object files.
+    # https://stackoverflow.com/questions/73714336/xcode-update-to-version-2395-ld-compile-problem-occurs-computedatomcount-m
+    # rdar://FB11369327
+    name: '${{ matrix.os }} (homebrew, ${{ matrix.compiler }})'
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
+        os:
+          - macos-11
         compiler:
           # GCC5 cannot compile anything on macOS
           # - gcc@5
-          - gcc@6
-          - gcc@7
+          ## GCC6 cannot handle constexpr-ness of mmap_t
+          ## See https://gcc.gnu.org/bugzilla/show_bug.cgi?id=66297
+          # - gcc@6
+          # GCC7 doesn't provide <filesystem> required by substrate in C++17 mode
+          #- gcc@7
           - gcc@8
           - gcc@9
           - gcc@10
-          - gcc
-        coverage: [false, true]
+          - gcc@11
+          - gcc@12
+          - gcc@13
       fail-fast: false
     steps:
       - name: Runtime environment
@@ -87,28 +116,19 @@ jobs:
           WORKSPACE: ${{ github.workspace }}
         run: |
           echo "GITHUB_WORKSPACE=`pwd`" >> $GITHUB_ENV
-      - name: Coverage environment
-        env:
-          COVERAGE: ${{ matrix.coverage }}
-        run: |
-          echo "Coverage enabled for build? ${{ matrix.coverage }}"
-          echo -n "COVERAGE=" >> $GITHUB_ENV
-          ([ $COVERAGE == "true" ] && echo 1 || echo 0) >> $GITHUB_ENV
-          echo -n "BUILD_OPTS=" >> $GITHUB_ENV
-          ([ $COVERAGE == "true" ] && echo "--buildtype=debug" || echo "") >> $GITHUB_ENV
       - name: Setup compiler
         shell: bash
         run: |
-          brew install ${{ matrix.compiler }}
+          brew install ${{ matrix.compiler }} gcovr
           CC=${COMPILER/@/-}
           CXX=${CC/#gcc/g++}
           echo "CC=$CC" >> $GITHUB_ENV
           echo "CXX=$CXX" >> $GITHUB_ENV
-          [ $COVERAGE -ne 0 ] && echo "GCOV=${CC/#gcc/gcov}" >> $GITHUB_ENV || true
+          echo "GCOV=${CC/#gcc/gcov}" >> $GITHUB_ENV
         env:
           COMPILER: ${{ matrix.compiler }}
       - name: Checkout rSON
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           lfs: true
           submodules: true
@@ -122,16 +142,38 @@ jobs:
         run: |
           $CC --version
           $CXX --version
+          $GCOV --version
           meson --version
           ninja --version
       - name: Configure
-        run: meson build --prefix=$HOME/.local -Db_coverage=${{ matrix.coverage }} $BUILD_OPTS
+        run: meson setup build --prefix=$HOME/.local $BUILD_OPTS
       - name: Build
-        run: ninja -C build
+        run: meson compile -C build
       - name: Test
-        run: ninja -C build test
+        run: meson test -C build
+      - name: Run coverage build
+        if: github.repository == 'dragonmux/rSON'
+        # Codecov no longer parses gcov files automatically
+        run: |
+          meson setup cov-build --prefix=$HOME/.local --buildtype=debug -Db_coverage=true
+          meson compile -C cov-build
+          meson test -C cov-build
+          ninja -C cov-build coverage-xml
       - name: Install
-        run: ninja -C build install
+        run: meson install -C build
+      - name: Upload failure logs
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: logs-${{ matrix.os }}-homebrew-${{ matrix.compiler }}
+          path: |
+            ${{ github.workspace }}/build/meson-logs/*
+            ${{ github.workspace }}/cpv-build/meson-logs/*
+          retention-days: 5
       - name: Codecov
-        if: success() && matrix.coverage
-        uses: codecov/codecov-action@v2
+        if: success() && github.repository == 'dragonmux/rSON'
+        uses: codecov/codecov-action@v3
+        with:
+          directory: ./cov-build/meson-logs
+          files: coverage.xml
+          token: ${{ secrets.CODECOV_TOKEN }}
