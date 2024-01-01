@@ -1,30 +1,61 @@
-crunch = find_program('crunch')
-#crunchpp = find_program('crunch++')
-#libcrunchpp = dependency('crunch++')
-libcrunch = dependency('crunch')
+# SPDX-License-Identifier: LGPL-3.0-or-later
+# SPDX-FileCopyrightText: 2018-2023 Rachel Mant <git@dragonmux.network>
+# SPDX-FileContributor: Written by Rachel Mant <git@dragonmux.network>
 
-commandExtra = [
+crunchProject = subproject(
+	'crunch',
+	default_options: [
+		'cpp_std=@0@'.format(get_option('cpp_std')),
+	],
+)
+
+crunchMake = find_program('crunchMake')
+crunch = find_program('crunch')
+libcrunch = dependency('crunch')
+#crunchpp = crunchProject.get_variable('crunchpp')
+libcrunchpp = dependency('crunch++')
+
+command = [
+	crunchMake,
+	'-s',
+	'@INPUT@',
+	'-o', '@OUTPUT@',
 	'-std=c++17',
+	'-L@0@'.format(crunchProject.get_variable('libCrunchppPath')),
+	'-L@0@'.format(crunchProject.get_variable('libCrunchPath')),
 	'-lcrunch',
-	'-I@0@'.format(rSONIncludePath),
+	f'-I@rSONIncludePath@',
+	'-DrSON_EXPORT_API',
+	'-D_FILE_OFFSET_BITS=64',
+	libcrunch.get_variable('compile_args'),
+	libcrunch.get_variable('link_args'),
+	#libcrunchpp.get_variable('compile_args'),
+	libcrunchpp.get_variable('link_args'),
 	substrate.get_variable('compile_args'),
 	substrate.get_variable('link_args'),
 ]
+
 if get_option('b_coverage')
-	commandExtra += ['--coverage']
+	command += ['--coverage']
 endif
 if get_option('debug')
-	commandExtra += ['--debug']
+	command += ['--debug']
 endif
-if cxx.get_id() != 'msvc'
-	commandExtra += ['-z', 'defs']
+if not isWindows and cxx.get_linker_id() != 'ld64' and noUndefined
+	command += ['-z', 'defs']
 endif
 if get_option('b_lto')
-	commandExtra += ['-flto']
+	command += ['-flto']
 endif
 
 if sanitizer != 'none'
-	commandExtra += ['-fsanitize=' + sanitizer]
+	command += ['-fsanitize=' + sanitizer]
+endif
+
+if isWindows
+	testExt = '.dll'
+else
+	testExt = '.so'
 endif
 
 rSONReaderTests = [
@@ -50,6 +81,7 @@ testSrcs = [
 testHelpers = static_library(
 	'testHelpers',
 	testSrcs,
+	cpp_args: ['-DrSON_EXPORT_API'],
 	pic: true,
 	dependencies: [libcrunch, substrate],
 	include_directories: rSONIncludeDir,
@@ -65,7 +97,7 @@ foreach test : rSONReaderTests
 
 	custom_target(
 		test,
-		command: [crunchMake, '-s', '@INPUT@', '-o', '@OUTPUT@'] + commandExtra,
+		command: command,
 		input: [test + '.cpp', objects],
 		output: test + '.so',
 		build_by_default: true
@@ -74,26 +106,23 @@ endforeach
 
 custom_target(
 	'testJSONErrors',
-	command: [crunchMake, '-s', '@INPUT@', '-o', '@OUTPUT@'] + commandExtra,
-	input: ['testJSONErrors.cpp', rSON.extract_objects('jsonErrors.cxx')],
+	command: command,
+	input: ['testJSONErrors.cpp', rSONObjs],
 	output: 'testJSONErrors.so',
 	build_by_default: true
 )
 
 custom_target(
 	'testWriter',
-#	command: [crunchMake, '-s', '@INPUT@', '-o', '@OUTPUT@', rSON.full_path()] + commandExtra,
-	command: [crunchMake, '-s', '@INPUT@', '-o', '@OUTPUT@'] + commandExtra,
-#	input: ['testWriter.cpp'],
+	command: command,
 	input: ['testWriter.cpp', rSONObjs, rSON.extract_objects('parser.cxx')],
 	output: 'testWriter.so',
-#	depends: rSON,
 	build_by_default: true
 )
 
 custom_target(
 	'testHeader',
-	command: [crunchMake, '-s', '@INPUT@', '-o', '@OUTPUT@'] + commandExtra,
+	command: command,
 	input: ['testHeader.cpp', objects, testHelpers.extract_objects('rSON.cpp')],
 	output: 'testHeader.so',
 	build_by_default: true
@@ -101,7 +130,7 @@ custom_target(
 
 custom_target(
 	'testStream',
-	command: [crunchMake, '-s', '-std=c++17', '@INPUT@', '-o', '@OUTPUT@', '-I@0@'.format(rSONIncludePath)],
+	command: command,
 	input: ['testStream.cpp', objects, testHelpers.extract_objects('stream.cpp')],
 	output: 'testStream.so',
 	build_by_default: true

@@ -8,6 +8,7 @@ project(
 	default_options: [
 		'cpp_std=c++17',
 		'warning_level=3',
+		'b_ndebug=if-release',
 		'b_pch=false'
 	],
 	version: '0.4.1',
@@ -17,6 +18,8 @@ project(
 
 cxx = meson.get_compiler('cpp')
 sanitizer = get_option('b_sanitize')
+noUndefined = get_option('b_lundef')
+isWindows = target_machine.system() == 'windows'
 pkgconfig = import('pkgconfig')
 
 if host_machine.system() != 'windows' and host_machine.system() != 'darwin'
@@ -33,6 +36,5 @@ subdir('include')
 subdir('src')
 
 if get_option('build_tests')
-	crunchMake = find_program('crunchMake', required: false)
-	subdir('test', if_found: crunchMake)
+	subdir('test')
 endif
