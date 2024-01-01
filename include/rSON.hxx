@@ -788,7 +788,7 @@ namespace rSON
 	template<JSONAtomType type> bool typeIsOrNull(const JSONAtom &atom) noexcept { return atom.typeIsOrNull(type); }
 
 #if __cplusplus >= 201703L
-#	if _WINDOWS
+#	if _WIN32
 	constexpr int32_t normalMode{O_RDONLY | O_BINARY};
 #	else
 	constexpr int32_t normalMode{O_RDONLY | O_NOCTTY};
