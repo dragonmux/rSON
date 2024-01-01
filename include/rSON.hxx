@@ -794,7 +794,7 @@ namespace rSON
 	constexpr int32_t normalMode{O_RDONLY | O_NOCTTY};
 #	endif
 
-	[[nodiscard]] rSON_API inline std::unique_ptr<JSONAtom> parseJSON(const std::filesystem::path &fileName)
+	[[nodiscard]] inline std::unique_ptr<JSONAtom> parseJSON(const std::filesystem::path &fileName)
 	{
 		fileStream_t stream{fileName.c_str(), normalMode};
 		return rSON::parseJSON(stream);
