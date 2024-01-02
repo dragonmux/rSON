@@ -1,20 +1,8 @@
-/*
- * This file is part of rSON
- * Copyright © 2012-2018 Rachel Mant (dx-mon@users.sourceforge.net)
- *
- * rSON is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * rSON is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
+// SPDX-License-Identifier: LGPL-3.0-or-later
+// SPDX-FileCopyrightText: 2012-2013,2018,2023 Rachel Mant <git@dragonmux.network>
+// SPDX-FileCopyrightText: 2021 Amyspark <amy@amyspark.me>
+// SPDX-FileContributor: Written by Rachel Mant <git@dragonmux.network>
+// SPDX-FileContributor: Modified by Amyspark <amy@amyspark.me>
 
 #ifndef INTERNAL_TYPES_HXX
 #define INTERNAL_TYPES_HXX

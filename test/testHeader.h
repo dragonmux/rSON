@@ -1,3 +1,7 @@
+// SPDX-License-Identifier: LGPL-3.0-or-later
+// SPDX-FileCopyrightText: 2017,2023 Rachel Mant <git@dragonmux.network>
+// SPDX-FileContributor: Written by Rachel Mant <git@dragonmux.network>
+
 #ifndef TEST_HEADER_H
 #define TEST_HEADER_H
 
