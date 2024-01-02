@@ -12,8 +12,6 @@ substrate = subproject(
 	'substrate_dep'
 )
 
-add_project_arguments('-DrSON_EXPORT_API', language: 'cpp')
-
 rSONSrc = [
 	'jsonErrors.cxx', 'jsonAtom.cxx', 'jsonNull.cxx', 'jsonBool.cxx',
 	'jsonInt.cxx', 'jsonFloat.cxx', 'jsonString.cxx', 'jsonObject.cxx',
@@ -24,6 +22,7 @@ rSONSrc = [
 rSON = library(
 	'rSON',
 	rSONSrc,
+	cpp_args: ['-DrSON_EXPORT_API'],
 	include_directories: rSONIncludeDir,
 	dependencies: [substrate],
 	gnu_symbol_visibility: 'inlineshidden',

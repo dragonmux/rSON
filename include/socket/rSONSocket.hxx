@@ -22,6 +22,20 @@
 #include <rSON.hxx>
 
 #ifdef _WIN32
+#	ifdef rSON_SOCKET_EXPORT_API
+#		define rSON_SOCKET_CLS_API __declspec(dllexport)
+#	else
+#		define rSON_SOCKET_CLS_API __declspec(dllimport)
+#	endif
+#	define rSON_SOCKET_DEFAULT_VISIBILITY
+#	define rSON_SOCKET_API extern rSON_SOCKET_CLS_API
+#else
+#	define rSON_SOCKET_DEFAULT_VISIBILITY __attribute__ ((visibility("default")))
+#	define rSON_SOCKET_CLS_API rSON_SOCKET_DEFAULT_VISIBILITY
+#	define rSON_SOCKET_API extern rSON_SOCKET_CLS_API
+#endif
+
+#ifdef _WIN32
 #define WIN32_LEAN_AND_MEAN
 #include <ws2tcpip.h>
 #undef WIN32_LEAN_AND_MEAN
@@ -52,32 +66,32 @@ namespace rSON
 		bool connect(const void *const addr, const size_t len) const noexcept;
 
 	public:
-		rSON_CLS_API constexpr socket_t() noexcept : socket(INVALID_SOCKET) { }
-		rSON_CLS_API constexpr socket_t(const int32_t s) noexcept : socket(s) { }
-		rSON_CLS_API socket_t(const int family, const int type, const int protocol = 0) noexcept;
+		rSON_SOCKET_CLS_API constexpr socket_t() noexcept : socket(INVALID_SOCKET) { }
+		rSON_SOCKET_CLS_API constexpr socket_t(const int32_t s) noexcept : socket(s) { }
+		rSON_SOCKET_CLS_API socket_t(const int family, const int type, const int protocol = 0) noexcept;
 		socket_t(const socket_t &) = delete;
-		rSON_CLS_API socket_t(socket_t &&s) noexcept : socket_t() { swap(s); }
-		rSON_CLS_API ~socket_t() noexcept;
+		rSON_SOCKET_CLS_API socket_t(socket_t &&s) noexcept : socket_t() { swap(s); }
+		rSON_SOCKET_CLS_API ~socket_t() noexcept;
 
 		socket_t &operator =(const socket_t &) = delete;
-		rSON_CLS_API void operator =(socket_t &&s) noexcept { swap(s); }
-		rSON_CLS_API operator sockType_t() const noexcept { return socket; }
-		rSON_CLS_API bool operator ==(const sockType_t s) const noexcept { return socket == s; }
-		rSON_CLS_API bool operator !=(const sockType_t s) const noexcept { return socket != s; }
-		rSON_CLS_API void swap(socket_t &s) noexcept { std::swap(socket, s.socket); }
-		rSON_CLS_API bool valid() const noexcept { return socket != INVALID_SOCKET; }
+		rSON_SOCKET_CLS_API void operator =(socket_t &&s) noexcept { swap(s); }
+		rSON_SOCKET_CLS_API operator sockType_t() const noexcept { return socket; }
+		rSON_SOCKET_CLS_API bool operator ==(const sockType_t s) const noexcept { return socket == s; }
+		rSON_SOCKET_CLS_API bool operator !=(const sockType_t s) const noexcept { return socket != s; }
+		rSON_SOCKET_CLS_API void swap(socket_t &s) noexcept { std::swap(socket, s.socket); }
+		rSON_SOCKET_CLS_API bool valid() const noexcept { return socket != INVALID_SOCKET; }
 
 		template<typename T> bool bind(const T &addr) const noexcept
 			{ return bind(static_cast<const void *>(&addr), sizeof(T)); }
-		rSON_CLS_API bool bind(const sockaddr_storage &addr) const noexcept;
+		rSON_SOCKET_CLS_API bool bind(const sockaddr_storage &addr) const noexcept;
 		template<typename T> bool connect(const T &addr) const noexcept
 			{ return connect(static_cast<const void *>(&addr), sizeof(T)); }
-		rSON_CLS_API bool connect(const sockaddr_storage &addr) const noexcept;
-		rSON_CLS_API bool listen(const int32_t queueLength) const noexcept;
-		rSON_CLS_API socket_t accept(sockaddr *peerAddr = nullptr, socklen_t *peerAddrLen = nullptr) const noexcept;
-		rSON_CLS_API ssize_t write(const void *const bufferPtr, const size_t len) const noexcept;
-		rSON_CLS_API ssize_t read(void *const bufferPtr, const size_t len) const noexcept;
-		rSON_CLS_API char peek() const noexcept;
+		rSON_SOCKET_CLS_API bool connect(const sockaddr_storage &addr) const noexcept;
+		rSON_SOCKET_CLS_API bool listen(const int32_t queueLength) const noexcept;
+		rSON_SOCKET_CLS_API socket_t accept(sockaddr *peerAddr = nullptr, socklen_t *peerAddrLen = nullptr) const noexcept;
+		rSON_SOCKET_CLS_API ssize_t write(const void *const bufferPtr, const size_t len) const noexcept;
+		rSON_SOCKET_CLS_API ssize_t read(void *const bufferPtr, const size_t len) const noexcept;
+		rSON_SOCKET_CLS_API char peek() const noexcept;
 	};
 
 	inline void swap(socket_t &a, socket_t &b) noexcept
@@ -109,24 +123,24 @@ namespace rSON
 		rpcStream_t() noexcept;
 
 	public:
-		rSON_CLS_API rpcStream_t(const socketType_t type);
+		rSON_SOCKET_CLS_API rpcStream_t(const socketType_t type);
 		rpcStream_t(const rpcStream_t &) = delete;
-		rSON_CLS_API rpcStream_t(rpcStream_t &&) = default;
-		rSON_CLS_API ~rpcStream_t() noexcept override = default;
+		rSON_SOCKET_CLS_API rpcStream_t(rpcStream_t &&) = default;
+		rSON_SOCKET_CLS_API ~rpcStream_t() noexcept override = default;
 		rpcStream_t &operator =(const rpcStream_t &) = delete;
-		rSON_CLS_API rpcStream_t &operator =(rpcStream_t &&) = default;
+		rSON_SOCKET_CLS_API rpcStream_t &operator =(rpcStream_t &&) = default;
 
-		rSON_CLS_API bool valid() const noexcept;
+		rSON_SOCKET_CLS_API bool valid() const noexcept;
 		// Either call the listen() API OR the connect() - NEVER both for a rpcStream_t instance.
-		rSON_CLS_API bool connect(const char *const where, uint16_t port) noexcept;
-		rSON_CLS_API bool listen(const char *const where, uint16_t port) noexcept;
-		rSON_CLS_API rpcStream_t accept() const noexcept;
+		rSON_SOCKET_CLS_API bool connect(const char *const where, uint16_t port) noexcept;
+		rSON_SOCKET_CLS_API bool listen(const char *const where, uint16_t port) noexcept;
+		rSON_SOCKET_CLS_API rpcStream_t accept() const noexcept;
 
-		rSON_CLS_API bool read(void *const value, const size_t valueLen, size_t &actualLen) final;
-		rSON_CLS_API bool write(const void *const value, const size_t valueLen) final;
-		rSON_CLS_API bool atEOF() const noexcept final;
-		rSON_CLS_API void readSync() noexcept final;
-		rSON_CLS_API void writeSync() noexcept final;
+		rSON_SOCKET_CLS_API bool read(void *const value, const size_t valueLen, size_t &actualLen) final;
+		rSON_SOCKET_CLS_API bool write(const void *const value, const size_t valueLen) final;
+		rSON_SOCKET_CLS_API bool atEOF() const noexcept final;
+		rSON_SOCKET_CLS_API void readSync() noexcept final;
+		rSON_SOCKET_CLS_API void writeSync() noexcept final;
 	};
 }
 

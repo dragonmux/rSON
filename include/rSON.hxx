@@ -47,13 +47,9 @@
 #		define rSON_CLS_API __declspec(dllimport)
 #	endif
 #	define rSON_DEFAULT_VISIBILITY
-#	define rSON_API	extern rSON_CLS_API
+#	define rSON_API extern rSON_CLS_API
 #else
-#	if __GNUC__ >= 4
-#		define rSON_DEFAULT_VISIBILITY __attribute__ ((visibility("default")))
-#	else
-#		error "This library cannot be compiled or used correctly with a GCC less than 4.x series"
-#	endif
+#	define rSON_DEFAULT_VISIBILITY __attribute__ ((visibility("default")))
 #	define rSON_CLS_API rSON_DEFAULT_VISIBILITY
 #	define rSON_API extern rSON_CLS_API
 #	include <sys/types.h>

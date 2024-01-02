@@ -12,6 +12,7 @@ rSONSocketSrc = ['socket.cxx']
 rSONSocket = library(
 	'rSON.socket',
 	rSONSocketSrc,
+	cpp_args: ['-DrSON_SOCKET_EXPORT_API'],
 	include_directories: [rSONIncludeDir, rSONSocketIncludeDir],
 	link_with: [rSON],
 	dependencies: [rSONSocketLibs, substrate],
