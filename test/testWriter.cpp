@@ -157,16 +157,16 @@ void testFileWrite()
 
 	// Go back to the start of our test file and allocate memory to read it
 	destStream.seek(0, SEEK_SET);
-	char *const resultData = new (std::nothrow) char[destStream.size() + 1];
-	assertNotNull(resultData);
+	const std::unique_ptr<char []> resultData{new (std::nothrow) char[destStream.size() + 1]};
+	assertNotNull(resultData.get());
 	// Read it
-	const bool result = readStream.read(resultData, destStream.size());
+	const bool result = readStream.read(resultData.get(), destStream.size());
 	// Cleanup
 	unlink("test.json");
 	// Continue testing (verify results)
 	assertTrue(result);
 	resultData[destStream.size()] = 0;
-	assertStringEqual(resultData, refData);
+	assertStringEqual(resultData.get(), refData);
 }
 
 extern "C"
