@@ -64,7 +64,7 @@ JSONAtom &array_t::add(std::unique_ptr<JSONAtom> &&value)
 void array_t::del(const size_t key)
 {
 	if (key >= children.size())
-		throw JSONArrayError(JSON_ARRAY_OOB);
+		throw JSONArrayError{JSON_ARRAY_OOB};
 	children.erase(children.begin() + key);
 }
 
@@ -78,7 +78,7 @@ void array_t::del(const JSONAtom &value)
 JSONAtom &array_t::operator [](const size_t key) const
 {
 	if (key >= children.size())
-		throw JSONArrayError(JSON_ARRAY_OOB);
+		throw JSONArrayError{JSON_ARRAY_OOB};
 	return *children[key];
 }
 
@@ -90,7 +90,13 @@ void JSONArray::add(std::unique_ptr<JSONAtom> &&value)
 void JSONArray::add(JSONAtom *value)
 	{ arr->add(std::unique_ptr<JSONAtom>{value}); }
 void JSONArray::del(const size_t key) { arr->del(key); }
-void JSONArray::del(const JSONAtom *value) { arr->del(*value); }
+
+void JSONArray::del(const JSONAtom *value)
+{
+	if (value)
+		arr->del(*value);
+}
+
 void JSONArray::del(const JSONAtom &value) { arr->del(value); }
 JSONAtom &JSONArray::operator [](const size_t key) const { return (*arr)[key]; }
 size_t JSONArray::size() const { return arr->size(); }
