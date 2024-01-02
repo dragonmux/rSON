@@ -39,6 +39,7 @@
 #include <type_traits>
 #include <utility>
 #include <fcntl.h>
+#include <sys/stat.h>
 
 #ifdef _WIN32
 #	ifdef rSON_EXPORT_API
@@ -785,14 +786,18 @@ namespace rSON
 
 #if __cplusplus >= 201703L
 #	if _WIN32
-	constexpr int32_t normalMode{O_RDONLY | O_BINARY};
+	using mode_t = int32_t;
+	constexpr int32_t normalFlags{O_RDONLY | O_BINARY};
+	constexpr mode_t normalMode{_S_IWRITE | _S_IREAD};
 #	else
-	constexpr int32_t normalMode{O_RDONLY | O_NOCTTY};
+	using mode_t = ::mode_t;
+	constexpr int32_t normalFlags{O_RDONLY | O_NOCTTY};
+	constexpr mode_t normalMode{S_IWUSR | S_IRUSR | S_IRGRP | S_IROTH};
 #	endif
 
 	[[nodiscard]] inline std::unique_ptr<JSONAtom> parseJSON(const std::filesystem::path &fileName)
 	{
-		fileStream_t stream{fileName.c_str(), normalMode};
+		fileStream_t stream{fileName.c_str(), normalFlags};
 		return rSON::parseJSON(stream);
 	}
 #endif

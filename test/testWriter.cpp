@@ -151,7 +151,7 @@ void testFileWrite()
 	assertNotNull(json.get());
 
 	// Write it using the stream writer engine, and using writeJSON for code coverage
-	fileStream_t destStream("test.json", O_RDWR | O_CREAT | O_TRUNC | O_NOCTTY, S_IRUSR | S_IWUSR);
+	fileStream_t destStream("test.json", O_RDWR | O_CREAT | O_TRUNC | O_NOCTTY, normalMode);
 	stream_t &readStream = destStream;
 	writeJSON(json, destStream); // could just as well be json->store(destStream)..
 
