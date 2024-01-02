@@ -41,7 +41,7 @@ void testConstruct()
 {
 	try
 		{ testArray = new JSONArray(); }
-	catch (std::bad_alloc &badAlloc)
+	catch (const std::bad_alloc &badAlloc)
 		{ fail(badAlloc.what()); }
 	assertNotNull(testArray);
 	assertIntEqual(testArray->count(), 0);
@@ -84,12 +84,12 @@ void testAdd()
 	{ \
 		tryStuff; \
 	} \
-	catch (JSONTypeError &err) \
+	catch (const JSONTypeError &err) \
 		{ fail(err.error()); }
 
 #define CATCH_FAIL(tryStuff) \
 	COMMON_CATCH(tryStuff) \
-	catch (JSONArrayError &err) \
+	catch (const JSONArrayError &err) \
 		{ fail(err.error()); }
 
 void testLookup()
@@ -115,7 +115,7 @@ void testLookup()
 		child = &(*testArray)[2]; \
 		fail("Array index out of bounds exception not thrown when it should have been!")
 	)
-	catch (JSONArrayError &) { }
+	catch (const JSONArrayError &) { }
 
 	child = testArray;
 	CATCH_FAIL(assertPtrEqual(&(*child)[size_t(0)], &(*testArray)[0]))
@@ -143,7 +143,7 @@ void testDuplicate()
 		JSONArray redup(*testArray);
 		fail("JSONArray constructor failed to throw JSONArrayError when it should have been!");
 	}
-	catch (JSONArrayError &) { }
+	catch (const JSONArrayError &) { }
 	testArray->del(8);
 	assertIntEqual(testArray->size(), 8);
 }
@@ -167,7 +167,7 @@ void testDel()
 		testArray->del(5);
 		fail("Array index out of bounds exception not thrown when it should have been!");
 	}
-	catch (JSONArrayError &) { }
+	catch (const JSONArrayError &) { }
 	testArray->del(4);
 
 	assertIntEqual(testArray->size(), 4);
@@ -209,7 +209,7 @@ void testIterate()
 			std::unique_ptr<JSONAtom> jsonAtom = std::make_unique<JSONInt>(value);
 			array.add(std::move(jsonAtom));
 		}
-		catch (std::bad_alloc &)
+		catch (const std::bad_alloc &)
 			{ fail("Out of memory occured during construction phase of test"); }
 	}
 	assertIntEqual(array.count(), 6);
