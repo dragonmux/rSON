@@ -96,9 +96,12 @@ namespace rSON
 			return valueLen == actualLen;
 		}
 
-		virtual bool read(void *const, const size_t, size_t &) { throw notImplemented_t(); }
-		virtual bool write(const void *const, const size_t) { throw notImplemented_t(); }
-		virtual bool atEOF() const { throw notImplemented_t(); }
+		virtual bool read(void *const, const size_t, size_t &)
+			{ throw notImplemented_t(); }
+		virtual bool write(const void *const, const size_t)
+			{ throw notImplemented_t(); }
+		virtual bool atEOF() const
+			{ throw notImplemented_t(); }
 		virtual void readSync() noexcept { }
 		virtual void writeSync() noexcept { }
 	};
@@ -130,7 +133,7 @@ namespace rSON
 		bool valid() const noexcept { return fd != -1; }
 	};
 
-	struct rSON_DEFAULT_VISIBILITY memoryStream_t final : public stream_t
+	struct rSON_CLS_API memoryStream_t final : public stream_t
 	{
 	private:
 		char *const memory;
