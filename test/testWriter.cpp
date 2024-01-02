@@ -21,7 +21,7 @@
 #include <fcntl.h>
 #include "test.h"
 
-#ifdef _MSVC
+#ifdef _WIN32
 #define O_NOCTTY O_BINARY
 #endif
 
