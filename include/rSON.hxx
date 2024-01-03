@@ -305,7 +305,7 @@ namespace rSON
 		operator int64_t() const;
 		operator double() const;
 		operator float() const { return float(asFloat()); }
-		operator const char *() const;
+		explicit operator const char *() const;
 		operator const std::string &() const;
 		operator JSONString &() const;
 		operator JSONObject &() const;
