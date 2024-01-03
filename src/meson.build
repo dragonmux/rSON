@@ -38,12 +38,14 @@ if not meson.is_subproject()
 		version: meson.project_version(),
 		description: 'A simple but effective JSON parser for C++'
 	)
-else
-	rSON_dep = declare_dependency(
-		include_directories: rSONIncludeDir,
-		link_with: rSON,
-		version: meson.project_version()
-	)
 endif
+
+rSON_dep = declare_dependency(
+	include_directories: rSONIncludeDir,
+	link_with: rSON,
+	version: meson.project_version()
+)
+
+meson.override_dependency('rSON', rSON_dep)
 
 subdir('socket')
