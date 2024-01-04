@@ -63,7 +63,7 @@ rSONReaderTests = [
 	'testJSONString', 'testJSONObject', 'testJSONArray', 'testParser',
 ]
 rSONGeneralTests = [
-	'testJSONErrors', 'testWriter', 'testHeader', #'testSocket',
+	'testJSONErrors', 'testWriter', 'testHeader', 'testSocket',
 	'testStream'
 ]
 rSONTests = rSONReaderTests + rSONGeneralTests
